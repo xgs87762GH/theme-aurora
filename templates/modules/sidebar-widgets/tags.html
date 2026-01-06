@@ -1,0 +1,36 @@
+<div
+  class="w-full overflow-hidden rounded-xl bg-white p-4 shadow-md transition-all duration-300 hover:shadow-lg dark:bg-slate-800"
+>
+  <div class="mb-4 flex items-center justify-between">
+    <h2 class="inline-flex items-center gap-2 text-base font-semibold dark:text-slate-50">
+      <span 
+        th:with="iconName=${widgetConfig != null and not #strings.isEmpty(widgetConfig.icon) ? widgetConfig.icon : 'tabler:tags'},iconClass=${#strings.contains(iconName, ':') ? #strings.concat('i-[', #strings.replace(iconName, ':', '--'), ']') : (#strings.startsWith(iconName, 'i-') ? iconName : #strings.concat('i-[', iconName, ']'))}"
+        th:classappend="${iconClass}"
+        class="text-lg text-layui-primary dark:text-blue-400"
+      ></span>
+      <th:block th:if="${widgetConfig != null and not #strings.isEmpty(widgetConfig.title)}" th:text="${widgetConfig.title}"></th:block>
+      <th:block th:unless="${widgetConfig != null and not #strings.isEmpty(widgetConfig.title)}" th:text="#{widget.tags.title}"></th:block>
+    </h2>
+    <a
+      class="group inline-flex items-center gap-1 text-xs font-medium text-gray-500 transition-all hover:text-layui-primary dark:text-slate-400 dark:hover:text-blue-400"
+      th:href="@{/tags}"
+    >
+      <span th:text="#{common.more}"></span>
+      <span class="i-[tabler--chevron-right] -translate-x-0.5 text-sm transition-transform group-hover:translate-x-0"></span>
+    </a>
+  </div>
+  <div class="flex flex-wrap gap-2" th:with="tags = ${tagFinder.list(1,20)}">
+    <a
+      th:each="tag : ${tags}"
+      th:href="@{${tag.status.permalink}}"
+      th:title="${tag.spec.displayName}"
+      class="group inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 shadow-sm transition-all hover:border-layui-primary hover:bg-layui-primary/5 hover:text-layui-primary hover:shadow-md dark:border-slate-700 dark:bg-slate-700 dark:text-slate-300 dark:hover:border-blue-400 dark:hover:bg-blue-500/10 dark:hover:text-blue-400"
+    >
+      <span class="i-[tabler--hash] text-xs opacity-60"></span>
+      <span th:text="${tag.spec.displayName}"></span>
+      <span class="ml-0.5 rounded-full bg-gray-100 px-1.5 py-0.5 text-[10px] font-semibold tabular-nums text-gray-600 transition-colors group-hover:bg-layui-primary/20 group-hover:text-layui-primary dark:bg-slate-600 dark:text-slate-400 dark:group-hover:bg-blue-500/30 dark:group-hover:text-blue-400" th:text="${tag.postCount ?: 0}"></span>
+    </a>
+    <p class="w-full py-4 text-center text-sm text-gray-500 dark:text-slate-400" th:if="${#lists.isEmpty(tags)}" th:text="#{widget.tags.empty}">暂无标签</p>
+  </div>
+</div>
+

@@ -10,6 +10,7 @@
     "rebuild": "pnpm clean && pnpm build",
     "rebuild:full": "pnpm clean && pnpm build && pnpm build:packages",
     "dev": "vite build --watch",
+    "watch:full": "nodemon",
     "lint": "eslint ./src --ext .js,.cjs,.mjs,.ts,.cts,.mts --ignore-path .gitignore",
     "prepare": "husky || true",
     "prettier": "prettier --write './**/*.{ts,json,yaml,yml,html}'"
@@ -38,6 +39,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.0",
+    "nodemon": "^3.1.11",
     "postcss": "^8.5.3",
     "prettier": "^2.8.8",
     "prettier-plugin-tailwindcss": "^0.1.13",

@@ -26,13 +26,17 @@ spec:
           name: header_background_type
           id: header_background_type
           key: header_background_type
-          label: 首页顶部背景
+          label: 首页顶部背景类型
           value: image
           options:
             - label: 手动设置
               value: manual
             - label: 图片
               value: image
+            - label: 轮播
+              value: carousel
+            - label: 视频
+              value: video
         - $formkit: text
           if: "$get(header_widget).value !== none && $get(header_background_type).value === manual"
           name: header_background
@@ -45,6 +49,33 @@ spec:
           id: header_background_image
           key: header_background_image
           label: 首页顶部背景图片
+        - $formkit: repeater
+          if: "$get(header_widget).value !== none && $get(header_background_type).value === carousel"
+          name: header_background_carousel
+          id: header_background_carousel
+          key: header_background_carousel
+          label: 轮播图片
+          help: "添加多张图片实现轮播效果"
+          value: []
+          children:
+            - $formkit: attachment
+              name: image
+              label: 图片
+              validation: "required"
+            - $formkit: text
+              name: title
+              label: 标题（可选）
+            - $formkit: text
+              name: link
+              label: 链接（可选）
+        - $formkit: attachment
+          if: "$get(header_widget).value !== none && $get(header_background_type).value === video"
+          name: header_background_video
+          id: header_background_video
+          key: header_background_video
+          label: 首页顶部背景视频
+          accepts:
+            - "video/*"
         - $formkit: color
           if: "$get(header_widget).value === site_title"
           name: title_color
@@ -64,6 +95,12 @@ spec:
             - label: 三分之一屏
               value: third
           help: "首页顶部大图的高度设置"
+        - $formkit: checkbox
+          if: $get(header_widget).value !== none && $get(top_banner_height).value == full && $get(header_background_type).value == image
+          name: use_banner_as_background
+          label: 将 Banner 作为全局背景
+          value: false
+          help: "启用后，所有页面将使用首页 banner 图片作为背景，实现视觉统一（仅图片类型支持）"
         - $formkit: checkbox
           name: show_category_filter
           label: 显示分类筛选器
@@ -423,6 +460,14 @@ spec:
               help: "非必填，选择图标或留空使用默认图标"
               format: name
               value-only: true
+            - $formkit: number
+              name: size
+              label: 显示数量
+              help: "热门文章和最新评论小部件可配置显示数量，默认5条"
+              if: $value.value === 'popular-posts' || $value.value === 'latest-comments'
+              value: 5
+              min: 1
+              max: 20
             - $formkit: checkbox
               name: enabled
               label: 启用

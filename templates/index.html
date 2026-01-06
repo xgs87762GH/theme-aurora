@@ -1,6 +1,19 @@
 <!doctype html>
+<!-- 检测是否为片段请求（仅返回文章列表） -->
+<th:block th:if="${param.fragment != null and not #lists.isEmpty(param.fragment) and param.fragment[0] == 'post-list'}" xmlns:th="https://www.thymeleaf.org">
+  <!-- 仅返回文章列表容器内容，不包含任何 HTML 结构 -->
+  <div id="post-list-container">
+    <th:block
+      th:with="categoryParam=${param.category != null and not #lists.isEmpty(param.category) ? param.category[0] : null},selectedCategory=${categoryParam != null ? categoryFinder.getByName(categoryParam) : null},filteredPosts=${selectedCategory != null ? postFinder.listByCategory(1, posts.size, selectedCategory.metadata.name) : posts},headerWidget=${theme.config.home.header_widget ?: 'none'},isFirstPage=${filteredPosts.page == 1 or filteredPosts.page == null},list_layout=${theme.config.post_list.post_list_layout ?: 'grid_3'},card_gap=${theme.config.post_list.card_gap ?: 'medium'},card_style=${theme.config.post_list.card_style ?: 'default'},card_animation=${theme.config.post_list.card_animation ?: 'hover_lift'},image_position=${theme.config.post_list.post_image_position ?: 'left'}"
+      th:replace="~{modules/post-list :: post-list(posts = ${filteredPosts}, list_layout = ${list_layout}, card_gap = ${card_gap}, card_style = ${card_style}, card_animation = ${card_animation}, image_position = ${image_position}, headerWidget = ${headerWidget}, isFirstPage = ${isFirstPage}, showPagination = ${selectedCategory == null})}"
+    />
+  </div>
+</th:block>
+
+<!-- 完整页面（默认） -->
 <html
   xmlns:th="https://www.thymeleaf.org"
+  th:if="${param.fragment == null or #lists.isEmpty(param.fragment) or param.fragment[0] != 'post-list'}"
   th:replace="~{modules/layout :: html(title = ${site.title}, hero = null, content = ~{::content}, head = null, footer = null, sidebar = null, contentClass = null)}"
 >
   <th:block th:fragment="content">
@@ -10,7 +23,7 @@
     <!-- 三栏布局（包含文章列表）- 当 banner 固定时，内容需要相对定位以叠加在背景上 -->
     <div th:classappend="${theme.config.home.top_banner_height == 'full' ? 'relative z-10' : ''}">
       <th:block
-        th:replace="~{modules/home-layout :: three-column-layout-with-posts(leftContent = null, rightContent = null)}"
+        th:replace="~{modules/home-layout :: three-column-layout-with-posts(leftContent = null, rightContent = null, showCategoryFilter = ${theme.config.home.show_category_filter == true})}"
       />
     </div>
     

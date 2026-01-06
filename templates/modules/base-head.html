@@ -6,6 +6,17 @@
   <link th:unless="${#strings.isEmpty(site.logo)}" rel="preload" th:href="${site.logo}" as="image" />
   <link rel="stylesheet" th:href="@{/assets/dist/style.css?v={version}(version=${theme.spec.version})}" />
   <script th:inline="javascript">
+    // 在页面渲染前就设置滚动位置为 0，避免刷新后跳回顶部时的闪烁
+    (function() {
+      if (typeof window !== 'undefined' && window.scrollY > 0) {
+        window.scrollTo(0, 0);
+      }
+      // 使用 history.scrollRestoration 来防止浏览器恢复滚动位置
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+      }
+    })();
+    
     window.i18nResources = {
       "jsModule.colorSchemeSwitcher.dark": `[(#{jsModule.colorSchemeSwitcher.dark})]`,
       "jsModule.colorSchemeSwitcher.light": `[(#{jsModule.colorSchemeSwitcher.light})]`,

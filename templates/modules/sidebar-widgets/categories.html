@@ -1,0 +1,61 @@
+<div
+  class="w-full overflow-hidden rounded-xl bg-white p-4 shadow-md transition-all duration-300 hover:shadow-lg dark:bg-slate-800"
+  th:with="categories = ${categoryFinder.listAsTree()}, totalCategories = ${#lists.size(categories)}"
+  th:attr="x-data=|categoryPagination([[${totalCategories}]])|"
+>
+  <h2 class="mb-4 inline-flex items-center gap-2 text-base font-semibold dark:text-slate-50">
+    <span 
+      th:with="iconName=${widgetConfig != null and not #strings.isEmpty(widgetConfig.icon) ? widgetConfig.icon : 'tabler:category'},iconClass=${#strings.contains(iconName, ':') ? #strings.concat('i-[', #strings.replace(iconName, ':', '--'), ']') : (#strings.startsWith(iconName, 'i-') ? iconName : #strings.concat('i-[', iconName, ']'))}"
+      th:classappend="${iconClass}"
+      class="text-lg text-layui-primary dark:text-blue-400"
+    ></span>
+    <th:block th:if="${widgetConfig != null and not #strings.isEmpty(widgetConfig.title)}" th:text="${widgetConfig.title}"></th:block>
+    <th:block th:unless="${widgetConfig != null and not #strings.isEmpty(widgetConfig.title)}" th:text="#{widget.categories.title}"></th:block>
+  </h2>
+  <div class="mt-2" th:if="${not #lists.isEmpty(categories)}">
+    <ul class="space-y-1.5">
+      <li 
+        th:each="category,iterStat : ${categories}" 
+        th:attr="x-show=|${iterStat.index} >= getStartIndex() && ${iterStat.index} < getEndIndex()|"
+        x-cloak
+      >
+        <a
+          th:href="@{${category.status.permalink}}"
+          class="group flex items-center justify-between rounded-lg px-3 py-2 text-sm text-gray-700 transition-all hover:bg-gray-50 hover:text-layui-primary dark:text-slate-300 dark:hover:bg-slate-700/50 dark:hover:text-blue-400"
+        >
+          <span class="flex items-center gap-2">
+            <span class="i-[tabler--folder] text-base opacity-60 transition-opacity group-hover:opacity-100"></span>
+            <span th:text="${category.spec.displayName}" class="font-medium"></span>
+          </span>
+          <span class="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 tabular-nums transition-colors group-hover:bg-layui-primary/10 group-hover:text-layui-primary dark:bg-slate-700 dark:text-slate-400 dark:group-hover:bg-blue-500/20 dark:group-hover:text-blue-400" th:text="${category.postCount ?: 0}"></span>
+        </a>
+      </li>
+    </ul>
+    <!-- 分页控制 -->
+    <div th:if="${totalCategories > 5}" class="mt-4 flex items-center justify-between border-t border-gray-200 pt-3 dark:border-slate-700" x-show="getTotalPages() > 1" x-cloak>
+      <button
+        type="button"
+        @click="previousPage()"
+        :disabled="!hasPrevious()"
+        :class="hasPrevious() ? 'text-gray-700 hover:text-layui-primary dark:text-slate-300 dark:hover:text-blue-400' : 'text-gray-400 cursor-not-allowed dark:text-slate-600'"
+        class="inline-flex items-center gap-1 text-xs font-medium transition-colors"
+      >
+        <span class="i-[tabler--chevron-left] text-sm"></span>
+        <span>上一页</span>
+      </button>
+      <span class="text-xs text-gray-500 dark:text-slate-400" x-text="`${currentPage} / ${getTotalPages()}`"></span>
+      <button
+        type="button"
+        @click="nextPage()"
+        :disabled="!hasNext()"
+        :class="hasNext() ? 'text-gray-700 hover:text-layui-primary dark:text-slate-300 dark:hover:text-blue-400' : 'text-gray-400 cursor-not-allowed dark:text-slate-600'"
+        class="inline-flex items-center gap-1 text-xs font-medium transition-colors"
+      >
+        <span>下一页</span>
+        <span class="i-[tabler--chevron-right] text-sm"></span>
+      </button>
+    </div>
+  </div>
+  <p class="py-4 text-center text-sm text-gray-500 dark:text-slate-400" th:if="${#lists.isEmpty(categories)}" th:text="#{widget.categories.empty}">暂无分类</p>
+</div>
+

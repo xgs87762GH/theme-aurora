@@ -51,6 +51,142 @@ Alpine.data("dropdown", () => ({
   },
 }));
 
+// Category Filter - 分类筛选器（检测溢出 + 筛选功能）
+Alpine.data("categoryFilter", () => ({
+  expanded: false,
+  needsCollapse: false,
+  selectedCategory: null as string | null,
+  isLoading: false,
+  checkOverflow() {
+    this.$nextTick(() => {
+      const filterList = this.$refs.filterList;
+      if (!filterList) return;
+      
+      // 临时移除高度限制和溢出隐藏，以获取内容的真实尺寸
+      const originalMaxHeight = filterList.style.maxHeight;
+      const originalOverflow = filterList.style.overflow;
+      filterList.style.maxHeight = "none";
+      filterList.style.overflow = "visible";
+      
+      // 获取内容的实际高度
+      const contentHeight = filterList.scrollHeight;
+      const maxHeight = 72; // 4.5rem = 72px (约2行)
+      
+      // 恢复原始样式
+      filterList.style.maxHeight = originalMaxHeight;
+      filterList.style.overflow = originalOverflow;
+      
+      // 判断是否需要折叠：内容高度超过最大高度（2行）
+      // 当内容被 flex-wrap 包裹时，如果高度超过 2 行，说明内容过多需要折叠
+      this.needsCollapse = contentHeight > maxHeight;
+    });
+  },
+  initCategoryFilter() {
+    // 从 URL 参数中获取当前选中的分类
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoryParam = urlParams.get("category");
+    this.selectedCategory = categoryParam;
+  },
+  async filterByCategory(categoryName: string | null) {
+    if (this.isLoading) return;
+    
+    this.selectedCategory = categoryName;
+    this.isLoading = true;
+    
+    try {
+      // 构建 URL - 添加 fragment=post-list 参数，只获取文章列表片段
+      const params = new URLSearchParams();
+      if (categoryName) {
+        params.append("category", categoryName);
+      }
+      params.append("fragment", "post-list");
+      const url = `/?${params.toString()}`;
+      
+      // 更新浏览器地址栏（不刷新页面，但不包含 fragment 参数）
+      const displayUrl = categoryName ? `/?category=${encodeURIComponent(categoryName)}` : "/";
+      window.history.pushState({ category: categoryName }, "", displayUrl);
+      
+      // 获取文章列表片段（只返回 #post-list-container 内容）
+      const response = await fetch(url, {
+        headers: {
+          "X-Requested-With": "XMLHttpRequest", // 标识为 AJAX 请求
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const html = await response.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, "text/html");
+      
+      // 查找文章列表容器
+      const newPostListContainer = doc.querySelector("#post-list-container");
+      
+      // 获取当前的文章列表容器
+      const currentPostListContainer = document.querySelector("#post-list-container");
+      
+      if (!currentPostListContainer) {
+        throw new Error("Post list container not found");
+      }
+      
+      // 替换整个文章列表容器
+      if (newPostListContainer) {
+        currentPostListContainer.innerHTML = newPostListContainer.innerHTML;
+      } else {
+        // 如果没有找到，显示错误
+        currentPostListContainer.innerHTML = `
+          <div class="flex items-center justify-center py-16">
+            <div class="text-center">
+              <span class="i-[tabler--file-off] text-6xl text-gray-300 dark:text-slate-600"></span>
+              <p class="mt-4 text-sm font-light text-gray-500 dark:text-slate-400">加载失败，请刷新页面重试</p>
+            </div>
+          </div>
+        `;
+      }
+      
+      // 等待 DOM 更新后再滚动（使用双重 requestAnimationFrame 确保 DOM 已完全更新）
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          // 滚动到文章列表顶部（平滑滚动）
+          // 如果 banner 是全屏的，需要滚动到 banner 下方（文章列表位置）
+          const fullBanner = document.querySelector(".aurora-top-banner-full");
+          const postListContainer = document.querySelector("#post-list-container");
+          const postList = document.querySelector("#post-list");
+          
+          if (fullBanner && postListContainer) {
+            // Banner 是全屏的，滚动到文章列表容器顶部
+            // 使用容器的实际位置，这样更准确
+            const rect = postListContainer.getBoundingClientRect();
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const targetY = scrollTop + rect.top - 20; // 20px 偏移，确保内容可见
+            window.scrollTo({ top: targetY, behavior: "smooth" });
+          } else if (postList) {
+            // Banner 不是全屏的，滚动到文章列表顶部
+            const rect = postList.getBoundingClientRect();
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const targetY = scrollTop + rect.top - 20; // 20px 偏移
+            window.scrollTo({ top: targetY, behavior: "smooth" });
+          } else if (postListContainer) {
+            // 如果没有文章列表，滚动到容器顶部
+            const rect = postListContainer.getBoundingClientRect();
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const targetY = scrollTop + rect.top - 20;
+            window.scrollTo({ top: targetY, behavior: "smooth" });
+          }
+        });
+      });
+    } catch (error) {
+      console.error("Failed to filter posts:", error);
+      // 如果失败，回退到页面跳转
+      window.location.href = categoryName ? `/?category=${encodeURIComponent(categoryName)}` : "/";
+    } finally {
+      this.isLoading = false;
+    }
+  },
+}));
+
 // Upvote
 Alpine.data("upvote", (kind: string, group: string, plural: string) => {
   const i18n = window.i18nResources || {};
@@ -81,6 +217,40 @@ Alpine.data("upvote", (kind: string, group: string, plural: string) => {
         }
       } catch (error) {
         alert(i18n["jsModule.upvote.networkError"] || "网络错误");
+      }
+    },
+  };
+});
+
+// Category Pagination
+Alpine.data("categoryPagination", (totalItems: number) => {
+  return {
+    currentPage: 1,
+    itemsPerPage: 5,
+    totalItems: totalItems,
+    getTotalPages() {
+      return Math.ceil(this.totalItems / this.itemsPerPage);
+    },
+    getStartIndex() {
+      return (this.currentPage - 1) * this.itemsPerPage;
+    },
+    getEndIndex() {
+      return this.getStartIndex() + this.itemsPerPage;
+    },
+    hasPrevious() {
+      return this.currentPage > 1;
+    },
+    hasNext() {
+      return this.currentPage < this.getTotalPages();
+    },
+    previousPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+      }
+    },
+    nextPage() {
+      if (this.currentPage < this.getTotalPages()) {
+        this.currentPage++;
       }
     },
   };
@@ -267,7 +437,7 @@ const main = {
         const element = document.querySelector(elementSelector);
         const sidebarSelector = `.aurora-${sidebarPosition}-sidebar .aurora-sidebar`;
         const sidebar = document.querySelector(sidebarSelector);
-        
+
         if (!element || !sidebar) {
           // 如果还没加载完成，延迟重试（最多重试 20 次，约 1 秒）
           const retryCount = (tryInsert as any).retryCount || 0;
@@ -296,12 +466,12 @@ const main = {
         } else {
           sidebar.appendChild(element);
         }
-        
+
         // 添加标记类（如果提供）
         if (markerClass) {
           sidebar.classList.add(markerClass);
         }
-        
+
         resolve(true);
       };
 
@@ -318,20 +488,20 @@ const main = {
 function setActiveMenuItems() {
   const currentPath = window.location.pathname;
   const menuLinks = document.querySelectorAll('[data-menu-href]');
-  
+
   menuLinks.forEach((link) => {
     const href = link.getAttribute('data-menu-href');
     if (!href) return;
-    
+
     // 规范化路径（移除尾部斜杠，除了根路径）
     const normalizedCurrentPath = currentPath === '/' ? '/' : currentPath.replace(/\/$/, '');
     const normalizedHref = href === '/' ? '/' : href.replace(/\/$/, '');
-    
+
     // 检查是否匹配
-    const isActive = 
+    const isActive =
       normalizedCurrentPath === normalizedHref ||
       (normalizedCurrentPath !== '/' && normalizedHref !== '/' && normalizedCurrentPath.startsWith(normalizedHref));
-    
+
     if (isActive) {
       link.classList.add('text-blue-600', 'font-semibold', 'dark:text-blue-400');
       // 如果是子菜单项，也添加背景色
@@ -367,6 +537,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // 全屏 Banner 上拉放大并固定为背景效果
+  // 全屏 Banner 上拉放大并固定为背景效果
   const fullBanner = document.querySelector(".aurora-top-banner-full");
   if (fullBanner) {
     const scrollIndicator = fullBanner.querySelector(".aurora-scroll-indicator");
@@ -374,39 +545,105 @@ document.addEventListener("DOMContentLoaded", () => {
     const bannerElement = fullBanner as HTMLElement;
     let ticking = false;
     let isFixed = false;
-    const bannerHeight = bannerElement.offsetHeight;
-    
+    let hasScrolled = false; // 标记是否已经滚动过
+
+    // 【修改点1】这里由 const 改为 let，以便后续更新高度
+    let bannerHeight = bannerElement.offsetHeight;
+
+    // 【修改点2】重写更新高度的逻辑，确保窗口缩放时高度变量同步更新
+    const updateBannerHeight = () => {
+      bannerHeight = bannerElement.offsetHeight;
+    };
+    // 保持监听 resize 事件，不要移除
+    window.addEventListener("resize", updateBannerHeight);
+
     // 滚动提示按钮点击事件
-    if (scrollDownBtn) {
-      scrollDownBtn.addEventListener("click", () => {
-        window.scrollTo({
-          top: bannerHeight,
-          behavior: "smooth"
-        });
+    const scrollToContent = () => {
+      window.scrollTo({
+        top: bannerHeight, // 这里会使用最新的高度
+        behavior: "smooth"
       });
+    };
+
+    if (scrollDownBtn) {
+      scrollDownBtn.addEventListener("click", scrollToContent);
     }
-    
+
+    // 滚动到顶部（banner区域）- 使用instant避免闪烁
+    const scrollToTop = () => {
+      // 先重置banner的状态，避免闪烁
+      if (isFixed) {
+        isFixed = false;
+        bannerElement.classList.remove("aurora-banner-fixed");
+        const placeholder = document.querySelector(".aurora-banner-placeholder");
+        if (placeholder) {
+          placeholder.remove();
+        }
+      }
+      // 重置transform
+      bannerElement.style.transform = "";
+      bannerElement.style.willChange = "";
+      // 显示滚动提示按钮
+      if (scrollIndicator) {
+        (scrollIndicator as HTMLElement).style.opacity = "1";
+      }
+      // 立即跳转到顶部
+      window.scrollTo({
+        top: 0,
+        behavior: "auto" // 使用auto而不是smooth，避免闪烁
+      });
+    };
+
+    // 监听鼠标滚轮事件，实现双向跳转（banner ↔ 内容区域）
+    const handleWheel = (e: Event) => {
+      const wheelEvent = e as WheelEvent;
+      const currentScroll = window.scrollY;
+
+      // 情况1: 在banner区域内且向下滚动 → 跳转到内容区域
+      if (currentScroll < bannerHeight && !isFixed && wheelEvent.deltaY > 0) {
+        e.preventDefault();
+        if (!hasScrolled) {
+          hasScrolled = true;
+          scrollToContent();
+        }
+        return;
+      }
+
+      // 情况2: 在内容区域顶部（banner高度附近）且向上滚动 → 跳转到banner顶部
+      // 使用一个小的容差范围（±5px）来判断是否在内容区域顶部
+      const contentTop = bannerHeight;
+      const tolerance = 5;
+      if (currentScroll >= contentTop - tolerance && currentScroll <= contentTop + tolerance && wheelEvent.deltaY < 0) {
+        e.preventDefault();
+        hasScrolled = false;
+        scrollToTop();
+        return;
+      }
+
+      // 情况3: 在内容区域中间（距离顶部超过tolerance）→ 完全不管，让浏览器正常处理
+    };
+
     const handleBannerEffect = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const scrolled = window.scrollY;
           const currentBannerHeight = bannerElement.offsetHeight;
-          
+
           // 在 banner 可见范围内应用放大效果
           if (scrolled < currentBannerHeight) {
             // 计算缩放比例（向下滚动时放大）
             const scale = 1 + scrolled * 0.001; // 放大效果
-            
+
             // 应用变换到 banner
             bannerElement.style.transform = `scale(${scale})`;
             bannerElement.style.willChange = "transform";
-            
+
             // 滚动提示按钮逐渐淡出
             if (scrollIndicator) {
               const indicatorOpacity = Math.max(0, 1 - scrolled / currentBannerHeight * 2);
               (scrollIndicator as HTMLElement).style.opacity = indicatorOpacity.toString();
             }
-            
+
             // 如果之前是固定状态，取消固定
             if (isFixed) {
               isFixed = false;
@@ -415,6 +652,8 @@ document.addEventListener("DOMContentLoaded", () => {
               if (placeholder) {
                 placeholder.remove();
               }
+              // 重置滚动标记
+              hasScrolled = false;
             }
           } else {
             // 滚动超过 banner 高度时，固定为背景
@@ -427,7 +666,7 @@ document.addEventListener("DOMContentLoaded", () => {
               placeholder.style.height = `${currentBannerHeight}px`;
               bannerElement.parentNode?.insertBefore(placeholder, bannerElement);
             }
-            
+
             // 固定后，应用最终缩放
             const finalScale = 1 + currentBannerHeight * 0.001;
             bannerElement.style.transform = `scale(${finalScale})`;
@@ -435,25 +674,19 @@ document.addEventListener("DOMContentLoaded", () => {
               (scrollIndicator as HTMLElement).style.opacity = "0";
             }
           }
-          
+
           ticking = false;
         });
-        
+
         ticking = true;
       }
     };
 
-    // 初始化时计算 banner 高度
-    const updateBannerHeight = () => {
-      const height = bannerElement.offsetHeight;
-      if (height > 0) {
-        window.removeEventListener("resize", updateBannerHeight);
-      }
-    };
-    
-    window.addEventListener("resize", updateBannerHeight);
+    // 监听整个页面的wheel事件，实现双向跳转
+    document.addEventListener("wheel", handleWheel, { passive: false });
     window.addEventListener("scroll", handleBannerEffect, { passive: true });
     handleBannerEffect(); // 初始化
+
   }
 });
 

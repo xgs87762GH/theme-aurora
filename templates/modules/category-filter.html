@@ -1,0 +1,112 @@
+<!-- 分类筛选器 -->
+<div 
+  class="rounded-xl bg-white p-4 shadow-lg transition-all duration-500 dark:bg-slate-800" 
+  th:with="categories = ${categoryFinder.listAsTree()}" 
+  x-data="categoryFilter()"
+  x-init="checkOverflow(); initCategoryFilter()"
+  @resize.window.debounce.100ms="checkOverflow()"
+>
+  <div class="relative">
+    <ul
+      x-ref="filterList"
+      class="flex flex-wrap gap-2 transition-all duration-300"
+      :class="expanded ? 'max-h-none' : 'max-h-[4.5rem] overflow-hidden'"
+    >
+      <li>
+        <a
+          href="/"
+          @click.prevent="filterByCategory(null)"
+          class="inline-flex h-8 cursor-pointer items-center rounded-md px-3 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-layui-primary dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-blue-400"
+          :class="selectedCategory === null ? '!text-layui-primary !bg-blue-50 dark:!bg-blue-900/20 dark:!text-blue-400' : ''"
+        >
+          <span class="truncate" th:text="#{common.all}">全部</span>
+        </a>
+      </li>
+      <li
+        x-data="dropdown"
+        @mouseenter="open()"
+        @mouseleave="close()"
+        class="relative cursor-pointer transition-all"
+        th:each="categoryItem,categoryStat : ${categories}"
+      >
+        <div
+          class="group inline-flex h-8 cursor-pointer items-center gap-1 overflow-hidden rounded-md font-medium text-gray-700 transition-all hover:bg-gray-100 hover:text-layui-primary dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-blue-400"
+          th:attr="data-category-name=${categoryItem.metadata.name}"
+          x-bind:class="$el.getAttribute('data-category-name') === selectedCategory ? '!text-layui-primary !bg-blue-50 dark:!bg-blue-900/20 dark:!text-blue-400' : ''"
+        >
+          <a
+            class="truncate px-3 text-sm"
+            th:href="@{${categoryItem.status.permalink}}"
+            th:attr="data-category-name=${categoryItem.metadata.name}"
+            @click.prevent="filterByCategory($el.getAttribute('data-category-name'))"
+            th:text="${categoryItem.spec.displayName}"
+            th:classappend="${#lists.isEmpty(categoryItem.children) ? '' : '!pr-1'}"
+          >
+          </a>
+          <button
+            th:if="${not #lists.isEmpty(categoryItem.children)}"
+            @click="open()"
+            class="h-full px-1.5 text-sm group-hover:bg-gray-200 dark:group-hover:bg-slate-600"
+          >
+            <span
+              class="i-[tabler--chevron-down] block size-3.5 transition-all duration-300"
+              x-bind:class="show ? 'rotate-180' : ''"
+            ></span>
+          </button>
+        </div>
+
+        <ul
+          th:if="${not #lists.isEmpty(categoryItem.children)}"
+          @mouseenter="open()"
+          @mouseleave="close()"
+          x-show="show"
+          x-cloak
+          x-transition:enter="transition ease-out duration-100"
+          x-transition:enter-start="transform opacity-0 scale-95"
+          x-transition:enter-end="transform opacity-100 scale-100"
+          x-transition:leave="transition ease-in duration-75"
+          x-transition:leave-start="transform opacity-100 scale-100"
+          x-transition:leave-end="transform opacity-0 scale-95"
+          class="absolute left-0 z-10 mt-2 w-60 overflow-hidden rounded-lg bg-white p-2 shadow-lg dark:bg-slate-800"
+        >
+          <li th:each="childCategory : ${categoryItem.children}">
+            <a
+              th:href="@{${childCategory.status.permalink}}"
+              th:attr="data-category-name=${childCategory.metadata.name}"
+              @click.prevent="filterByCategory($el.getAttribute('data-category-name'))"
+              class="block rounded px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100 hover:text-layui-primary dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-blue-400"
+              th:text="${childCategory.spec.displayName}"
+            ></a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    
+    <!-- 渐变遮罩（折叠时显示） -->
+    <div
+      x-show="needsCollapse && !expanded"
+      x-cloak
+      class="pointer-events-none absolute bottom-0 left-0 right-0 h-8 rounded-b-xl bg-gradient-to-t from-white via-white/80 to-transparent dark:from-slate-800 dark:via-slate-800/80"
+    ></div>
+  </div>
+  <!-- 展开/收起按钮 -->
+  <div
+    x-show="needsCollapse"
+    x-cloak
+    class="mt-2 flex justify-end border-t border-gray-100 pt-2 dark:border-slate-700"
+  >
+    <button
+      type="button"
+      @click="expanded = !expanded"
+      class="inline-flex items-center gap-1 text-xs font-medium text-layui-primary transition-colors hover:text-layui-blue dark:text-blue-400 dark:hover:text-blue-300"
+    >
+      <span x-show="!expanded" x-cloak>展开全部</span>
+      <span x-show="expanded" x-cloak>收起</span>
+      <span
+        class="i-[tabler--chevron-down] size-3 transition-transform"
+        x-bind:class="expanded ? 'rotate-180' : ''"
+      ></span>
+    </button>
+  </div>
+</div>
+

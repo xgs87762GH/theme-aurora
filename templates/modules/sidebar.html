@@ -1,6 +1,6 @@
 <aside 
   th:fragment="sidebar (prepend)" 
-  class="aurora-sidebar z-0 hidden w-72 flex-col gap-6 md:flex"
+  class="aurora-sidebar z-0 hidden w-full md:block"
 >
   <th:block th:with="allWidgets = ${theme.config.sidebar.sidebar_widgets}">
     <th:block th:if="${prepend != null}">

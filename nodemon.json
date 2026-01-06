@@ -1,0 +1,22 @@
+{
+  "watch": [
+    "templates",
+    "src",
+    "settings.yaml",
+    "theme.yaml",
+    "i18n"
+  ],
+  "ext": "html,yaml,yml,ts,css,json",
+  "ignore": [
+    "dist/**/*",
+    "node_modules/**/*",
+    "*.zip",
+    ".vite/**/*",
+    "node_modules/.vite/**/*",
+    "node_modules/.cache/**/*"
+  ],
+  "exec": "pnpm rebuild:full",
+  "delay": 2000,
+  "verbose": false
+}
+

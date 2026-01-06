@@ -48,16 +48,18 @@
 - **`modules/footer-social.html`** - 页脚社交链接组件（可选）
 - **`modules/tag-filter.html`** - 标签筛选组件，支持折叠展开功能，用于标签列表页
 
-## 🎯 侧边栏小部件（modules/widgets/）
+## 🎯 侧边栏小部件（modules/sidebar-widgets/）
 
 这些小部件可以通过后台配置在侧边栏中启用或禁用：
 
-- **`modules/widgets/profile.html`** - 个人资料卡片（站点信息、统计数据）
-- **`modules/widgets/categories.html`** - 分类列表小部件
-- **`modules/widgets/tags.html`** - 标签云小部件
-- **`modules/widgets/popular-posts.html`** - 热门文章小部件
-- **`modules/widgets/latest-comments.html`** - 最新评论小部件
-- **`modules/widgets/announcement.html`** - 公告小部件，用于显示站点公告
+- **`modules/sidebar-widgets/profile.html`** - 个人资料卡片（站点信息、统计数据）
+- **`modules/sidebar-widgets/categories.html`** - 分类列表小部件
+- **`modules/sidebar-widgets/tags.html`** - 标签云小部件
+- **`modules/sidebar-widgets/popular-posts.html`** - 热门文章小部件
+- **`modules/sidebar-widgets/latest-comments.html`** - 最新评论小部件
+- **`modules/sidebar-widgets/announcement.html`** - 公告小部件，用于显示站点公告
+
+> **注意**：`modules/widgets/` 目录是用于后台仪表盘的部件，侧边栏小部件应放在 `modules/sidebar-widgets/` 目录下。
 
 ## 🎨 布局系统
 
@@ -110,6 +112,6 @@
 
 ### 添加新小部件
 
-1. 在 `modules/widgets/` 目录下创建新的小部件文件
+1. 在 `modules/sidebar-widgets/` 目录下创建新的小部件文件
 2. 在 `settings.yaml` 中配置小部件的启用选项
 3. 小部件会自动在侧边栏中显示

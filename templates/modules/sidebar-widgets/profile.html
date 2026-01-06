@@ -1,8 +1,8 @@
 <div
-  class="card widget profile w-full overflow-hidden rounded-xl bg-white shadow transition-all duration-500 hover:shadow-md dark:bg-slate-800"
+  class="w-full overflow-hidden rounded-xl bg-white p-4 shadow-md transition-all duration-300 hover:shadow-lg dark:bg-slate-800"
   th:with="stats = ${siteStatsFinder.getStats()}, tagCount = ${#lists.size(tagFinder.listAll())}"
 >
-  <div class="card-content p-4">
+  <div class="card-content">
     <!-- 个人信息区域 -->
     <nav class="level mb-4">
       <div class="level-item flex flex-col items-center">
@@ -18,7 +18,7 @@
         <p class="nickname mb-1 text-lg font-medium dark:text-slate-50" th:text="${#strings.defaultString(theme.config.sidebar.profile.name, site.title)}"></p>
         <p class="motto mb-1 text-center text-sm text-gray-600 dark:text-slate-300" th:if="${not #strings.isEmpty(theme.config.sidebar.profile.motto)}" th:text="${theme.config.sidebar.profile.motto}"></p>
         <p class="address flex items-center gap-1 text-sm text-gray-600 dark:text-slate-400" th:if="${not #strings.isEmpty(theme.config.sidebar.profile.location)}">
-          <i class="i-tabler-map-pin text-base"></i>
+          <span class="i-[tabler--map-pin] text-base"></span>
           <span th:text="${theme.config.sidebar.profile.location}"></span>
         </p>
       </div>
@@ -62,7 +62,7 @@
           target="_blank"
           rel="nofollow noopener noreferrer"
         >
-          <i th:classappend="${social_media.icon}" class="text-lg"></i>
+          <span th:classappend="${social_media.icon}" class="text-lg"></span>
         </a>
         <a
           th:if="${social_media.url_type == 'image'}"

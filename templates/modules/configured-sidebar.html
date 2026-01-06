@@ -1,7 +1,7 @@
 <!-- 可配置的侧边栏组件 -->
 <aside 
   th:fragment="configured-sidebar(widgets, position)" 
-  class="aurora-sidebar z-0 hidden w-72 flex-col gap-6 md:flex"
+  class="aurora-sidebar z-0 hidden w-full md:block"
   th:classappend="|${theme.config.sidebar.sticky_behavior == 'sticky_to_header' ? 'aurora-sidebar-sticky-header' : ''} ${theme.config.sidebar.sticky_behavior == 'sticky_independent' ? 'aurora-sidebar-sticky-independent' : ''}|"
 >
   <th:block th:if="${widgets != null and not #lists.isEmpty(widgets)}">
@@ -15,7 +15,7 @@
           >
             <th:block th:classappend="${hideClass}">
               <th:block th:with="widgetConfig=${widget}">
-                <th:block th:replace="~{'modules/widgets/'+${widget.value}}" />
+                <th:block th:replace="~{'modules/sidebar-widgets/'+${widget.value}}" />
               </th:block>
             </th:block>
           </th:block>
