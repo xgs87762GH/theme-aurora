@@ -1,0 +1,21 @@
+apiVersion: theme.halo.run/v1alpha1
+kind: Theme
+metadata:
+  name: theme-aurora
+spec:
+  displayName: Aurora
+  author:
+    name: Halo
+    website: https://www.halo.run
+  description: A modern and beautiful theme for Halo 2.0 <p>demo</p>
+  logo: https://www.halo.run/logo
+  homepage: https://github.com/xgs87762GH/theme-aurora
+  repo: https://github.com/xgs87762GH/theme-aurora.git
+  issues: https://github.com/xgs87762GH/theme-aurora/issues
+  settingName: "theme-aurora-setting"
+  configMapName: "theme-aurora-configMap"
+  version: 1.0.2
+  requires: ">=2.20.0"
+  license:
+    - name: "GPL-3.0"
+      url: "https://github.com/halo-dev/theme-earth/blob/main/LICENSE"

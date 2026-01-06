@@ -1,0 +1,22 @@
+<!doctype html>
+<html
+  xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{modules/layout :: html(title = ${site.title}, hero = null, content = ~{::content}, head = null, footer = null, sidebar = null, contentClass = null)}"
+>
+  <th:block th:fragment="content">
+    <!-- 顶部大图 -->
+    <th:block th:replace="~{modules/home-layout :: top-banner}" />
+
+    <!-- 三栏布局（包含文章列表）- 当 banner 固定时，内容需要相对定位以叠加在背景上 -->
+    <div th:classappend="${theme.config.home.top_banner_height == 'full' ? 'relative z-10' : ''}">
+      <th:block
+        th:replace="~{modules/home-layout :: three-column-layout-with-posts(leftContent = null, rightContent = null)}"
+      />
+    </div>
+    
+    <!-- 页脚容器 - 当 banner 全屏时，确保页脚在内容层之上 -->
+    <!-- <div th:classappend="${theme.config.home.top_banner_height == 'full' ? 'relative z-10' : ''}">
+      <th:block th:replace="~{modules/footer}" />
+    </div> -->
+  </th:block>
+</html>

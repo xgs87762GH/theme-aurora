@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.toLanguageTag}" th:fragment="html (title,hero,content,head,footer,sidebar,contentClass)">
+  <head>
+    <th:block th:replace="~{modules/base-head :: base-head(title = ${title})}" />
+
+    <th:block th:if="${head != null}">
+      <th:block th:replace="${head}" />
+    </th:block>
+  </head>
+  <body class="bg-slate-50 dark:bg-slate-900">
+    <th:block th:replace="~{modules/header}" />
+    <!-- 首页使用自定义布局，其他页面使用默认布局 -->
+    <th:block th:if="${contentClass == null}">
+      <!-- 首页布局：由index.html自己处理（包含页脚） -->
+      <th:block th:replace="${content}" />
+    </th:block>
+    <th:block th:unless="${contentClass == null}">
+      <!-- 其他页面布局：使用默认布局 -->
+      <th:block th:if="${hero != null}">
+        <th:block th:replace="${hero}" />
+      </th:block>
+      <th:block th:unless="${hero != null}">
+        <th:block th:replace="~{modules/hero :: hero(isHome = false, cover = null, title = null)}" />
+      </th:block>
+      <section
+        class="mx-auto mt-6 grid max-w-7xl grid-cols-1 gap-6 px-4 md:grid-cols-[1fr_18rem] lg:px-6"
+        th:classappend="${contentClass}"
+      >
+        <div class="z-0 min-w-0">
+          <th:block th:replace="${content}" />
+        </div>
+        <th:block th:if="${sidebar != null}">
+          <th:block th:replace="${sidebar}" />
+        </th:block>
+        <th:block th:if="${sidebar == null}">
+          <th:block th:replace="~{modules/sidebar :: sidebar(prepend = null)}" />
+        </th:block>
+      </section>
+    </th:block>
+    <!-- 页脚：显示逻辑
+         - 如果 contentClass != null：使用默认布局的页面，显示页脚
+         - 如果 contentClass == null 且 footer == null：使用自定义布局但未提供页脚的页面，显示默认页脚
+         - 如果 contentClass == null 且 footer != null：使用自定义布局且提供了页脚的页面，显示提供的页脚
+         - 首页（index.html）在 content 中自己处理页脚
+    -->
+    <th:block th:if="${contentClass != null}">
+      <!-- 默认布局页面：显示页脚 -->
+      <div class="relative z-10">
+        <th:block th:replace="~{modules/footer}" />
+        <th:block th:if="${footer != null}">
+          <th:block th:replace="${footer}" />
+        </th:block>
+      </div>
+    </th:block>
+    <th:block th:if="${contentClass == null and footer == null}">
+      <!-- 自定义布局页面但未提供页脚：显示默认页脚 -->
+      <div class="relative z-10">
+        <th:block th:replace="~{modules/footer}" />
+      </div>
+    </th:block>
+    <th:block th:if="${contentClass == null and footer != null}">
+      <!-- 自定义布局页面且提供了页脚：显示提供的页脚 -->
+      <div class="relative z-10">
+        <th:block th:replace="${footer}" />
+      </div>
+    </th:block>
+
+    <button
+      th:if="${theme.config.global.show_scroll_button}"
+      type="button"
+      id="btn-scroll-to-top"
+      th:aria-label="#{fragment.layout.toTop}"
+      class="fixed bottom-5 right-5 z-50 flex items-center justify-center rounded-full bg-white p-3 opacity-0 shadow-md transition-all duration-300 hover:bg-gray-50 hover:shadow-lg lg:bottom-10 lg:right-10 dark:bg-slate-600 dark:hover:bg-slate-500"
+    >
+      <span class="i-[tabler--chevron-up] text-2xl text-gray-600 dark:text-slate-200"></span>
+    </button>
+  </body>
+</html>

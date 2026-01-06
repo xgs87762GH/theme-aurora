@@ -1,0 +1,12 @@
+<!doctype html>
+<html
+  xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{modules/layout :: html(title = |#{page.archives.title} - ${site.title}|, hero = null, content = ~{::content}, head = null, footer = null, sidebar = null, contentClass = null)}"
+>
+  <th:block th:fragment="content">
+    <!-- 三栏布局（包含时间线） -->
+    <th:block
+      th:replace="~{modules/home-layout :: three-column-layout-with-archives(leftContent = null, rightContent = null)}"
+    />
+  </th:block>
+</html>

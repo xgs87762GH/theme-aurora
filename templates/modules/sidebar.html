@@ -1,0 +1,15 @@
+<aside 
+  th:fragment="sidebar (prepend)" 
+  class="aurora-sidebar z-0 hidden w-72 flex-col gap-6 md:flex"
+>
+  <th:block th:with="allWidgets = ${theme.config.sidebar.sidebar_widgets}">
+    <th:block th:if="${prepend != null}">
+      <th:block th:replace="${prepend}" />
+    </th:block>
+    <!-- 其他页面默认显示右侧小部件 -->
+    <th:block th:if="${allWidgets != null}">
+      <th:block th:replace="~{modules/configured-sidebar :: configured-sidebar(widgets = ${allWidgets}, position = 'right')}" />
+    </th:block>
+  </th:block>
+</aside>
+

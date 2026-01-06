@@ -1,0 +1,24 @@
+<th:block th:with="social_media = ${theme.config.footer.social_media}">
+  <div th:unless="${#lists.isEmpty(social_media)}" class="mt-4 flex justify-center space-x-6 sm:mt-0">
+    <th:block th:each="item : ${social_media}">
+      <a
+        th:if="${item.url_type == 'normal'}"
+        th:href="${item.url}"
+        class="text-gray-500 hover:text-gray-900 dark:hover:text-white"
+        th:title="${item.name}"
+      >
+        <div th:classappend="${item.icon}" class="size-5"></div>
+      </a>
+      <a
+        th:if="${item.url_type == 'image'}"
+        th:href="${item.url}"
+        target="_blank"
+        class="text-gray-500 hover:text-gray-900 dark:hover:text-white"
+        th:title="${item.name}"
+      >
+        <div th:classappend="${item.icon}" class="size-5"></div>
+      </a>
+    </th:block>
+  </div>
+</th:block>
+

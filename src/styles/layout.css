@@ -1,0 +1,467 @@
+/* ============================================
+   Layout Styles - 布局样式
+   ============================================ */
+
+/* Top Banner - 顶部大图 */
+.aurora-top-banner {
+  position: relative;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+
+.aurora-top-banner-full {
+  height: 100vh;
+  min-height: 600px;
+}
+
+.aurora-top-banner-half {
+  height: 50vh;
+  min-height: 400px;
+}
+
+.aurora-top-banner-third {
+  height: 33.333vh;
+  min-height: 300px;
+}
+
+.aurora-top-banner-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+
+.aurora-top-banner-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================================
+   Three Column Layout - 三栏布局系统
+   ============================================ */
+
+/* Base Container - 基础容器 */
+.aurora-three-column {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Sidebar Base Styles - 侧边栏基础样式 */
+.aurora-left-sidebar,
+.aurora-right-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* 确保侧边栏内的卡片和组件占满宽度 */
+.aurora-left-sidebar > *,
+.aurora-right-sidebar > * {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.aurora-left-sidebar {
+  order: 1;
+}
+
+.aurora-right-sidebar {
+  order: 3;
+}
+
+/* Main Content - 主内容区 */
+.aurora-main-content {
+  order: 2;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.aurora-main-content-inner {
+  width: 100%;
+  max-width: 100%;
+  padding-top: 1.5rem;
+  padding-bottom: 2rem;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* ============================================
+   Responsive Width Configuration - 响应式宽度配置
+   ============================================ */
+
+/* 使用百分比宽度控制内容区域，统一管理 */
+@media (min-width: 640px) {
+  .aurora-three-column {
+    width: 95%;
+  }
+}
+
+@media (min-width: 768px) {
+  .aurora-three-column {
+    width: 92%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .aurora-three-column {
+    width: 90%;
+  }
+}
+
+@media (min-width: 1280px) {
+  .aurora-three-column {
+    width: 88%;
+  }
+}
+
+@media (min-width: 1536px) {
+  .aurora-three-column {
+    width: 85%;
+  }
+}
+
+/* ============================================
+   Responsive Layout Configuration - 响应式布局配置
+   ============================================ */
+
+/* Mobile Layout (< 768px) - 移动端布局 */
+@media (max-width: 767px) {
+  .aurora-three-column {
+    grid-template-columns: 1fr !important;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0 1rem;
+  }
+
+  .aurora-left-sidebar,
+  .aurora-right-sidebar {
+    order: 3;
+    width: 100%;
+    padding-top: 1.5rem;
+  }
+
+  .aurora-main-content {
+    order: 1;
+  }
+}
+
+/* Tablet Layout (768px - 1023px) - 平板布局 */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .aurora-three-column {
+    gap: 0.5rem;
+  }
+
+  /* 仅显示主内容 */
+  .aurora-three-column.layout-main-only {
+    grid-template-columns: 1fr;
+    width: 75%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* 左侧栏 + 主内容 */
+  .aurora-three-column.layout-left-main {
+    grid-template-columns: 22% 1fr;
+    gap: 0.5rem;
+  }
+
+  /* 主内容 + 右侧栏 */
+  .aurora-three-column.layout-main-right {
+    grid-template-columns: 1fr 22%;
+    gap: 0.5rem;
+  }
+
+  /* 三栏布局 - 平板端显示为两栏（主内容+右侧栏） */
+  .aurora-three-column.layout-three-column {
+    grid-template-columns: 1fr 22%;
+    gap: 0.5rem;
+  }
+
+  .aurora-three-column.layout-three-column .aurora-left-sidebar {
+    order: 3;
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+}
+
+/* Desktop Layout (1024px+) - 桌面布局 */
+@media (min-width: 1024px) {
+  .aurora-three-column {
+    gap: 0.625rem;
+  }
+
+  /* 仅显示主内容 */
+  .aurora-three-column.layout-main-only {
+    grid-template-columns: 1fr;
+    width: 70%;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* 左侧栏 + 主内容 */
+  .aurora-three-column.layout-left-main {
+    grid-template-columns: 20% 1fr;
+    gap: 0.625rem;
+  }
+
+  /* 主内容 + 右侧栏 */
+  .aurora-three-column.layout-main-right {
+    grid-template-columns: 1fr 20%;
+    gap: 0.625rem;
+  }
+
+  /* 三栏布局 */
+  .aurora-three-column.layout-three-column {
+    grid-template-columns: 18% 1fr 18%;
+    gap: 0.625rem;
+  }
+}
+
+/* Large Desktop (1280px+) - 大屏桌面 */
+@media (min-width: 1280px) {
+  .aurora-three-column {
+    gap: 0.75rem;
+  }
+
+  /* 仅显示主内容 */
+  .aurora-three-column.layout-main-only {
+    width: 72%;
+    max-width: 1200px;
+  }
+
+  /* 左侧栏 + 主内容 */
+  .aurora-three-column.layout-left-main {
+    grid-template-columns: 22% 1fr;
+    gap: 0.75rem;
+  }
+
+  /* 主内容 + 右侧栏 */
+  .aurora-three-column.layout-main-right {
+    grid-template-columns: 1fr 22%;
+    gap: 0.75rem;
+  }
+
+  /* 三栏布局 */
+  .aurora-three-column.layout-three-column {
+    grid-template-columns: 20% 1fr 20%;
+    gap: 0.75rem;
+  }
+}
+
+/* Extra Large Desktop (1536px+) - 超大屏 */
+@media (min-width: 1536px) {
+  .aurora-three-column {
+    gap: 0.875rem;
+  }
+
+  /* 仅显示主内容 */
+  .aurora-three-column.layout-main-only {
+    width: 75%;
+    max-width: 1400px;
+  }
+
+  /* 左侧栏 + 主内容 */
+  .aurora-three-column.layout-left-main {
+    grid-template-columns: 24% 1fr;
+    gap: 0.875rem;
+  }
+
+  /* 主内容 + 右侧栏 */
+  .aurora-three-column.layout-main-right {
+    grid-template-columns: 1fr 24%;
+    gap: 0.875rem;
+  }
+
+  /* 三栏布局 */
+  .aurora-three-column.layout-three-column {
+    grid-template-columns: 22% 1fr 22%;
+    gap: 0.875rem;
+  }
+}
+
+/* ============================================
+   Sidebar Responsive Configuration - 侧边栏响应式配置
+   ============================================ */
+
+/* 侧边栏最小宽度保护 - 确保内容可读性 */
+@media (min-width: 768px) {
+  .aurora-left-sidebar,
+  .aurora-right-sidebar {
+    min-width: 200px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .aurora-left-sidebar,
+  .aurora-right-sidebar {
+    min-width: 220px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .aurora-left-sidebar,
+  .aurora-right-sidebar {
+    min-width: 240px;
+  }
+}
+
+/* 平板和移动端侧边栏行为 */
+@media (max-width: 1023px) {
+  .aurora-left-sidebar,
+  .aurora-right-sidebar {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+/* 确保侧边栏在 grid 布局中正确使用百分比宽度 */
+.aurora-three-column.layout-left-main .aurora-left-sidebar,
+.aurora-three-column.layout-main-right .aurora-right-sidebar,
+.aurora-three-column.layout-three-column .aurora-left-sidebar,
+.aurora-three-column.layout-three-column .aurora-right-sidebar {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Prevent Overflow - 防止溢出 */
+.aurora-left-sidebar *,
+.aurora-right-sidebar *,
+.aurora-main-content * {
+  max-width: 100%;
+  word-wrap: break-word;
+  box-sizing: border-box;
+}
+
+/* 确保主内容区的所有直接子元素不会溢出 */
+.aurora-main-content > * {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.aurora-main-content-inner > * {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* ============================================
+   Sidebar Sticky Behavior - 侧边栏磁吸效果
+   ============================================ */
+
+/* Base Sidebar - 基础侧边栏 */
+.aurora-sidebar {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* Sticky to Header - 贴近导航栏磁吸 */
+.aurora-sidebar-sticky-header {
+  position: sticky;
+  align-self: flex-start;
+  max-height: 100vh;
+  overflow-y: auto;
+  padding-top: 1.5rem;
+  top: 4rem; /* 64px - 导航栏高度 (h-16) */
+}
+
+/* Sticky Independent - 独立磁吸 */
+.aurora-sidebar-sticky-independent {
+  position: sticky;
+  top: 1rem;
+  align-self: flex-start;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  padding-top: 1.5rem;
+}
+
+/* Sticky Below TOC - 当目录在 sidebar 内时，其他部件磁吸在目录下方 */
+/* 注意：目录的 sticky 样式由 HTML 中的类控制，这里只处理其他部件 */
+
+.aurora-sidebar:has(.toc-container) .aurora-sidebar-sticky-header,
+.aurora-sidebar:has(.toc-container) .aurora-sidebar-sticky-independent {
+  position: sticky !important;
+  top: calc(4rem + 20rem) !important; /* 导航栏高度(4rem) + 目录高度(约20rem) */
+  max-height: calc(100vh - 24rem) !important;
+  align-self: flex-start !important;
+  overflow-y: auto !important;
+}
+
+/* 兼容不支持 :has() 的浏览器 */
+.aurora-sidebar-with-toc .aurora-sidebar-sticky-header,
+.aurora-sidebar-with-toc .aurora-sidebar-sticky-independent {
+  position: sticky !important;
+  top: calc(4rem + 20rem) !important;
+  max-height: calc(100vh - 24rem) !important;
+  align-self: flex-start !important;
+  overflow-y: auto !important;
+}
+
+/* Sidebar Scrollbar - 侧边栏滚动条样式 */
+.aurora-sidebar-sticky-header::-webkit-scrollbar,
+.aurora-sidebar-sticky-independent::-webkit-scrollbar {
+  width: 6px;
+}
+
+.aurora-sidebar-sticky-header::-webkit-scrollbar-track,
+.aurora-sidebar-sticky-independent::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 3px;
+}
+
+.aurora-sidebar-sticky-header::-webkit-scrollbar-thumb,
+.aurora-sidebar-sticky-independent::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+  transition: background 0.3s ease;
+}
+
+.aurora-sidebar-sticky-header::-webkit-scrollbar-thumb:hover,
+.aurora-sidebar-sticky-independent::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.dark .aurora-sidebar-sticky-header::-webkit-scrollbar-thumb,
+.dark .aurora-sidebar-sticky-independent::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.dark .aurora-sidebar-sticky-header::-webkit-scrollbar-thumb:hover,
+.dark .aurora-sidebar-sticky-independent::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Mobile Behavior - 移动端禁用 sticky */
+@media (max-width: 767px) {
+  .aurora-sidebar-sticky-header,
+  .aurora-sidebar-sticky-independent {
+    position: relative;
+    top: 0;
+    max-height: none;
+    overflow-y: visible;
+    padding-top: 1.5rem;
+  }
+}

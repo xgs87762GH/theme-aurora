@@ -1,0 +1,1533 @@
+/* ============================================
+   Component Styles - 组件样式
+   ============================================ */
+
+/* Post Card - 文章卡片 */
+.aurora-post-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: white;
+  transition: all 0.5s ease;
+}
+
+.dark .aurora-post-card {
+  background-color: rgb(30, 41, 59);
+}
+
+/* Card Styles - 卡片样式 */
+.aurora-post-card.style-default {
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.aurora-post-card.style-default:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.aurora-post-card.style-minimal {
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.aurora-post-card.style-minimal:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.aurora-post-card.style-rounded {
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.aurora-post-card.style-rounded:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.aurora-post-card.style-flat {
+  border-radius: 0;
+  box-shadow: none;
+  border: 1px solid rgb(229, 231, 235);
+}
+
+.dark .aurora-post-card.style-flat {
+  border-color: rgb(51, 65, 85);
+}
+
+.aurora-post-card.style-bordered {
+  border-radius: 0.5rem;
+  border: 2px solid rgb(229, 231, 235);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.aurora-post-card.style-bordered:hover {
+  border-color: #16baaa;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.dark .aurora-post-card.style-bordered {
+  border-color: rgb(51, 65, 85);
+}
+
+.dark .aurora-post-card.style-bordered:hover {
+  border-color: rgb(96, 165, 250);
+}
+
+/* Card Animations - 卡片动画 */
+.aurora-post-card.animation-hover-lift:hover {
+  transform: translateY(-4px);
+}
+
+.aurora-post-card.animation-hover-scale:hover {
+  transform: scale(1.05);
+}
+
+.aurora-post-card.animation-hover-shadow:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.aurora-post-card.animation-combined:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Card Image - 卡片图片 */
+.aurora-post-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.aurora-post-card:hover .aurora-post-card-image.scale-on-hover {
+  transform: scale(1.05);
+}
+
+/* Card Content - 卡片内容 */
+.aurora-post-card-content {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  gap: 0.5rem;
+}
+
+/* Card Direction - 卡片方向 */
+.aurora-post-card.direction-column {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .aurora-post-card.direction-column {
+    grid-template-columns: 2fr 3fr;
+  }
+}
+
+.aurora-post-card.direction-column .aurora-post-card-image-wrapper {
+  grid-column: 1;
+}
+
+@media (min-width: 640px) {
+  .aurora-post-card.direction-column .aurora-post-card-image-wrapper {
+    grid-column: 1;
+  }
+}
+
+.aurora-post-card.direction-column .aurora-post-card-content {
+  grid-column: 2;
+}
+
+@media (min-width: 640px) {
+  .aurora-post-card.direction-column .aurora-post-card-content {
+    grid-column: 2;
+  }
+}
+
+.aurora-post-card.direction-list {
+  display: flex;
+  flex-direction: row;
+}
+
+.aurora-post-card.direction-list .aurora-post-card-image-wrapper {
+  width: 12rem;
+  flex-shrink: 0;
+  aspect-ratio: auto;
+}
+
+.aurora-post-card.direction-list .aurora-post-card-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Sidebar Widget - 侧边栏组件 */
+.aurora-sidebar-widget {
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.dark .aurora-sidebar-widget {
+  background-color: rgb(30, 41, 59);
+}
+
+.aurora-sidebar-widget-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: rgb(17, 24, 39);
+}
+
+.dark .aurora-sidebar-widget-title {
+  color: rgb(241, 245, 249);
+}
+
+/* Scroll to Top Button - 返回顶部按钮 */
+#btn-scroll-to-top {
+  transition: opacity 0.3s ease-in-out, transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+#btn-scroll-to-top:hover {
+  transform: translateY(-2px);
+}
+
+#btn-scroll-to-top:active {
+  transform: translateY(0);
+}
+
+/* Table of Contents - 目录 */
+.toc a {
+  display: block;
+  transition: color 0.2s ease-in-out;
+}
+
+/* Pattern Header Text - 图案标题文字 */
+.pattern-header-text {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================
+   Header & Navigation - 导航栏样式
+   ============================================ */
+
+/* Header Container - 导航栏容器 */
+#header-menu {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  background-color: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.dark #header-menu {
+  background-color: rgba(31, 41, 55, 0.95);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Header Container - 导航栏内容容器，与内容区域对齐 */
+.aurora-header-container {
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 使用百分比宽度与内容区域对齐 */
+@media (min-width: 640px) {
+  .aurora-header-container {
+    width: 95%;
+  }
+}
+
+@media (min-width: 768px) {
+  .aurora-header-container {
+    width: 92%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .aurora-header-container {
+    width: 90%;
+  }
+}
+
+@media (min-width: 1280px) {
+  .aurora-header-container {
+    width: 88%;
+  }
+}
+
+@media (min-width: 1536px) {
+  .aurora-header-container {
+    width: 85%;
+    max-width: 1400px;
+  }
+}
+
+/* Logo - Logo样式 */
+#header-menu .logo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+#header-menu .logo img {
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+#header-menu .logo:hover img {
+  transform: scale(1.05);
+}
+
+#header-menu #site-title {
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  transition: color 0.2s ease;
+  text-align: left;
+}
+
+#header-menu #site-title:hover {
+  color: #16baaa;
+}
+
+.dark #header-menu #site-title:hover {
+  color: rgb(96, 165, 250);
+}
+
+/* Navigation Menu - 导航菜单 */
+#header-menu nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#header-menu nav > ul > li {
+  position: relative;
+}
+
+#header-menu nav > ul > li > a {
+  position: relative;
+  display: inline-block;
+  padding: 0.5rem 0;
+  font-size: 0.9375rem; /* 15px - 增大字体 */
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+#header-menu nav > ul > li > a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #16baaa;
+  transition: width 0.3s ease;
+}
+
+#header-menu nav > ul > li:hover > a::after,
+#header-menu nav > ul > li > a.text-blue-600::after,
+#header-menu nav > ul > li > a.dark\:text-blue-400::after {
+  width: 100%;
+}
+
+.dark #header-menu nav > ul > li > a::after {
+  background-color: rgb(96, 165, 250);
+}
+
+/* Menu Dropdown - 菜单下拉 */
+.menu-dropdown {
+  min-width: 160px;
+  max-width: 240px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: all 0.2s ease;
+}
+
+.menu-dropdown[x-show="true"],
+.menu-dropdown.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.menu-dropdown li {
+  transition: background-color 0.2s ease;
+}
+
+.menu-dropdown li a {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  transition: all 0.2s ease;
+}
+
+.menu-dropdown li:hover {
+  background-color: rgb(249, 250, 251);
+}
+
+.dark .menu-dropdown li:hover {
+  background-color: rgb(51, 65, 85);
+}
+
+/* Mobile Menu - 移动端菜单 */
+#header-menu .mobile-menu-overlay {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+#header-menu .mobile-menu-panel {
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+#header-menu .mobile-menu-panel nav ul li {
+  border-bottom: 1px solid rgb(243, 244, 246);
+}
+
+.dark #header-menu .mobile-menu-panel nav ul li {
+  border-bottom-color: rgb(30, 41, 59);
+}
+
+#header-menu .mobile-menu-panel nav ul li a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  transition: color 0.2s ease;
+}
+
+#header-menu .mobile-menu-panel nav ul li a:hover {
+  color: #16baaa;
+}
+
+.dark #header-menu .mobile-menu-panel nav ul li a:hover {
+  color: rgb(96, 165, 250);
+}
+
+#header-menu .mobile-menu-panel nav ul li ul {
+  margin-top: 0.5rem;
+  padding-left: 1rem;
+  border-left: 2px solid rgb(229, 231, 235);
+}
+
+.dark #header-menu .mobile-menu-panel nav ul li ul {
+  border-left-color: rgb(51, 65, 85);
+}
+
+#header-menu .mobile-menu-panel nav ul li ul li {
+  border-bottom: none;
+}
+
+#header-menu .mobile-menu-panel nav ul li ul li a {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  color: rgb(107, 114, 128);
+}
+
+.dark #header-menu .mobile-menu-panel nav ul li ul li a {
+  color: rgb(148, 163, 184);
+}
+
+/* Header Actions - 导航栏操作按钮 */
+#header-menu .header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+#header-menu .header-actions li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#header-menu .header-actions a,
+#header-menu .header-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  transition: all 0.2s ease;
+}
+
+#header-menu .header-actions a:hover,
+#header-menu .header-actions button:hover {
+  background-color: rgb(243, 244, 246);
+  color: #16baaa;
+}
+
+.dark #header-menu .header-actions a:hover,
+.dark #header-menu .header-actions button:hover {
+  background-color: rgb(51, 65, 85);
+  color: rgb(96, 165, 250);
+}
+
+/* User Avatar - 用户头像 */
+#header-menu .user-avatar {
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+#header-menu .user-avatar:hover {
+  border-color: #16baaa;
+  box-shadow: 0 0 0 2px rgba(22, 186, 170, 0.1);
+}
+
+.dark #header-menu .user-avatar:hover {
+  border-color: rgb(96, 165, 250);
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.1);
+}
+
+/* Responsive - 响应式 */
+@media (max-width: 640px) {
+  #header-menu {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  #header-menu nav > ul {
+    gap: 1.5rem;
+  }
+}
+
+/* ============================================
+   Post List Layout - 文章列表布局样式
+   ============================================ */
+
+/* Base Post List - 基础文章列表 */
+.aurora-post-list {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.aurora-post-list.grid-2 {
+  grid-template-columns: 1fr;
+}
+
+.aurora-post-list.grid-3 {
+  grid-template-columns: 1fr;
+}
+
+.aurora-post-list.grid-4 {
+  grid-template-columns: 1fr;
+}
+
+.aurora-post-list.single {
+  grid-template-columns: 1fr;
+}
+
+.aurora-post-list.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.aurora-post-list.masonry {
+  column-count: 1;
+  column-gap: 1.5rem;
+}
+
+/* Responsive Post List - 响应式文章列表 */
+@media (min-width: 640px) {
+  .aurora-post-list.grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .aurora-post-list.grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .aurora-post-list.masonry {
+    column-count: 2;
+  }
+}
+
+@media (min-width: 768px) {
+  .aurora-post-list.grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .aurora-post-list.grid-4 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .aurora-post-list.grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .aurora-post-list.grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .aurora-post-list.masonry {
+    column-count: 3;
+  }
+}
+
+@media (min-width: 1280px) {
+  .aurora-post-list.masonry {
+    column-count: 4;
+  }
+}
+
+/* Card Gap - 卡片间距 */
+.aurora-post-list.gap-tight {
+  gap: 0.75rem;
+}
+
+.aurora-post-list.gap-medium {
+  gap: 1.5rem;
+}
+
+.aurora-post-list.gap-loose {
+  gap: 2rem;
+}
+
+.aurora-post-list.gap-extra-loose {
+  gap: 3rem;
+}
+
+/* Masonry Layout - 瀑布流布局 */
+.aurora-post-list.masonry > * {
+  break-inside: avoid;
+  margin-bottom: 1.5rem;
+  display: inline-block;
+  width: 100%;
+}
+
+/* ============================================
+   Home Page Optimizations - 主页优化样式
+   ============================================ */
+
+/* Top Banner Enhancements - 顶部大图增强 */
+.aurora-top-banner {
+  position: relative;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transform-origin: center top;
+  will-change: transform;
+  transition: transform 0.1s ease-out;
+}
+
+/* 全屏 Banner 拉动动效 */
+.aurora-top-banner-full {
+  background-attachment: scroll; /* 改为 scroll 以支持滚动效果 */
+}
+
+/* Banner 固定为背景 */
+.aurora-banner-fixed {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100vh;
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+}
+
+/* 当 banner 固定时，确保内容区域正确叠加 */
+body:has(.aurora-banner-fixed) .aurora-three-column {
+  position: relative;
+  z-index: 10;
+}
+
+/* Banner 占位元素（防止布局跳动） */
+.aurora-banner-placeholder {
+  width: 100%;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.aurora-top-banner-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.4) 0%,
+    rgba(0, 0, 0, 0.2) 50%,
+    rgba(0, 0, 0, 0.5) 100%
+  );
+  backdrop-filter: blur(1px);
+  z-index: 1;
+  transition: opacity 0.3s ease;
+}
+
+.aurora-top-banner:hover .aurora-top-banner-overlay {
+  opacity: 0.8;
+}
+
+.aurora-top-banner-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scroll Indicator - 滚动提示按钮 */
+.aurora-scroll-indicator {
+  transition: opacity 0.3s ease;
+}
+
+.aurora-scroll-down-btn {
+  cursor: pointer;
+  animation: scrollBounce 2s ease-in-out infinite;
+}
+
+@keyframes scrollBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Featured Post Card Enhancements - 特色文章卡片增强 */
+.aurora-featured-post-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: white;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .aurora-featured-post-card {
+  background: rgb(30, 41, 59);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3),
+    0 10px 10px -5px rgba(0, 0, 0, 0.2);
+}
+
+.aurora-featured-post-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15),
+    0 15px 20px -10px rgba(0, 0, 0, 0.1);
+}
+
+.dark .aurora-featured-post-card:hover {
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.4),
+    0 15px 20px -10px rgba(0, 0, 0, 0.3);
+}
+
+.aurora-featured-post-card img {
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.aurora-featured-post-card:hover img {
+  transform: scale(1.08);
+}
+
+/* Post Card Enhancements - 文章卡片增强 */
+.aurora-post-card {
+  position: relative;
+  overflow: hidden;
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, box-shadow;
+}
+
+.dark .aurora-post-card {
+  background: rgb(30, 41, 59);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3),
+    0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+.aurora-post-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #16baaa, #1e9fff, #16b777);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.aurora-post-card:hover::before {
+  opacity: 1;
+}
+
+.aurora-post-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.15),
+    0 8px 16px -4px rgba(0, 0, 0, 0.1);
+}
+
+.dark .aurora-post-card:hover {
+  box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.4),
+    0 8px 16px -4px rgba(0, 0, 0, 0.3);
+}
+
+.aurora-post-card-image-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.75rem 0.75rem 0 0;
+}
+
+.aurora-post-card-image-wrapper img {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.aurora-post-card:hover .aurora-post-card-image-wrapper img {
+  transform: scale(1.05);
+}
+
+/* Post List Grid Enhancements - 文章列表网格增强 */
+.aurora-post-list {
+  display: grid;
+  gap: 1.5rem;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.aurora-post-list > * {
+  animation: slideInUp 0.5s ease-out backwards;
+}
+
+.aurora-post-list > *:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.aurora-post-list > *:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.aurora-post-list > *:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.aurora-post-list > *:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+.aurora-post-list > *:nth-child(5) {
+  animation-delay: 0.5s;
+}
+
+.aurora-post-list > *:nth-child(n + 6) {
+  animation-delay: 0.6s;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Post Card Content Enhancements - 文章卡片内容增强 */
+.aurora-post-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Post Title - 文章标题 */
+.aurora-post-title a {
+  display: inline-block;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(120deg, transparent 0%, transparent 100%);
+  background-size: 0% 2px;
+  background-position: 0% 100%;
+  background-repeat: no-repeat;
+}
+
+.aurora-post-title a:hover {
+  background-size: 100% 2px;
+}
+
+/* Post Excerpt - 文章摘要 */
+.aurora-post-excerpt {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Post Category - 文章分类 */
+.aurora-post-category {
+  transition: all 0.2s ease;
+}
+
+.aurora-post-category:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+}
+
+/* Post Tag - 文章标签 */
+.aurora-post-tag {
+  transition: all 0.2s ease;
+}
+
+.aurora-post-tag:hover {
+  transform: translateY(-1px);
+}
+
+/* Post Meta - 文章元信息 */
+.aurora-post-meta {
+  margin-top: auto;
+}
+
+/* Post Stats - 文章统计信息 */
+.aurora-post-stats {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.aurora-post-stat {
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+}
+
+.aurora-post-stat span[class*="i-tabler"] {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+/* 确保 Iconify 图标正确显示 */
+.aurora-post-stat [class*="i-tabler"] {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.aurora-post-stat:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dark .aurora-post-stat:hover {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Author Avatar - 作者头像 */
+.aurora-post-author-avatar {
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.aurora-post-author-avatar:hover {
+  transform: scale(1.1);
+}
+
+/* Author Avatar - 作者头像 */
+.aurora-post-card-content img[alt*='avatar'],
+.aurora-post-card-content img[alt*='Avatar'] {
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.aurora-post-card-content img[alt*='avatar']:hover,
+.aurora-post-card-content img[alt*='Avatar']:hover {
+  transform: scale(1.1);
+  border-color: #16baaa;
+  box-shadow: 0 4px 12px rgba(22, 186, 170, 0.3);
+}
+
+/* Empty State - 空状态 */
+.aurora-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.aurora-empty-state svg,
+.aurora-empty-state .i-tabler-file-off {
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+.aurora-empty-state:hover svg,
+.aurora-empty-state:hover .i-tabler-file-off {
+  opacity: 0.8;
+}
+
+/* Pagination Enhancements - 分页增强 */
+.aurora-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 3rem;
+  padding: 1rem 0;
+}
+
+.aurora-pagination a,
+.aurora-pagination span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.aurora-pagination a {
+  background: white;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.dark .aurora-pagination a {
+  background: rgb(30, 41, 59);
+  color: rgb(241, 245, 249);
+  border-color: rgb(51, 65, 85);
+}
+
+.aurora-pagination a:hover {
+  background: #16baaa;
+  color: white;
+  border-color: #16baaa;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(22, 186, 170, 0.3);
+}
+
+.dark .aurora-pagination a:hover {
+  background: #60a5fa;
+  border-color: #60a5fa;
+}
+
+.aurora-pagination span {
+  background: #f3f4f6;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+}
+
+.dark .aurora-pagination span {
+  background: rgb(51, 65, 85);
+  color: rgb(148, 163, 184);
+  border-color: rgb(51, 65, 85);
+}
+
+/* Site Title in Banner - 横幅中的站点标题 */
+.aurora-top-banner-content .text-5xl {
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(255, 255, 255, 0.1);
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+
+.aurora-top-banner-content:hover .text-5xl {
+  text-shadow: 2px 2px 12px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(255, 255, 255, 0.2);
+  transform: scale(1.02);
+}
+
+/* Post Grid Layout - 文章网格布局优化 */
+.aurora-post-list.grid-2,
+.aurora-post-list.grid-3,
+.aurora-post-list.grid-4 {
+  grid-auto-rows: minmax(320px, auto);
+}
+
+.aurora-post-list.grid-2 > *,
+.aurora-post-list.grid-3 > *,
+.aurora-post-list.grid-4 > * {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Grid 2 Layout - 两列网格布局 */
+.aurora-post-list.grid-2 .aurora-post-card {
+  min-height: 380px;
+}
+
+.aurora-post-list.grid-2 .aurora-post-card-image-wrapper {
+  min-height: 200px;
+}
+
+/* Grid 3 Layout - 三列网格布局 */
+.aurora-post-list.grid-3 .aurora-post-card {
+  min-height: 360px;
+}
+
+.aurora-post-list.grid-3 .aurora-post-card-image-wrapper {
+  min-height: 180px;
+}
+
+/* Grid 4 Layout - 四列网格布局 */
+.aurora-post-list.grid-4 .aurora-post-card {
+  min-height: 320px;
+}
+
+.aurora-post-list.grid-4 .aurora-post-card-image-wrapper {
+  min-height: 140px;
+}
+
+.aurora-post-list.grid-4 .aurora-post-title {
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.aurora-post-list.grid-4 .aurora-post-excerpt {
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.aurora-post-list.grid-4 .aurora-post-meta {
+  padding-top: 0.75rem;
+  gap: 0.5rem;
+}
+
+.aurora-post-list.grid-4 .aurora-post-stat {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.625rem;
+}
+
+/* Single Layout - 单条布局 */
+.aurora-post-list.single .aurora-post-card {
+  min-height: 280px;
+}
+
+.aurora-post-list.single .aurora-post-card-image-wrapper {
+  min-height: 240px;
+}
+
+.aurora-post-list.single .aurora-post-title {
+  font-size: 1.5rem;
+  line-height: 1.4;
+}
+
+/* List Layout - 列表布局 */
+.aurora-post-list.list .aurora-post-card {
+  min-height: 160px;
+  flex-direction: row;
+}
+
+.aurora-post-list.list .aurora-post-card-image-wrapper {
+  width: 200px;
+  min-width: 200px;
+  height: 100%;
+  aspect-ratio: auto;
+}
+
+.aurora-post-list.list .aurora-post-card-content {
+  flex: 1;
+  min-width: 0;
+  padding: 1rem 1.5rem;
+}
+
+.aurora-post-list.list .aurora-post-title {
+  font-size: 1.125rem;
+  line-height: 1.5;
+}
+
+.aurora-post-list.list .aurora-post-excerpt {
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
+}
+
+.aurora-post-list.list .aurora-post-meta {
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+}
+
+/* Masonry Layout - 瀑布流布局 */
+.aurora-post-list.masonry .aurora-post-card {
+  break-inside: avoid;
+  margin-bottom: 1.5rem;
+  display: inline-block;
+  width: 100%;
+  min-height: 300px;
+}
+
+.aurora-post-list.masonry .aurora-post-card-image-wrapper {
+  min-height: 180px;
+}
+
+/* Responsive Optimizations - 响应式优化 */
+@media (max-width: 768px) {
+  .aurora-top-banner {
+    background-attachment: scroll;
+  }
+
+  .aurora-post-card {
+    border-radius: 0.5rem;
+  }
+
+  .aurora-featured-post-card {
+    border-radius: 0.75rem;
+  }
+
+  .aurora-post-list {
+    gap: 1rem;
+  }
+}
+
+/* Loading State - 加载状态 */
+.aurora-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  opacity: 0.6;
+}
+
+.aurora-loading::after {
+  content: '';
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid #e5e7eb;
+  border-top-color: #16baaa;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.dark .aurora-loading::after {
+  border-color: rgb(51, 65, 85);
+  border-top-color: #60a5fa;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Smooth Scrolling - 平滑滚动 */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Focus States - 焦点状态 */
+.aurora-post-card a:focus,
+.aurora-featured-post-card a:focus {
+  outline: 2px solid #16baaa;
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+.dark .aurora-post-card a:focus,
+.dark .aurora-featured-post-card a:focus {
+  outline-color: #60a5fa;
+}
+
+/* ============================================
+   Timeline - 时间线样式
+   ============================================ */
+
+.aurora-timeline {
+  position: relative;
+  padding-left: 2rem;
+}
+
+.aurora-timeline-item {
+  position: relative;
+  padding-bottom: 3.5rem;
+}
+
+.aurora-timeline-item:last-child .aurora-timeline-line {
+  display: none;
+}
+
+.aurora-timeline-marker {
+  position: absolute;
+  left: -2rem;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 0.75rem;
+  height: 100%;
+}
+
+.aurora-timeline-dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  min-width: 0.75rem;
+  min-height: 0.75rem;
+  border-radius: 50%;
+  background: #93c5fd;
+  border: 2px solid white;
+  box-shadow: 0 0 0 1px #bfdbfe;
+  z-index: 2;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  position: relative;
+  top: 0.25rem;
+}
+
+.dark .aurora-timeline-dot {
+  background: #60a5fa;
+  border-color: rgb(30, 41, 59);
+  box-shadow: 0 0 0 1px rgba(96, 165, 250, 0.3);
+}
+
+.aurora-timeline-item:hover .aurora-timeline-dot {
+  transform: scale(1.2);
+  box-shadow: 0 0 0 2px rgba(147, 197, 253, 0.3);
+}
+
+.dark .aurora-timeline-item:hover .aurora-timeline-dot {
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.4);
+}
+
+.aurora-timeline-line {
+  width: 0.5px;
+  background: #d1d5db;
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+  height: auto;
+}
+
+.dark .aurora-timeline-line {
+  background: rgb(71, 85, 105);
+}
+
+.aurora-timeline-label {
+  margin-bottom: 0.75rem;
+}
+
+.aurora-timeline-label h2 {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.aurora-timeline-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.aurora-timeline-post {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  border-left: 2px solid transparent;
+}
+
+.aurora-timeline-post:hover {
+  background: rgba(22, 186, 170, 0.05);
+  border-left-color: #16baaa;
+  transform: translateX(4px);
+}
+
+.dark .aurora-timeline-post:hover {
+  background: rgba(96, 165, 250, 0.1);
+  border-left-color: #60a5fa;
+}
+
+.aurora-timeline-post-date {
+  min-width: 3.5rem;
+  text-align: right;
+  padding-top: 0.125rem;
+}
+
+.aurora-timeline-post-title {
+  display: block;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  transition: all 0.2s ease;
+}
+
+.aurora-timeline-post-title:hover {
+  text-decoration: underline;
+}
+
+/* 响应式优化 */
+@media (max-width: 768px) {
+  .aurora-timeline {
+    padding-left: 1.5rem;
+  }
+
+  .aurora-timeline-marker {
+    left: -1.5rem;
+  }
+
+  .aurora-timeline-dot {
+    width: 0.625rem;
+    height: 0.625rem;
+  }
+
+  .aurora-timeline-post-date {
+    min-width: 3rem;
+    font-size: 0.75rem;
+  }
+
+  .aurora-timeline-post-title {
+    font-size: 0.875rem;
+  }
+  
+  .aurora-timeline-label h2 {
+    font-size: 0.875rem;
+  }
+}
+
+/* ============================================
+   Popular Posts Widget - 热门文章组件
+   ============================================ */
+
+.aurora-popular-post-item {
+  border-bottom: 1px solid rgb(243, 244, 246);
+  transition: background-color 0.2s ease;
+}
+
+.dark .aurora-popular-post-item {
+  border-bottom-color: rgb(51, 65, 85);
+}
+
+.aurora-popular-post-item:hover {
+  background-color: rgba(59, 130, 246, 0.05);
+}
+
+.dark .aurora-popular-post-item:hover {
+  background-color: rgba(96, 165, 250, 0.1);
+}
+
+.aurora-popular-post-item:last-child {
+  border-bottom: none;
+}
+
+.aurora-popular-post-content {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+}
+
+.aurora-popular-post-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.aurora-popular-post-title {
+  line-height: 1.5;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin: 0;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.aurora-popular-post-title a {
+  color: rgb(17, 24, 39);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  display: block;
+}
+
+.dark .aurora-popular-post-title a {
+  color: rgb(241, 245, 249);
+}
+
+.aurora-popular-post-title a:hover {
+  color: #16baaa;
+  text-decoration: underline;
+}
+
+.dark .aurora-popular-post-title a:hover {
+  color: rgb(96, 165, 250);
+}
+
+.aurora-popular-post-date {
+  font-size: 0.75rem;
+  color: rgb(107, 114, 128);
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.dark .aurora-popular-post-date {
+  color: rgb(148, 163, 184);
+}
+
+.aurora-popular-post-views {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: rgb(107, 114, 128);
+  flex-shrink: 0;
+  white-space: nowrap;
+  margin-left: auto;
+}
+
+.dark .aurora-popular-post-views {
+  color: rgb(148, 163, 184);
+}
+
+.aurora-popular-post-views span:first-child {
+  font-size: 0.875rem;
+}
+
+.aurora-popular-post-views span:last-child {
+  font-variant-numeric: tabular-nums;
+  min-width: 2ch;
+  text-align: right;
+}
+

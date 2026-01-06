@@ -1,0 +1,484 @@
+<!doctype html>
+<html xmlns:th="https://www.thymeleaf.org">
+  <!-- 首页顶部大图 -->
+  <th:block th:fragment="top-banner">
+    <div
+      th:if="${theme.config.home.header_widget != 'none'}"
+      class="aurora-top-banner"
+      th:classappend="|${theme.config.home.top_banner_height == 'full' ? 'aurora-top-banner-full' : ''} ${theme.config.home.top_banner_height == 'half' ? 'aurora-top-banner-half' : ''} ${theme.config.home.top_banner_height == 'third' ? 'aurora-top-banner-third' : ''}|"
+      th:with="bgImageStyle=${theme.config.home.header_background_type == 'image' and not #strings.isEmpty(theme.config.home.header_background_image) ? 'background-image: url(' + theme.config.home.header_background_image + ');' : ''},
+               bgManualStyle=${theme.config.home.header_background_type == 'manual' and not #strings.isEmpty(theme.config.home.header_background) ? 'background: ' + theme.config.home.header_background + ';' : ''}"
+      th:style="|${bgImageStyle} ${bgManualStyle}|"
+    >
+      <div class="aurora-top-banner-overlay"></div>
+      <div class="aurora-top-banner-content">
+        <th:block th:switch="${theme.config.home.header_widget}">
+          <th:block th:case="latest_post" th:with="posts = ${postFinder.list(1,1)}">
+            <div class="mx-auto max-w-7xl px-4 py-6 lg:px-6" th:if="${posts.total gt 0}">
+              <th:block th:replace="~{modules/featured-post-card :: featured-post-card(post=${posts.items[0]})}" />
+            </div>
+          </th:block>
+          <th:block th:case="latest_post_grid" th:with="posts = ${postFinder.list(1,5)}">
+            <div
+              class="mx-auto grid max-w-7xl grid-cols-1 gap-3 px-4 py-6 sm:grid-cols-5 lg:px-6"
+              th:if="${posts.total gt 0}"
+            >
+              <div class="col-span-1 sm:col-span-3">
+                <th:block
+                  th:replace="~{modules/post-card :: post-card(post=${posts.items[0]},cover=true,animation=false,border=false,direction='row')}"
+                />
+              </div>
+              <div class="col-span-1 grid grid-cols-1 gap-3 sm:col-span-2 sm:grid-cols-2">
+                <th:block th:each="post,postStat : ${posts.items}">
+                  <th:block th:if="${postStat.index != 0}">
+                    <th:block
+                      th:replace="~{modules/post-card :: post-card(post=${post},cover=false,animation=false,border=false,direction='row')}"
+                    />
+                  </th:block>
+                </th:block>
+              </div>
+            </div>
+          </th:block>
+          <th:block th:case="site_title">
+            <div class="mx-auto flex h-full max-w-7xl flex-col items-center justify-center gap-3 px-4 py-6 lg:px-6">
+              <span class="text-5xl" th:style="|color:${theme.config.home.title_color}|" th:text="${site.title}"></span>
+              <span
+                class="text-sm font-light"
+                th:style="|color:${theme.config.home.title_color}|"
+                th:text="${site.subtitle}"
+              ></span>
+            </div>
+          </th:block>
+        </th:block>
+      </div>
+      <!-- 滚动提示按钮（仅全屏时显示） -->
+      <div
+        th:if="${theme.config.home.top_banner_height == 'full'}"
+        class="aurora-scroll-indicator absolute bottom-20 left-1/2 z-10 -translate-x-1/2"
+      >
+        <button
+          type="button"
+          class="aurora-scroll-down-btn flex size-14 items-center justify-center rounded-full bg-white/30 backdrop-blur-md border-2 border-white/40 shadow-lg transition-all hover:bg-white/40 hover:scale-110 dark:bg-slate-800/40 dark:border-slate-600/40 dark:hover:bg-slate-800/50"
+          aria-label="向下滚动"
+        >
+          <span class="i-[tabler--chevron-down] text-3xl text-white dark:text-slate-200"></span>
+        </button>
+      </div>
+    </div>
+  </th:block>
+
+  <!-- 三栏布局容器（带文章列表） -->
+  <th:block th:fragment="three-column-layout-with-posts(leftContent, rightContent)">
+    <th:block th:with="allWidgets=${theme.config.sidebar.sidebar_widgets},headerWidget=${theme.config.home.header_widget ?: 'none'},isFirstPage=${posts.page == 1 or posts.page == null},skipCount=${isFirstPage and headerWidget == 'latest_post' ? 1 : (isFirstPage and headerWidget == 'latest_post_grid' ? 5 : 0)},postItems=${skipCount gt 0 and not #lists.isEmpty(posts.items) and posts.items.size() gt skipCount ? posts.items.subList(skipCount, posts.items.size()) : posts.items},list_layout=${theme.config.post_list.post_list_layout ?: 'grid_3'},card_gap=${theme.config.post_list.card_gap ?: 'medium'},card_style=${theme.config.post_list.card_style ?: 'default'},card_animation=${theme.config.post_list.card_animation ?: 'hover_lift'},image_position=${theme.config.post_list.post_image_position ?: 'left'}">
+      <!-- 简化逻辑：直接检查是否有小部件，让 configured-sidebar 组件自己处理过滤 -->
+      <div
+        class="aurora-three-column"
+        th:with="hasLeftContent=${leftContent != null},hasRightContent=${rightContent != null},hasLeftWidgets=${allWidgets != null and not #lists.isEmpty(allWidgets)},hasRightWidgets=${allWidgets != null and not #lists.isEmpty(allWidgets)},showLeft=${hasLeftContent or hasLeftWidgets},showRight=${hasRightContent or hasRightWidgets},layoutClass=${showLeft and showRight ? 'layout-three-column' : (showLeft ? 'layout-left-main' : (showRight ? 'layout-main-right' : 'layout-main-only'))}"
+        th:classappend="|${layoutClass}|"
+      >
+        <!-- 第一列（左侧栏） -->
+        <aside
+          th:if="${showLeft}"
+          class="aurora-left-sidebar"
+        >
+          <th:block th:if="${leftContent != null}">
+            <th:block th:replace="${leftContent}" />
+          </th:block>
+          <th:block th:if="${leftContent == null and allWidgets != null}">
+            <th:block th:replace="~{modules/configured-sidebar :: configured-sidebar(widgets = ${allWidgets}, position = 'left')}" />
+          </th:block>
+        </aside>
+
+        <!-- 第二列（主内容区 - 必需） -->
+        <main class="aurora-main-content">
+          <div class="aurora-main-content-inner">
+            <!-- 文章列表 -->
+            <div
+              id="post-list"
+              th:if="${posts.total gt 0}"
+              class="aurora-post-list"
+              th:classappend="|${list_layout == 'grid_2' ? 'grid-2' : ''} ${list_layout == 'grid_3' ? 'grid-3' : ''} ${list_layout == 'grid_4' ? 'grid-4' : ''} ${list_layout == 'single' ? 'single' : ''} ${list_layout == 'list' ? 'list' : ''} ${list_layout == 'masonry' ? 'masonry' : ''} ${card_gap == 'tight' ? 'gap-tight' : ''} ${card_gap == 'medium' ? 'gap-medium' : ''} ${card_gap == 'loose' ? 'gap-loose' : ''} ${card_gap == 'extra_loose' ? 'gap-extra-loose' : ''}|"
+            >
+              <th:block th:each="post : ${postItems}">
+                <th:block
+                  th:with="cardDirection=${list_layout == 'single' ? 'column' : (list_layout == 'list' ? 'list' : (image_position == 'left' ? 'row' : (image_position == 'right' ? 'row-reverse' : 'row')))}"
+                  th:replace="~{modules/post-card :: post-card(${post},${image_position != 'none'},${card_animation != 'none'},${card_style == 'bordered'},${cardDirection},${card_style ?: 'default'},${card_animation ?: 'hover_lift'},${image_position ?: 'left'})}"
+                />
+              </th:block>
+            </div>
+
+            <!-- 空状态 -->
+            <div th:if="${posts.total == 0}" class="flex items-center justify-center py-16">
+              <div class="text-center">
+                <span class="i-[tabler--file-off] text-6xl text-gray-300 dark:text-slate-600"></span>
+                <p class="mt-4 text-sm font-light text-gray-500 dark:text-slate-400" th:text="#{common.noPosts}"></p>
+              </div>
+            </div>
+
+            <!-- 分页 -->
+            <th:block
+              th:if="${posts.total gt 0}"
+              class="mt-8"
+              th:replace="~{modules/pagination :: pagination(context = '/', prevUrl = ${posts.prevUrl}, nextUrl = ${posts.nextUrl}, totalPages = ${posts.totalPages}, page = ${posts.page}, hasPrevious = ${posts.hasPrevious()}, hasNext = ${posts.hasNext()})}"
+            />
+          </div>
+        </main>
+
+        <!-- 第三列（右侧栏） -->
+        <aside
+          th:if="${showRight}"
+          class="aurora-right-sidebar"
+        >
+          <th:block th:if="${rightContent != null}">
+            <th:block th:replace="${rightContent}" />
+          </th:block>
+          <th:block th:if="${rightContent == null and allWidgets != null}">
+            <th:block th:replace="~{modules/configured-sidebar :: configured-sidebar(widgets = ${allWidgets}, position = 'right')}" />
+          </th:block>
+        </aside>
+      </div>
+    </th:block>
+  </th:block>
+
+  <!-- 三栏布局容器（带时间线归档） -->
+  <th:block th:fragment="three-column-layout-with-archives(leftContent, rightContent)">
+    <th:block th:with="allWidgets=${theme.config.sidebar.sidebar_widgets}">
+      <div
+        class="aurora-three-column"
+        th:with="hasLeftContent=${leftContent != null},hasRightContent=${rightContent != null},hasLeftWidgets=${allWidgets != null and not #lists.isEmpty(allWidgets)},hasRightWidgets=${allWidgets != null and not #lists.isEmpty(allWidgets)},showLeft=${hasLeftContent or hasLeftWidgets},showRight=${hasRightContent or hasRightWidgets},layoutClass=${showLeft and showRight ? 'layout-three-column' : (showLeft ? 'layout-left-main' : (showRight ? 'layout-main-right' : 'layout-main-only'))}"
+        th:classappend="|${layoutClass}|"
+      >
+        <!-- 第一列（左侧栏） -->
+        <aside
+          th:if="${showLeft}"
+          class="aurora-left-sidebar"
+        >
+          <th:block th:if="${leftContent != null}">
+            <th:block th:replace="${leftContent}" />
+          </th:block>
+          <th:block th:if="${leftContent == null and allWidgets != null}">
+            <th:block th:replace="~{modules/configured-sidebar :: configured-sidebar(widgets = ${allWidgets}, position = 'left')}" />
+          </th:block>
+        </aside>
+
+        <!-- 第二列（主内容区 - 时间线） -->
+        <main class="aurora-main-content">
+          <div class="aurora-main-content-inner">
+            <div class="rounded-xl bg-white p-6 dark:bg-slate-800">
+              <!-- 时间视图 - 时间线格式，按时间倒序排列 -->
+              <div 
+                class="aurora-timeline" 
+                th:if="${archives.total gt 0 and (theme.config.archives.timeline_view ?: 'month') == 'day'}"
+              >
+                <th:block th:each="archive : ${archives.items}">
+                  <th:block th:each="month : ${archive.months}">
+                    <th:block th:each="post : ${month.posts}">
+                      <div class="aurora-timeline-item">
+                        <!-- 时间节点 -->
+                        <div class="aurora-timeline-marker">
+                          <div class="aurora-timeline-dot"></div>
+                          <div class="aurora-timeline-line"></div>
+                        </div>
+                        <!-- 时间标签 - 显示完整日期时间 -->
+                        <div class="aurora-timeline-label">
+                          <h2
+                            class="text-base font-semibold text-gray-900 dark:text-slate-50"
+                            th:text="${#dates.format(post.spec.publishTime, 'yyyy-MM-dd HH:mm')}"
+                          ></h2>
+                        </div>
+                        <!-- 文章内容 -->
+                        <div class="aurora-timeline-content">
+                          <div class="aurora-timeline-post">
+                            <div class="flex-1">
+                              <a
+                                th:href="@{${post.status.permalink}}"
+                                class="aurora-timeline-post-title text-base font-medium text-gray-900 transition-colors hover:text-blue-600 dark:text-slate-50 dark:hover:text-blue-400"
+                                th:text="${post.spec.title}"
+                              ></a>
+                              <div
+                                th:if="${not #lists.isEmpty(post.categories) or not #lists.isEmpty(post.tags)}"
+                                class="mt-2 flex flex-wrap items-center gap-2"
+                              >
+                                <a
+                                  th:if="${#lists.size(post.categories)} gt 0"
+                                  th:href="@{${post.categories[0].status.permalink}}"
+                                  th:title="${post.categories[0].spec.displayName}"
+                                  th:text="${post.categories[0].spec.displayName}"
+                                  class="aurora-post-category inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 transition-colors hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 dark:hover:bg-blue-900/50"
+                                >
+                                </a>
+                                <a
+                                  th:each="tag : ${post.tags}"
+                                  th:href="@{${tag.status.permalink}}"
+                                  th:title="${tag.spec.displayName}"
+                                  th:text="|#${tag.spec.displayName}|"
+                                  class="aurora-post-tag inline-flex items-center rounded-md bg-gray-100 px-2 py-0.5 text-xs italic text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-900 dark:bg-slate-700 dark:text-slate-400 dark:hover:bg-slate-600 dark:hover:text-slate-200"
+                                >
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </th:block>
+                  </th:block>
+                </th:block>
+              </div>
+              
+              <!-- 月视图时间线 -->
+              <div 
+                class="aurora-timeline" 
+                th:if="${archives.total gt 0 and (theme.config.archives.timeline_view ?: 'month') == 'month'}"
+              >
+                <th:block th:each="archive : ${archives.items}">
+                  <th:block th:each="month : ${archive.months}">
+                    <div class="aurora-timeline-item">
+                      <!-- 时间节点 -->
+                      <div class="aurora-timeline-marker">
+                        <div class="aurora-timeline-dot"></div>
+                        <div class="aurora-timeline-line"></div>
+                      </div>
+                      <!-- 时间标签 -->
+                      <div class="aurora-timeline-label">
+                        <h2
+                          class="text-base font-semibold text-gray-900 dark:text-slate-50"
+                          th:text="#{page.archives.date(${archive.year},${month.month})}"
+                        ></h2>
+                      </div>
+                      <!-- 文章列表 -->
+                      <div class="aurora-timeline-content">
+                        <th:block th:each="post : ${month.posts}">
+                          <div class="aurora-timeline-post">
+                            <div class="flex items-start gap-4">
+                              <div class="aurora-timeline-post-date">
+                                <span
+                                  class="text-sm font-medium text-gray-500 dark:text-slate-400"
+                                  th:text="${#dates.format(post.spec.publishTime, 'MM-dd')}"
+                                ></span>
+                              </div>
+                              <div class="flex-1">
+                                <a
+                                  th:href="@{${post.status.permalink}}"
+                                  class="aurora-timeline-post-title text-base font-medium text-gray-900 transition-colors hover:text-blue-600 dark:text-slate-50 dark:hover:text-blue-400"
+                                  th:text="${post.spec.title}"
+                                ></a>
+                                <div
+                                  th:if="${not #lists.isEmpty(post.categories) or not #lists.isEmpty(post.tags)}"
+                                  class="mt-2 flex flex-wrap items-center gap-2"
+                                >
+                                  <a
+                                    th:if="${#lists.size(post.categories)} gt 0"
+                                    th:href="@{${post.categories[0].status.permalink}}"
+                                    th:title="${post.categories[0].spec.displayName}"
+                                    th:text="${post.categories[0].spec.displayName}"
+                                    class="aurora-post-category inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 transition-colors hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 dark:hover:bg-blue-900/50"
+                                  >
+                                  </a>
+                                  <a
+                                    th:each="tag : ${post.tags}"
+                                    th:href="@{${tag.status.permalink}}"
+                                    th:title="${tag.spec.displayName}"
+                                    th:text="|#${tag.spec.displayName}|"
+                                    class="aurora-post-tag inline-flex items-center rounded-md bg-gray-100 px-2 py-0.5 text-xs italic text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-900 dark:bg-slate-700 dark:text-slate-400 dark:hover:bg-slate-600 dark:hover:text-slate-200"
+                                  >
+                                  </a>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </th:block>
+                      </div>
+                    </div>
+                  </th:block>
+                </th:block>
+              </div>
+
+              <!-- 年视图时间线 -->
+              <div 
+                class="aurora-timeline" 
+                th:if="${archives.total gt 0 and (theme.config.archives.timeline_view ?: 'month') == 'year'}"
+              >
+                <th:block th:each="archive : ${archives.items}">
+                  <div class="aurora-timeline-item">
+                    <!-- 时间节点 -->
+                    <div class="aurora-timeline-marker">
+                      <div class="aurora-timeline-dot"></div>
+                      <div class="aurora-timeline-line"></div>
+                    </div>
+                    <!-- 时间标签 - 年份 -->
+                    <div class="aurora-timeline-label">
+                      <h2
+                        class="text-base font-semibold text-gray-900 dark:text-slate-50"
+                        th:text="|${archive.year} 年|"
+                      ></h2>
+                    </div>
+                    <!-- 文章列表 - 该年份所有文章 -->
+                    <div class="aurora-timeline-content">
+                      <th:block th:each="month : ${archive.months}">
+                        <th:block th:each="post : ${month.posts}">
+                          <div class="aurora-timeline-post">
+                            <div class="flex items-start gap-4">
+                              <div class="aurora-timeline-post-date">
+                                <span
+                                  class="text-sm font-medium text-gray-500 dark:text-slate-400"
+                                  th:text="${#dates.format(post.spec.publishTime, 'MM-dd')}"
+                                ></span>
+                              </div>
+                              <div class="flex-1">
+                                <a
+                                  th:href="@{${post.status.permalink}}"
+                                  class="aurora-timeline-post-title text-base font-medium text-gray-900 transition-colors hover:text-blue-600 dark:text-slate-50 dark:hover:text-blue-400"
+                                  th:text="${post.spec.title}"
+                                ></a>
+                                <div
+                                  th:if="${not #lists.isEmpty(post.categories) or not #lists.isEmpty(post.tags)}"
+                                  class="mt-2 flex flex-wrap items-center gap-2"
+                                >
+                                  <a
+                                    th:if="${#lists.size(post.categories)} gt 0"
+                                    th:href="@{${post.categories[0].status.permalink}}"
+                                    th:title="${post.categories[0].spec.displayName}"
+                                    th:text="${post.categories[0].spec.displayName}"
+                                    class="aurora-post-category inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 transition-colors hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 dark:hover:bg-blue-900/50"
+                                  >
+                                  </a>
+                                  <a
+                                    th:each="tag : ${post.tags}"
+                                    th:href="@{${tag.status.permalink}}"
+                                    th:title="${tag.spec.displayName}"
+                                    th:text="|#${tag.spec.displayName}|"
+                                    class="aurora-post-tag inline-flex items-center rounded-md bg-gray-100 px-2 py-0.5 text-xs italic text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-900 dark:bg-slate-700 dark:text-slate-400 dark:hover:bg-slate-600 dark:hover:text-slate-200"
+                                  >
+                                  </a>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </th:block>
+                      </th:block>
+                    </div>
+                  </div>
+                </th:block>
+              </div>
+
+              <!-- 空状态 -->
+              <div th:if="${archives.total == 0}" class="flex items-center justify-center py-16">
+                <div class="text-center">
+                  <span class="i-[tabler--file-off] text-6xl text-gray-300 dark:text-slate-600"></span>
+                  <p class="mt-4 text-sm font-light text-gray-500 dark:text-slate-400" th:text="#{common.noPosts}"></p>
+                </div>
+              </div>
+
+              <!-- 分页 -->
+              <th:block
+                th:if="${archives.total gt 0}"
+                class="mt-8"
+                th:replace="~{modules/pagination :: pagination(context = '/archives/', prevUrl = ${archives.prevUrl}, nextUrl = ${archives.nextUrl}, totalPages = ${archives.totalPages}, page = ${archives.page}, hasPrevious = ${archives.hasPrevious()}, hasNext = ${archives.hasNext()})}"
+              />
+            </div>
+          </div>
+        </main>
+
+        <!-- 第三列（右侧栏） -->
+        <aside
+          th:if="${showRight}"
+          class="aurora-right-sidebar"
+        >
+          <th:block th:if="${rightContent != null}">
+            <th:block th:replace="${rightContent}" />
+          </th:block>
+          <th:block th:if="${rightContent == null and allWidgets != null}">
+            <th:block th:replace="~{modules/configured-sidebar :: configured-sidebar(widgets = ${allWidgets}, position = 'right')}" />
+          </th:block>
+        </aside>
+      </div>
+    </th:block>
+  </th:block>
+
+  <!-- 三栏布局容器（通用，自动检测小部件） -->
+  <th:block th:fragment="three-column-layout-auto(mainContent, leftContent, rightContent)">
+    <th:block th:with="allWidgets=${theme.config.sidebar.sidebar_widgets}">
+      <div
+        class="aurora-three-column"
+        th:with="hasLeftContent=${leftContent != null},hasRightContent=${rightContent != null},hasLeftWidgets=${allWidgets != null and not #lists.isEmpty(allWidgets)},hasRightWidgets=${allWidgets != null and not #lists.isEmpty(allWidgets)},showLeft=${hasLeftContent or hasLeftWidgets},showRight=${hasRightContent or hasRightWidgets},layoutClass=${showLeft and showRight ? 'layout-three-column' : (showLeft ? 'layout-left-main' : (showRight ? 'layout-main-right' : 'layout-main-only'))}"
+        th:classappend="|${layoutClass}|"
+      >
+        <!-- 第一列（左侧栏） -->
+        <aside
+          th:if="${showLeft}"
+          class="aurora-left-sidebar"
+        >
+          <th:block th:if="${leftContent != null}">
+            <th:block th:replace="${leftContent}" />
+          </th:block>
+          <th:block th:if="${leftContent == null and allWidgets != null}">
+            <th:block th:replace="~{modules/configured-sidebar :: configured-sidebar(widgets = ${allWidgets}, position = 'left')}" />
+          </th:block>
+        </aside>
+
+        <!-- 第二列（主内容区） -->
+        <main class="aurora-main-content">
+          <div class="aurora-main-content-inner">
+            <th:block th:replace="${mainContent}" />
+          </div>
+        </main>
+
+        <!-- 第三列（右侧栏） -->
+        <aside
+          th:if="${showRight}"
+          class="aurora-right-sidebar"
+        >
+          <th:block th:if="${rightContent != null}">
+            <th:block th:replace="${rightContent}" />
+          </th:block>
+          <th:block th:if="${rightContent == null and allWidgets != null}">
+            <th:block th:replace="~{modules/configured-sidebar :: configured-sidebar(widgets = ${allWidgets}, position = 'right')}" />
+          </th:block>
+        </aside>
+      </div>
+    </th:block>
+  </th:block>
+
+  <!-- 三栏布局容器（通用，保留兼容性） -->
+  <th:block th:fragment="three-column-layout(leftContent, mainContent, rightContent)">
+    <div
+      class="aurora-three-column"
+      th:with="columnLayout='main-right',showLeft=false,showRight=true"
+      th:classappend="|${columnLayout == 'main-only' ? 'layout-main-only' : ''} ${columnLayout == 'left-main' ? 'layout-left-main' : ''} ${columnLayout == 'main-right' ? 'layout-main-right' : ''} ${columnLayout == 'three-column' ? 'layout-three-column' : ''}|"
+    >
+      <!-- 左侧栏 -->
+      <aside
+        th:if="${(columnLayout == 'left-main' or columnLayout == 'three-column') and showLeft}"
+        class="aurora-left-sidebar"
+      >
+        <th:block th:if="${leftContent != null}">
+          <th:block th:replace="${leftContent}" />
+        </th:block>
+        <th:block th:if="${leftContent == null}">
+          <th:block th:replace="~{modules/sidebar :: sidebar(prepend = null)}" />
+        </th:block>
+      </aside>
+
+      <!-- 主内容区 -->
+      <main class="aurora-main-content">
+        <div class="aurora-main-content-inner">
+          <th:block th:replace="${mainContent}" />
+        </div>
+      </main>
+
+      <!-- 右侧栏 -->
+      <aside
+        th:if="${(columnLayout == 'main-right' or columnLayout == 'three-column') and showRight}"
+        class="aurora-right-sidebar"
+      >
+        <th:block th:if="${rightContent != null}">
+          <th:block th:replace="${rightContent}" />
+        </th:block>
+        <th:block th:if="${rightContent == null}">
+          <th:block th:replace="~{modules/sidebar :: sidebar(prepend = null)}" />
+        </th:block>
+      </aside>
+    </div>
+  </th:block>
+</html>
+
