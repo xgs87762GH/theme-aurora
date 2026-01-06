@@ -1,0 +1,56 @@
+<!doctype html>
+<html xmlns:th="https://www.thymeleaf.org">
+  <!-- 通用三栏布局容器（自动检测小部件） -->
+  <th:block th:fragment="three-column-layout-auto(mainContent, leftContent, rightContent)">
+    <th:block th:with="allWidgets=${theme.config.sidebar.sidebar_widgets}">
+      <!-- 检查左侧是否有启用的、位置匹配的小部件 -->
+      <th:block th:with="hasLeftWidgets=${allWidgets != null and not #lists.isEmpty(allWidgets) and allWidgets.?[enabled != false and position == 'left'].size() gt 0}">
+        <!-- 检查右侧是否有启用的、位置匹配的小部件 -->
+        <th:block th:with="hasRightWidgets=${allWidgets != null and not #lists.isEmpty(allWidgets) and allWidgets.?[enabled != false and position == 'right'].size() gt 0}">
+          <th:block th:with="hasLeftContent=${leftContent != null},hasRightContent=${rightContent != null},showLeft=${hasLeftContent or hasLeftWidgets},showRight=${hasRightContent or hasRightWidgets}">
+            <!-- aurora-body 容器：控制整体宽度和居中 -->
+            <div class="aurora-body">
+              <!-- 内部 grid 布局：左侧栏（百分比）、主内容（1fr）、右侧栏（百分比） -->
+              <div class="aurora-three-column">
+                <!-- 第一列（左侧栏） -->
+                <aside
+                  th:if="${showLeft}"
+                  class="aurora-left-sidebar"
+                  th:classappend="|${theme.config.sidebar.sticky_behavior == 'sticky_to_header' ? 'aurora-sidebar-sticky-header' : ''} ${theme.config.sidebar.sticky_behavior == 'sticky_independent' ? 'aurora-sidebar-sticky-independent' : ''}|"
+                >
+                  <th:block th:if="${leftContent != null}">
+                    <th:block th:replace="${leftContent}" />
+                  </th:block>
+                  <th:block th:if="${leftContent == null and hasLeftWidgets}">
+                    <th:block th:replace="~{modules/configured-sidebar :: configured-sidebar(widgets = ${allWidgets}, position = 'left')}" />
+                  </th:block>
+                </aside>
+
+                <!-- 第二列（主内容区） -->
+                <main class="aurora-main-content">
+                  <div class="aurora-main-content-inner">
+                    <th:block th:replace="${mainContent}" />
+                  </div>
+                </main>
+
+                <!-- 第三列（右侧栏） -->
+                <aside
+                  th:if="${showRight}"
+                  class="aurora-right-sidebar"
+                  th:classappend="|${theme.config.sidebar.sticky_behavior == 'sticky_to_header' ? 'aurora-sidebar-sticky-header' : ''} ${theme.config.sidebar.sticky_behavior == 'sticky_independent' ? 'aurora-sidebar-sticky-independent' : ''}|"
+                >
+                  <th:block th:if="${rightContent != null}">
+                    <th:block th:replace="${rightContent}" />
+                  </th:block>
+                  <th:block th:if="${rightContent == null and hasRightWidgets}">
+                    <th:block th:replace="~{modules/configured-sidebar :: configured-sidebar(widgets = ${allWidgets}, position = 'right')}" />
+                  </th:block>
+                </aside>
+              </div>
+            </div>
+          </th:block>
+        </th:block>
+      </th:block>
+    </th:block>
+  </th:block>
+</html>

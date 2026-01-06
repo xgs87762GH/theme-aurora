@@ -1,6 +1,9 @@
-<!doctype html>
+<!DOCTYPE html>
 <!-- 检测是否为片段请求（仅返回文章列表） -->
-<th:block th:if="${param.fragment != null and not #lists.isEmpty(param.fragment) and param.fragment[0] == 'post-list'}" xmlns:th="https://www.thymeleaf.org">
+<th:block
+  th:if="${param.fragment != null and not #lists.isEmpty(param.fragment) and param.fragment[0] == 'post-list'}"
+  xmlns:th="https://www.thymeleaf.org"
+>
   <!-- 仅返回文章列表容器内容，不包含任何 HTML 结构 -->
   <div id="post-list-container">
     <th:block
@@ -26,10 +29,15 @@
         th:replace="~{modules/home-layout :: three-column-layout-with-posts(leftContent = null, rightContent = null, showCategoryFilter = ${theme.config.home.show_category_filter == true})}"
       />
     </div>
-    
+
     <!-- 页脚容器 - 当 banner 全屏时，确保页脚在内容层之上 -->
     <!-- <div th:classappend="${theme.config.home.top_banner_height == 'full' ? 'relative z-10' : ''}">
       <th:block th:replace="~{modules/footer}" />
     </div> -->
   </th:block>
 </html>
+<style>
+  .aurora-body {
+    padding-top: 20px !important;
+  }
+</style>

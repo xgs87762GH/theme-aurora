@@ -4,71 +4,42 @@
   th:replace="~{modules/layout :: html(title = |#{page.tag.title(${tag.spec.displayName})} - ${site.title}|, hero = null, content = ~{::content}, head = null, footer = null, sidebar = null, contentClass = null)}"
 >
   <th:block th:fragment="content">
-    <!-- 使用三栏布局系统 -->
+    <!-- 使用通用三栏布局 -->
+    <th:block th:replace="~{modules/components/three-column-layout :: three-column-layout-auto(mainContent = ~{::main-content}, leftContent = null, rightContent = null)}" />
+  </th:block>
+
+  <th:block th:fragment="main-content">
     <th:block th:with="list_layout=${theme.config.post_list.post_list_layout ?: 'grid_3'},card_gap=${theme.config.post_list.card_gap ?: 'medium'},card_style=${theme.config.post_list.card_style ?: 'default'},card_animation=${theme.config.post_list.card_animation ?: 'hover_lift'},image_position=${theme.config.post_list.post_image_position ?: 'left'}">
-      <th:block th:with="allWidgets=${theme.config.sidebar.sidebar_widgets}">
-        <div
-          class="aurora-three-column"
-          th:with="hasLeftWidgets=${allWidgets != null and not #lists.isEmpty(allWidgets)},hasRightWidgets=${allWidgets != null and not #lists.isEmpty(allWidgets)},showLeft=${hasLeftWidgets},showRight=${hasRightWidgets},layoutClass=${showLeft and showRight ? 'layout-three-column' : (showLeft ? 'layout-left-main' : (showRight ? 'layout-main-right' : 'layout-main-only'))}"
-          th:classappend="|${layoutClass}|"
-        >
-          <!-- 第一列（左侧栏） -->
-          <aside
-            th:if="${showLeft}"
-            class="aurora-left-sidebar"
-          >
-            <th:block th:if="${allWidgets != null}">
-              <th:block th:replace="~{modules/configured-sidebar :: configured-sidebar(widgets = ${allWidgets}, position = 'left')}" />
-            </th:block>
-          </aside>
+      <!-- 文章列表 -->
+      <div
+        id="post-list"
+        th:if="${posts.total gt 0}"
+        th:with="postItems=${posts.items}"
+        class="aurora-post-list"
+        th:classappend="|${list_layout == 'grid_2' ? 'grid-2' : ''} ${list_layout == 'grid_3' ? 'grid-3' : ''} ${list_layout == 'grid_4' ? 'grid-4' : ''} ${list_layout == 'single' ? 'single' : ''} ${list_layout == 'list' ? 'list' : ''} ${list_layout == 'masonry' ? 'masonry' : ''} ${card_gap == 'tight' ? 'gap-tight' : ''} ${card_gap == 'medium' ? 'gap-medium' : ''} ${card_gap == 'loose' ? 'gap-loose' : ''} ${card_gap == 'extra_loose' ? 'gap-extra-loose' : ''}|"
+      >
+        <th:block th:each="post : ${postItems}">
+          <th:block
+            th:with="cardDirection=${list_layout == 'single' ? 'column' : (list_layout == 'list' ? 'list' : (image_position == 'left' ? 'row' : (image_position == 'right' ? 'row-reverse' : 'row')))}"
+            th:replace="~{modules/post-card :: post-card(${post},${image_position != 'none'},${card_animation != 'none'},${card_style == 'bordered'},${cardDirection},${card_style ?: 'default'},${card_animation ?: 'hover_lift'},${image_position ?: 'left'})}"
+          />
+        </th:block>
+      </div>
 
-          <!-- 第二列（主内容区） -->
-          <main class="aurora-main-content">
-            <div class="aurora-main-content-inner">
-              <!-- 文章列表 -->
-              <div
-                id="post-list"
-                th:if="${posts.total gt 0}"
-                th:with="postItems=${posts.items}"
-                class="aurora-post-list"
-                th:classappend="|${list_layout == 'grid_2' ? 'grid-2' : ''} ${list_layout == 'grid_3' ? 'grid-3' : ''} ${list_layout == 'grid_4' ? 'grid-4' : ''} ${list_layout == 'single' ? 'single' : ''} ${list_layout == 'list' ? 'list' : ''} ${list_layout == 'masonry' ? 'masonry' : ''} ${card_gap == 'tight' ? 'gap-tight' : ''} ${card_gap == 'medium' ? 'gap-medium' : ''} ${card_gap == 'loose' ? 'gap-loose' : ''} ${card_gap == 'extra_loose' ? 'gap-extra-loose' : ''}|"
-              >
-                <th:block th:each="post : ${postItems}">
-                  <th:block
-                    th:with="cardDirection=${list_layout == 'single' ? 'column' : (list_layout == 'list' ? 'list' : (image_position == 'left' ? 'row' : (image_position == 'right' ? 'row-reverse' : 'row')))}"
-                    th:replace="~{modules/post-card :: post-card(${post},${image_position != 'none'},${card_animation != 'none'},${card_style == 'bordered'},${cardDirection},${card_style ?: 'default'},${card_animation ?: 'hover_lift'},${image_position ?: 'left'})}"
-                  />
-                </th:block>
-              </div>
-
-              <!-- 空状态 -->
-              <div th:if="${posts.total == 0}" class="flex items-center justify-center py-16">
-                <div class="text-center">
-                  <span class="i-tabler-file-off text-6xl text-gray-300 dark:text-slate-600"></span>
-                  <p class="mt-4 text-sm font-light text-gray-600 dark:text-slate-200" th:text="#{common.noPosts}"></p>
-                </div>
-              </div>
-
-              <!-- 分页 -->
-              <th:block
-                th:if="${posts.total gt 0}"
-                class="mt-8"
-                th:replace="~{modules/pagination :: pagination(context = |${tag.status.permalink}/|, prevUrl = ${posts.prevUrl}, nextUrl = ${posts.nextUrl}, totalPages = ${posts.totalPages}, page = ${posts.page}, hasPrevious = ${posts.hasPrevious()}, hasNext = ${posts.hasNext()})}"
-              />
-            </div>
-          </main>
-
-          <!-- 第三列（右侧栏） -->
-          <aside
-            th:if="${showRight}"
-            class="aurora-right-sidebar"
-          >
-            <th:block th:if="${allWidgets != null}">
-              <th:block th:replace="~{modules/configured-sidebar :: configured-sidebar(widgets = ${allWidgets}, position = 'right')}" />
-            </th:block>
-          </aside>
+      <!-- 空状态 -->
+      <div th:if="${posts.total == 0}" class="flex items-center justify-center py-16">
+        <div class="text-center">
+          <span class="i-tabler-file-off text-6xl text-gray-300 dark:text-slate-600"></span>
+          <p class="mt-4 text-sm font-light text-gray-600 dark:text-slate-200" th:text="#{common.noPosts}"></p>
         </div>
-      </th:block>
+      </div>
+
+      <!-- 分页 -->
+      <th:block
+        th:if="${posts.total gt 0}"
+        class="mt-8"
+        th:replace="~{modules/pagination :: pagination(context = |${tag.status.permalink}/|, prevUrl = ${posts.prevUrl}, nextUrl = ${posts.nextUrl}, totalPages = ${posts.totalPages}, page = ${posts.page}, hasPrevious = ${posts.hasPrevious()}, hasNext = ${posts.hasNext()})}"
+      />
     </th:block>
   </th:block>
 </html>

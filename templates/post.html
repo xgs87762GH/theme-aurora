@@ -47,9 +47,9 @@
   </script>
 </th:block>
   <th:block th:fragment="content">
-    <!-- 使用三栏布局系统 -->
+    <!-- 使用通用三栏布局 -->
     <th:block
-      th:replace="~{modules/home-layout :: three-column-layout-auto(mainContent = ~{::main-content}, leftContent = null, rightContent = ~{::right-content})}">
+      th:replace="~{modules/components/three-column-layout :: three-column-layout-auto(mainContent = ~{::main-content}, leftContent = null, rightContent = ~{::right-content})}">
 
     <!-- 主内容 -->
     <th:block th:fragment="main-content">

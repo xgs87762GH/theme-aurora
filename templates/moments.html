@@ -4,8 +4,8 @@
   th:replace="~{modules/layout :: html(title = |#{page.moments.title} - ${site.title}|, hero = null, content = ~{::content}, head = null, footer = null, sidebar = null, contentClass = null)}"
 >
   <th:block th:fragment="content">
-    <!-- 使用三栏布局系统 -->
-    <th:block th:replace="~{modules/home-layout :: three-column-layout-auto(mainContent = ~{::main-content}, leftContent = null, rightContent = null)}">
+    <!-- 使用通用三栏布局 -->
+    <th:block th:replace="~{modules/components/three-column-layout :: three-column-layout-auto(mainContent = ~{::main-content}, leftContent = null, rightContent = null)}">
       <th:block th:fragment="main-content">
 
             <!-- 动态列表 -->

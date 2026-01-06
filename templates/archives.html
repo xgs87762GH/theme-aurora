@@ -4,9 +4,44 @@
   th:replace="~{modules/layout :: html(title = |#{page.archives.title} - ${site.title}|, hero = null, content = ~{::content}, head = null, footer = null, sidebar = null, contentClass = null)}"
 >
   <th:block th:fragment="content">
-    <!-- 三栏布局（包含时间线） -->
-    <th:block
-      th:replace="~{modules/home-layout :: three-column-layout-with-archives(leftContent = null, rightContent = null)}"
-    />
+    <!-- 使用通用三栏布局 -->
+    <th:block th:replace="~{modules/components/three-column-layout :: three-column-layout-auto(mainContent = ~{::main-content}, leftContent = null, rightContent = null)}" />
+  </th:block>
+
+  <th:block th:fragment="main-content">
+    <div class="rounded-xl bg-white p-6 dark:bg-slate-800">
+      <!-- 日视图时间线 -->
+      <th:block
+        th:if="${archives.total gt 0 and (theme.config.archives.timeline_view ?: 'month') == 'day'}"
+        th:replace="~{modules/components/timeline :: timeline-day(archives = ${archives})}"
+      />
+      
+      <!-- 月视图时间线 -->
+      <th:block
+        th:if="${archives.total gt 0 and (theme.config.archives.timeline_view ?: 'month') == 'month'}"
+        th:replace="~{modules/components/timeline :: timeline-month(archives = ${archives})}"
+      />
+      
+      <!-- 年视图时间线 -->
+      <th:block
+        th:if="${archives.total gt 0 and (theme.config.archives.timeline_view ?: 'month') == 'year'}"
+        th:replace="~{modules/components/timeline :: timeline-year(archives = ${archives})}"
+      />
+
+      <!-- 空状态 -->
+      <div th:if="${archives.total == 0}" class="flex items-center justify-center py-16">
+        <div class="text-center">
+          <span class="i-[tabler--file-off] text-6xl text-gray-300 dark:text-slate-600"></span>
+          <p class="mt-4 text-sm font-light text-gray-500 dark:text-slate-400" th:text="#{common.noPosts}"></p>
+        </div>
+      </div>
+
+      <!-- 分页 -->
+      <th:block
+        th:if="${archives.total gt 0}"
+        class="mt-8"
+        th:replace="~{modules/pagination :: pagination(context = '/archives/', prevUrl = ${archives.prevUrl}, nextUrl = ${archives.nextUrl}, totalPages = ${archives.totalPages}, page = ${archives.page}, hasPrevious = ${archives.hasPrevious()}, hasNext = ${archives.hasNext()})}"
+      />
+    </div>
   </th:block>
 </html>

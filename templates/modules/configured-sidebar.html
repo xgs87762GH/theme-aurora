@@ -1,14 +1,11 @@
 <!-- 可配置的侧边栏组件 -->
-<aside 
-  th:fragment="configured-sidebar(widgets, position)" 
-  class="aurora-sidebar z-0 hidden w-full md:block"
-  th:classappend="|${theme.config.sidebar.sticky_behavior == 'sticky_to_header' ? 'aurora-sidebar-sticky-header' : ''} ${theme.config.sidebar.sticky_behavior == 'sticky_independent' ? 'aurora-sidebar-sticky-independent' : ''}|"
->
+<!-- 只返回内容，不返回 aside 标签（aside 标签由调用方提供） -->
+<th:block th:fragment="configured-sidebar(widgets, position)" th:with="targetPosition=${position}">
   <th:block th:if="${widgets != null and not #lists.isEmpty(widgets)}">
     <!-- 按 order 排序并过滤启用的和位置匹配的 -->
     <th:block th:each="i : ${#numbers.sequence(1, 100)}">
       <th:block th:each="widget : ${widgets}">
-        <th:block th:if="${widget.enabled != false and widget.position == position and (widget.order ?: 999) == i}">
+        <th:block th:if="${widget.enabled != false and widget.position == targetPosition and (widget.order ?: 999) == i}">
           <!-- 根据隐藏方式添加响应式类 -->
           <th:block 
             th:with="hideMethod=${widget.hide_method ?: 'none'},hideClass=${hideMethod == 'mobile' ? 'hidden md:block' : (hideMethod == 'tablet' ? 'hidden md:hidden lg:block' : (hideMethod == 'desktop' ? 'block md:hidden' : 'block'))}"
@@ -23,5 +20,4 @@
       </th:block>
     </th:block>
   </th:block>
-</aside>
-
+</th:block>

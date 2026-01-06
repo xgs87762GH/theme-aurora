@@ -4,105 +4,77 @@
   th:replace="~{modules/layout :: html(title = |#{page.tags.title} - ${site.title}|, hero = null, content = ~{::content}, head = null, footer = null, sidebar = null, contentClass = null)}"
 >
   <th:block th:fragment="content">
-    <!-- 使用三栏布局系统 -->
+    <!-- 使用通用三栏布局 -->
     <th:block th:with="tags = ${tagFinder.listAll()}">
       <th:block th:if="${#lists.isEmpty(tags)}">
-        <div class="aurora-three-column layout-main-only">
-          <main class="aurora-main-content">
-            <div class="aurora-main-content-inner">
-              <div class="flex items-center justify-center py-16">
-                <div class="text-center">
-                  <span class="i-tabler-tags-off text-6xl text-gray-300 dark:text-slate-600"></span>
-                  <p class="mt-4 text-sm font-light text-gray-600 dark:text-slate-200" th:text="#{page.tags.empty}"></p>
-                </div>
-              </div>
-            </div>
-          </main>
-        </div>
+        <!-- 空状态 -->
+        <th:block th:replace="~{modules/components/three-column-layout :: three-column-layout-auto(mainContent = ~{::empty-content}, leftContent = null, rightContent = null)}" />
       </th:block>
 
       <th:block th:unless="${#lists.isEmpty(tags)}">
         <th:block th:with="selectedTagName=${param.tag != null and not #lists.isEmpty(param.tag) ? param.tag[0] : tags[0].metadata.name}">
           <th:block th:each="tagItem : ${tags}" th:if="${tagItem.metadata.name == selectedTagName}">
-            <th:block th:with="tag=${tagItem},posts = ${postFinder.listByTag(1,10,tag.metadata.name)},list_layout=${theme.config.post_list.post_list_layout ?: 'grid_3'},card_gap=${theme.config.post_list.card_gap ?: 'medium'},card_style=${theme.config.post_list.card_style ?: 'default'},card_animation=${theme.config.post_list.card_animation ?: 'hover_lift'},image_position=${theme.config.post_list.post_image_position ?: 'left'}">
-        <th:block th:with="allWidgets=${theme.config.sidebar.sidebar_widgets}">
-          <div
-            class="aurora-three-column"
-            th:with="hasLeftWidgets=${allWidgets != null and not #lists.isEmpty(allWidgets)},hasRightWidgets=${allWidgets != null and not #lists.isEmpty(allWidgets)},showLeft=${hasLeftWidgets},showRight=${hasRightWidgets},layoutClass=${showLeft and showRight ? 'layout-three-column' : (showLeft ? 'layout-left-main' : (showRight ? 'layout-main-right' : 'layout-main-only'))}"
-            th:classappend="|${layoutClass}|"
-          >
-            <!-- 第一列（左侧栏） -->
-            <aside
-              th:if="${showLeft}"
-              class="aurora-left-sidebar"
-            >
-              <th:block th:if="${allWidgets != null}">
-                <th:block th:replace="~{modules/configured-sidebar :: configured-sidebar(widgets = ${allWidgets}, position = 'left')}" />
-              </th:block>
-            </aside>
-
-            <!-- 第二列（主内容区） -->
-            <main class="aurora-main-content">
-              <div class="aurora-main-content-inner">
-                <!-- 标签筛选器 -->
-                <div class="mb-6 rounded-xl bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md dark:bg-slate-800">
-                  <th:block th:replace="~{modules/tag-filter}" />
-                </div>
-
-                <!-- 文章列表 -->
-                <div
-                  id="post-list"
-                  th:if="${posts.total gt 0}"
-                  th:with="postItems=${posts.items}"
-                  class="aurora-post-list"
-                  th:classappend="|${list_layout == 'grid_2' ? 'grid-2' : ''} ${list_layout == 'grid_3' ? 'grid-3' : ''} ${list_layout == 'grid_4' ? 'grid-4' : ''} ${list_layout == 'single' ? 'single' : ''} ${list_layout == 'list' ? 'list' : ''} ${list_layout == 'masonry' ? 'masonry' : ''} ${card_gap == 'tight' ? 'gap-tight' : ''} ${card_gap == 'medium' ? 'gap-medium' : ''} ${card_gap == 'loose' ? 'gap-loose' : ''} ${card_gap == 'extra_loose' ? 'gap-extra-loose' : ''}|"
-                >
-                  <th:block th:each="post : ${postItems}">
-                    <th:block
-                      th:with="cardDirection=${list_layout == 'single' ? 'column' : (list_layout == 'list' ? 'list' : (image_position == 'left' ? 'row' : (image_position == 'right' ? 'row-reverse' : 'row')))}"
-                      th:replace="~{modules/post-card :: post-card(${post},${image_position != 'none'},${card_animation != 'none'},${card_style == 'bordered'},${cardDirection},${card_style ?: 'default'},${card_animation ?: 'hover_lift'},${image_position ?: 'left'})}"
-                    />
-                  </th:block>
-                </div>
-
-                <!-- 空状态 -->
-                <div th:if="${posts.total == 0}" class="flex items-center justify-center py-16">
-                  <div class="text-center">
-                    <span class="i-tabler-file-off text-6xl text-gray-300 dark:text-slate-600"></span>
-                    <p class="mt-4 text-sm font-light text-gray-600 dark:text-slate-200" th:text="#{common.noPosts}"></p>
-                  </div>
-                </div>
-
-                <!-- 更多文章按钮 -->
-                <div th:if="${posts.total gt 10}" class="mt-10 flex justify-end">
-                  <a
-                    class="group inline-flex items-center gap-2 rounded-lg bg-blue-50 px-4 py-2 text-sm font-medium text-blue-600 transition-all hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30"
-                    th:href="@{${tag.status.permalink}}"
-                  >
-                    <span th:text="#{page.tags.morePosts}"></span>
-                    <span
-                      class="i-tabler-chevron-right -translate-x-1 text-lg transition-all group-hover:translate-x-0"
-                    ></span>
-                  </a>
-                </div>
-              </div>
-            </main>
-
-            <!-- 第三列（右侧栏） -->
-            <aside
-              th:if="${showRight}"
-              class="aurora-right-sidebar"
-            >
-              <th:block th:if="${allWidgets != null}">
-                <th:block th:replace="~{modules/configured-sidebar :: configured-sidebar(widgets = ${allWidgets}, position = 'right')}" />
-              </th:block>
-            </aside>
-          </div>
-        </th:block>
+            <th:block th:with="tag=${tagItem}">
+              <th:block th:replace="~{modules/components/three-column-layout :: three-column-layout-auto(mainContent = ~{::main-content}, leftContent = null, rightContent = null)}" />
             </th:block>
           </th:block>
         </th:block>
       </th:block>
+    </th:block>
+  </th:block>
+
+  <th:block th:fragment="empty-content">
+    <div class="flex items-center justify-center py-16">
+      <div class="text-center">
+        <span class="i-tabler-tags-off text-6xl text-gray-300 dark:text-slate-600"></span>
+        <p class="mt-4 text-sm font-light text-gray-600 dark:text-slate-200" th:text="#{page.tags.empty}"></p>
+      </div>
+    </div>
+  </th:block>
+
+  <th:block th:fragment="main-content">
+    <th:block th:with="posts = ${postFinder.listByTag(1,10,tag.metadata.name)},list_layout=${theme.config.post_list.post_list_layout ?: 'grid_3'},card_gap=${theme.config.post_list.card_gap ?: 'medium'},card_style=${theme.config.post_list.card_style ?: 'default'},card_animation=${theme.config.post_list.card_animation ?: 'hover_lift'},image_position=${theme.config.post_list.post_image_position ?: 'left'}">
+      <!-- 标签筛选器 -->
+      <div class="mb-6 rounded-xl bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md dark:bg-slate-800">
+        <th:block th:replace="~{modules/tag-filter}" />
+      </div>
+
+      <!-- 文章列表 -->
+      <div
+        id="post-list"
+        th:if="${posts.total gt 0}"
+        th:with="postItems=${posts.items}"
+        class="aurora-post-list"
+        th:classappend="|${list_layout == 'grid_2' ? 'grid-2' : ''} ${list_layout == 'grid_3' ? 'grid-3' : ''} ${list_layout == 'grid_4' ? 'grid-4' : ''} ${list_layout == 'single' ? 'single' : ''} ${list_layout == 'list' ? 'list' : ''} ${list_layout == 'masonry' ? 'masonry' : ''} ${card_gap == 'tight' ? 'gap-tight' : ''} ${card_gap == 'medium' ? 'gap-medium' : ''} ${card_gap == 'loose' ? 'gap-loose' : ''} ${card_gap == 'extra_loose' ? 'gap-extra-loose' : ''}|"
+      >
+        <th:block th:each="post : ${postItems}">
+          <th:block
+            th:with="cardDirection=${list_layout == 'single' ? 'column' : (list_layout == 'list' ? 'list' : (image_position == 'left' ? 'row' : (image_position == 'right' ? 'row-reverse' : 'row')))}"
+            th:replace="~{modules/post-card :: post-card(${post},${image_position != 'none'},${card_animation != 'none'},${card_style == 'bordered'},${cardDirection},${card_style ?: 'default'},${card_animation ?: 'hover_lift'},${image_position ?: 'left'})}"
+          />
+        </th:block>
+      </div>
+
+      <!-- 空状态 -->
+      <div th:if="${posts.total == 0}" class="flex items-center justify-center py-16">
+        <div class="text-center">
+          <span class="i-tabler-file-off text-6xl text-gray-300 dark:text-slate-600"></span>
+          <p class="mt-4 text-sm font-light text-gray-600 dark:text-slate-200" th:text="#{common.noPosts}"></p>
+        </div>
+      </div>
+
+      <!-- 更多文章按钮 -->
+      <div th:if="${posts.total gt 10}" class="mt-10 flex justify-end">
+        <a
+          class="group inline-flex items-center gap-2 rounded-lg bg-blue-50 px-4 py-2 text-sm font-medium text-blue-600 transition-all hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30"
+          th:href="@{${tag.status.permalink}}"
+        >
+          <span th:text="#{page.tags.morePosts}"></span>
+          <span
+            class="i-tabler-chevron-right -translate-x-1 text-lg transition-all group-hover:translate-x-0"
+          ></span>
+        </a>
+      </div>
     </th:block>
   </th:block>
 </html>
