@@ -1,0 +1,104 @@
+<!doctype html>
+<html xmlns:th="https://www.thymeleaf.org">
+  <!-- 调试面板组件 -->
+  <!-- 用法: th:replace="~{modules/components/debug-panel :: debug-panel(title = '调试标题', data = ${someData})}" -->
+  <th:block th:fragment="debug-panel(title, data)">
+    <div style="background: #fef3c7; border: 2px solid #f59e0b; padding: 1rem; margin-bottom: 1rem; border-radius: 0.5rem; font-family: monospace; font-size: 0.875rem;">
+      <div style="font-weight: bold; margin-bottom: 0.5rem; color: #92400e;">
+        <span th:text="|调试信息: ${title}|">调试信息</span>
+      </div>
+      <div style="max-height: 400px; overflow-y: auto;">
+        <th:block th:each="entry : ${data}">
+          <div style="margin-bottom: 0.5rem; padding: 0.25rem; background: rgba(255, 255, 255, 0.5); border-radius: 0.25rem;">
+            <span style="font-weight: bold; color: #92400e;" th:text="${entry.key}">Key</span>: 
+            <span style="color: #dc2626; font-weight: bold;" th:text="${entry.value}">Value</span>
+          </div>
+        </th:block>
+      </div>
+    </div>
+  </th:block>
+
+  <!-- 简化版调试面板 - 直接显示键值对 -->
+  <!-- 用法: th:replace="~{modules/components/debug-panel :: debug-simple(title = '调试标题', items = ${#maps.toMap('key1', value1, 'key2', value2)})}" -->
+  <th:block th:fragment="debug-simple(title, items)">
+    <div style="background: #fef3c7; border: 2px solid #f59e0b; padding: 1rem; margin-bottom: 1rem; border-radius: 0.5rem; font-family: monospace; font-size: 0.875rem;">
+      <div style="font-weight: bold; margin-bottom: 0.5rem; color: #92400e;" th:text="|调试信息: ${title}|">调试信息</div>
+      <th:block th:each="item : ${items}">
+        <div style="margin-bottom: 0.25rem;">
+          <span style="font-weight: bold; color: #92400e;" th:text="${item.key}">Key</span>: 
+          <span style="color: #dc2626; font-weight: bold;" th:text="${item.value}">Value</span>
+        </div>
+      </th:block>
+    </div>
+  </th:block>
+
+  <!-- 内联调试面板 - 直接在模板中使用，不需要传递数据 -->
+  <!-- 用法: th:replace="~{modules/components/debug-panel :: debug-inline(title = '调试标题', var1 = ${var1}, var2 = ${var2}, ...)}" -->
+  <!-- 注意：所有参数都是可选的，可以只传递需要的参数 -->
+  <th:block th:fragment="debug-inline(title, var1, var2, var3, var4, var5, var6, var7, var8, var9, var10)" th:with="var1=${var1 != null ? var1 : null},var2=${var2 != null ? var2 : null},var3=${var3 != null ? var3 : null},var4=${var4 != null ? var4 : null},var5=${var5 != null ? var5 : null},var6=${var6 != null ? var6 : null},var7=${var7 != null ? var7 : null},var8=${var8 != null ? var8 : null},var9=${var9 != null ? var9 : null},var10=${var10 != null ? var10 : null}">
+    <div style="background: #fef3c7; border: 2px solid #f59e0b; padding: 1rem; margin-bottom: 1rem; border-radius: 0.5rem; font-family: monospace; font-size: 0.875rem;">
+      <div style="font-weight: bold; margin-bottom: 0.5rem; color: #92400e;" th:text="|调试信息: ${title}|">调试信息</div>
+      <th:block th:if="${var1 != null}">
+        <div style="margin-bottom: 0.25rem;">
+          <span style="font-weight: bold; color: #92400e;">var1</span>: 
+          <span style="color: #dc2626; font-weight: bold;" th:text="${var1}">Value</span>
+        </div>
+      </th:block>
+      <th:block th:if="${var2 != null}">
+        <div style="margin-bottom: 0.25rem;">
+          <span style="font-weight: bold; color: #92400e;">var2</span>: 
+          <span style="color: #dc2626; font-weight: bold;" th:text="${var2}">Value</span>
+        </div>
+      </th:block>
+      <th:block th:if="${var3 != null}">
+        <div style="margin-bottom: 0.25rem;">
+          <span style="font-weight: bold; color: #92400e;">var3</span>: 
+          <span style="color: #dc2626; font-weight: bold;" th:text="${var3}">Value</span>
+        </div>
+      </th:block>
+      <th:block th:if="${var4 != null}">
+        <div style="margin-bottom: 0.25rem;">
+          <span style="font-weight: bold; color: #92400e;">var4</span>: 
+          <span style="color: #dc2626; font-weight: bold;" th:text="${var4}">Value</span>
+        </div>
+      </th:block>
+      <th:block th:if="${var5 != null}">
+        <div style="margin-bottom: 0.25rem;">
+          <span style="font-weight: bold; color: #92400e;">var5</span>: 
+          <span style="color: #dc2626; font-weight: bold;" th:text="${var5}">Value</span>
+        </div>
+      </th:block>
+      <th:block th:if="${var6 != null}">
+        <div style="margin-bottom: 0.25rem;">
+          <span style="font-weight: bold; color: #92400e;">var6</span>: 
+          <span style="color: #dc2626; font-weight: bold;" th:text="${var6}">Value</span>
+        </div>
+      </th:block>
+      <th:block th:if="${var7 != null}">
+        <div style="margin-bottom: 0.25rem;">
+          <span style="font-weight: bold; color: #92400e;">var7</span>: 
+          <span style="color: #dc2626; font-weight: bold;" th:text="${var7}">Value</span>
+        </div>
+      </th:block>
+      <th:block th:if="${var8 != null}">
+        <div style="margin-bottom: 0.25rem;">
+          <span style="font-weight: bold; color: #92400e;">var8</span>: 
+          <span style="color: #dc2626; font-weight: bold;" th:text="${var8}">Value</span>
+        </div>
+      </th:block>
+      <th:block th:if="${var9 != null}">
+        <div style="margin-bottom: 0.25rem;">
+          <span style="font-weight: bold; color: #92400e;">var9</span>: 
+          <span style="color: #dc2626; font-weight: bold;" th:text="${var9}">Value</span>
+        </div>
+      </th:block>
+      <th:block th:if="${var10 != null}">
+        <div style="margin-bottom: 0.25rem;">
+          <span style="font-weight: bold; color: #92400e;">var10</span>: 
+          <span style="color: #dc2626; font-weight: bold;" th:text="${var10}">Value</span>
+        </div>
+      </th:block>
+    </div>
+  </th:block>
+</html>
+

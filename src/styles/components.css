@@ -1169,6 +1169,298 @@ body:has(.aurora-banner-fixed) .aurora-three-column {
   flex-direction: column;
 }
 
+/* Latest Post Grid Container - 最新文章网格容器（首页顶部） */
+.aurora-post-grid-container {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .aurora-post-grid-container {
+    gap: 1.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .aurora-post-grid-container {
+    gap: 1.5rem;
+  }
+}
+
+/* 大卡片样式优化 */
+.aurora-post-grid-container > div:first-child .aurora-post-card {
+  min-height: 400px;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.aurora-post-grid-container > div:first-child .aurora-post-card:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  transform: translateY(-4px);
+}
+
+.dark .aurora-post-grid-container > div:first-child .aurora-post-card {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+.dark .aurora-post-grid-container > div:first-child .aurora-post-card:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+}
+
+.aurora-post-grid-container > div:first-child .aurora-post-card-image-wrapper {
+  min-height: 240px;
+  border-radius: 1rem 1rem 0 0;
+}
+
+@media (min-width: 640px) {
+  .aurora-post-grid-container > div:first-child .aurora-post-card-image-wrapper {
+    min-height: 280px;
+  }
+}
+
+/* 小卡片样式优化 */
+.aurora-post-grid-container > div:last-child .aurora-post-card {
+  min-height: 280px;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  height: 100%;
+}
+
+.aurora-post-grid-container > div:last-child .aurora-post-card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+
+.dark .aurora-post-grid-container > div:last-child .aurora-post-card {
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+}
+
+.dark .aurora-post-grid-container > div:last-child .aurora-post-card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+}
+
+.aurora-post-grid-container > div:last-child .aurora-post-card-image-wrapper {
+  min-height: 160px;
+  border-radius: 0.75rem 0.75rem 0 0;
+}
+
+.aurora-post-grid-container > div:last-child .aurora-post-card-content {
+  padding: 1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.aurora-post-grid-container > div:last-child .aurora-post-title {
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+}
+
+.aurora-post-grid-container > div:last-child .aurora-post-excerpt {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  -webkit-line-clamp: 2;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.aurora-post-grid-container > div:last-child .aurora-post-meta {
+  margin-top: auto;
+  padding-top: 0.5rem;
+  font-size: 0.75rem;
+}
+
+/* 确保小卡片网格高度一致 */
+.aurora-post-grid-container > div:last-child {
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .aurora-post-grid-container > div:last-child {
+    gap: 1.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .aurora-post-grid-container > div:last-child {
+    gap: 1.5rem;
+  }
+}
+
+/* 响应式优化 */
+@media (max-width: 639px) {
+  .aurora-post-grid-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .aurora-post-grid-container > div:last-child {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+  
+  .aurora-post-grid-container > div:first-child .aurora-post-card {
+    min-height: 320px;
+  }
+  
+  .aurora-post-grid-container > div:last-child .aurora-post-card {
+    min-height: 240px;
+  }
+}
+
+/* 半屏 Banner 状态下的文章网格优化 */
+.aurora-top-banner-half .aurora-post-grid-container,
+.aurora-top-banner-third .aurora-post-grid-container {
+  gap: 0.75rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+@media (min-width: 640px) {
+  .aurora-top-banner-half .aurora-post-grid-container,
+  .aurora-top-banner-third .aurora-post-grid-container {
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .aurora-top-banner-half .aurora-post-grid-container,
+  .aurora-top-banner-third .aurora-post-grid-container {
+    gap: 1.25rem;
+  }
+}
+
+/* 半屏状态下大卡片优化 */
+.aurora-top-banner-half .aurora-post-grid-container > div:first-child .aurora-post-card,
+.aurora-top-banner-third .aurora-post-grid-container > div:first-child .aurora-post-card {
+  min-height: 320px;
+  border-radius: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .aurora-top-banner-half .aurora-post-grid-container > div:first-child .aurora-post-card,
+  .aurora-top-banner-third .aurora-post-grid-container > div:first-child .aurora-post-card {
+    min-height: 340px;
+  }
+}
+
+.aurora-top-banner-half .aurora-post-grid-container > div:first-child .aurora-post-card-image-wrapper,
+.aurora-top-banner-third .aurora-post-grid-container > div:first-child .aurora-post-card-image-wrapper {
+  min-height: 180px;
+}
+
+@media (min-width: 640px) {
+  .aurora-top-banner-half .aurora-post-grid-container > div:first-child .aurora-post-card-image-wrapper,
+  .aurora-top-banner-third .aurora-post-grid-container > div:first-child .aurora-post-card-image-wrapper {
+    min-height: 200px;
+  }
+}
+
+.aurora-top-banner-half .aurora-post-grid-container > div:first-child .aurora-post-card-content,
+.aurora-top-banner-third .aurora-post-grid-container > div:first-child .aurora-post-card-content {
+  padding: 1rem;
+}
+
+.aurora-top-banner-half .aurora-post-grid-container > div:first-child .aurora-post-title,
+.aurora-top-banner-third .aurora-post-grid-container > div:first-child .aurora-post-title {
+  font-size: 1.125rem;
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+}
+
+.aurora-top-banner-half .aurora-post-grid-container > div:first-child .aurora-post-excerpt,
+.aurora-top-banner-third .aurora-post-grid-container > div:first-child .aurora-post-excerpt {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  -webkit-line-clamp: 2;
+  margin-bottom: 0.5rem;
+}
+
+.aurora-top-banner-half .aurora-post-grid-container > div:first-child .aurora-post-meta,
+.aurora-top-banner-third .aurora-post-grid-container > div:first-child .aurora-post-meta {
+  font-size: 0.75rem;
+  padding-top: 0.5rem;
+}
+
+/* 半屏状态下小卡片优化 */
+.aurora-top-banner-half .aurora-post-grid-container > div:last-child .aurora-post-card,
+.aurora-top-banner-third .aurora-post-grid-container > div:last-child .aurora-post-card {
+  min-height: 220px;
+  border-radius: 0.625rem;
+}
+
+@media (min-width: 640px) {
+  .aurora-top-banner-half .aurora-post-grid-container > div:last-child .aurora-post-card,
+  .aurora-top-banner-third .aurora-post-grid-container > div:last-child .aurora-post-card {
+    min-height: 240px;
+  }
+}
+
+.aurora-top-banner-half .aurora-post-grid-container > div:last-child .aurora-post-card-image-wrapper,
+.aurora-top-banner-third .aurora-post-grid-container > div:last-child .aurora-post-card-image-wrapper {
+  min-height: 120px;
+}
+
+@media (min-width: 640px) {
+  .aurora-top-banner-half .aurora-post-grid-container > div:last-child .aurora-post-card-image-wrapper,
+  .aurora-top-banner-third .aurora-post-grid-container > div:last-child .aurora-post-card-image-wrapper {
+    min-height: 140px;
+  }
+}
+
+.aurora-top-banner-half .aurora-post-grid-container > div:last-child .aurora-post-card-content,
+.aurora-top-banner-third .aurora-post-grid-container > div:last-child .aurora-post-card-content {
+  padding: 0.75rem;
+}
+
+.aurora-top-banner-half .aurora-post-grid-container > div:last-child .aurora-post-title,
+.aurora-top-banner-third .aurora-post-grid-container > div:last-child .aurora-post-title {
+  font-size: 0.875rem;
+  line-height: 1.35;
+  margin-bottom: 0.375rem;
+}
+
+.aurora-top-banner-half .aurora-post-grid-container > div:last-child .aurora-post-excerpt,
+.aurora-top-banner-third .aurora-post-grid-container > div:last-child .aurora-post-excerpt {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  -webkit-line-clamp: 2;
+  margin-bottom: 0.5rem;
+}
+
+.aurora-top-banner-half .aurora-post-grid-container > div:last-child .aurora-post-meta,
+.aurora-top-banner-third .aurora-post-grid-container > div:last-child .aurora-post-meta {
+  font-size: 0.6875rem;
+  padding-top: 0.375rem;
+}
+
+/* 半屏状态下小卡片网格间距优化 */
+.aurora-top-banner-half .aurora-post-grid-container > div:last-child,
+.aurora-top-banner-third .aurora-post-grid-container > div:last-child {
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .aurora-top-banner-half .aurora-post-grid-container > div:last-child,
+  .aurora-top-banner-third .aurora-post-grid-container > div:last-child {
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .aurora-top-banner-half .aurora-post-grid-container > div:last-child,
+  .aurora-top-banner-third .aurora-post-grid-container > div:last-child {
+    gap: 1.25rem;
+  }
+}
+
 /* Grid 2 Layout - 两列网格布局 */
 .aurora-post-list.grid-2 .aurora-post-card {
   min-height: 380px;
@@ -1355,7 +1647,20 @@ html {
 
 .aurora-timeline-item {
   position: relative;
-  padding-bottom: 3.5rem;
+  padding-bottom: 2rem;
+  margin-bottom: 1.5rem;
+  min-height: 60px;
+}
+
+.aurora-timeline-item:last-child {
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+/* 日视图：每个文章都是独立的时间线项，间距可以更紧凑 */
+.aurora-timeline-item:has(.aurora-timeline-post) {
+  padding-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .aurora-timeline-item:last-child .aurora-timeline-line {
@@ -1365,12 +1670,12 @@ html {
 .aurora-timeline-marker {
   position: absolute;
   left: -2rem;
-  top: 0;
+  top: 0.25rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 0.75rem;
-  height: 100%;
+  z-index: 1;
 }
 
 .aurora-timeline-dot {
@@ -1405,14 +1710,15 @@ html {
 }
 
 .aurora-timeline-line {
-  width: 0.5px;
+  width: 2px;
   background: #d1d5db;
   position: absolute;
-  top: 1rem;
+  top: 0.75rem;
   left: 50%;
   transform: translateX(-50%);
-  bottom: 0;
-  height: auto;
+  bottom: -1rem;
+  height: calc(100% + 10rem);
+  min-height: 2rem;
 }
 
 .dark .aurora-timeline-line {
@@ -1421,35 +1727,56 @@ html {
 
 .aurora-timeline-label {
   margin-bottom: 0.75rem;
+  position: relative;
+  z-index: 1;
 }
 
 .aurora-timeline-label h2 {
   font-size: 0.9375rem;
   line-height: 1.5;
+  margin: 0;
+  font-weight: 600;
+  color: rgb(55, 65, 81);
+}
+
+.dark .aurora-timeline-label h2 {
+  color: rgb(241, 245, 249);
 }
 
 .aurora-timeline-content {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.5rem;
+  position: relative;
+  z-index: 1;
 }
 
 .aurora-timeline-post {
-  padding: 1rem;
-  border-radius: 0.5rem;
+  padding: 1rem 1.25rem;
+  border-radius: 0.625rem;
   transition: all 0.2s ease;
-  border-left: 2px solid transparent;
+  border-left: 3px solid transparent;
+  margin-bottom: 0.5rem;
+  background: rgba(249, 250, 251, 0.6);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.dark .aurora-timeline-post {
+  background: rgba(30, 41, 59, 0.4);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
 }
 
 .aurora-timeline-post:hover {
-  background: rgba(22, 186, 170, 0.05);
+  background: rgba(22, 186, 170, 0.08);
   border-left-color: #16baaa;
   transform: translateX(4px);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
 }
 
 .dark .aurora-timeline-post:hover {
-  background: rgba(96, 165, 250, 0.1);
+  background: rgba(96, 165, 250, 0.15);
   border-left-color: #60a5fa;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.3);
 }
 
 .aurora-timeline-post-date {
@@ -1460,13 +1787,25 @@ html {
 
 .aurora-timeline-post-title {
   display: block;
-  font-size: 0.9375rem;
-  line-height: 1.5;
+  font-size: 1rem;
+  line-height: 1.6;
   transition: all 0.2s ease;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: rgb(17, 24, 39);
+}
+
+.dark .aurora-timeline-post-title {
+  color: rgb(241, 245, 249);
 }
 
 .aurora-timeline-post-title:hover {
   text-decoration: underline;
+  color: #16baaa;
+}
+
+.dark .aurora-timeline-post-title:hover {
+  color: #60a5fa;
 }
 
 /* 响应式优化 */
