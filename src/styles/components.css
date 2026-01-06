@@ -227,42 +227,42 @@
 }
 
 /* Header Container - 导航栏内容容器，与内容区域对齐 */
+/* 与 aurora-body 保持一致的宽度设置 */
 .aurora-header-container {
-  max-width: 1400px;
   width: 100%;
   margin: 0 auto;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* 使用百分比宽度与内容区域对齐 */
-@media (min-width: 640px) {
+/* 移动端：全屏 */
+@media (max-width: 767px) {
   .aurora-header-container {
-    width: 95%;
+    width: 100%;
+    max-width: 100%;
   }
 }
 
-@media (min-width: 768px) {
-  .aurora-header-container {
-    width: 92%;
-  }
-}
-
+/* 桌面端：70% 宽度，最大 1000px */
 @media (min-width: 1024px) {
   .aurora-header-container {
-    width: 90%;
+    width: 70%;
+    max-width: 1000px;
   }
 }
 
+/* 大屏桌面：68% 宽度，最大 1200px */
 @media (min-width: 1280px) {
   .aurora-header-container {
-    width: 88%;
+    width: 68%;
+    max-width: 1200px;
   }
 }
 
+/* 超大屏：65% 宽度，最大 1400px */
 @media (min-width: 1536px) {
   .aurora-header-container {
-    width: 85%;
+    width: 65%;
     max-width: 1400px;
   }
 }

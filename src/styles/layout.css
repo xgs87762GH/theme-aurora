@@ -62,6 +62,7 @@
   box-sizing: border-box;
 }
 
+
 /* 移动端：全屏 */
 @media (max-width: 767px) {
   .aurora-body {
@@ -308,6 +309,11 @@
   box-sizing: border-box;
 }
 
+/* Post List Container - 文章列表容器 */
+#post-list-container {
+  overflow: hidden;
+}
+
 /* 防止内容溢出 */
 .aurora-main-content > *,
 .aurora-main-content-inner > * {
@@ -454,5 +460,70 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
+  }
+}
+
+/* ============================================
+   Footer Container - 页脚容器
+   ============================================ */
+
+/* Footer Container - 页脚容器，与内容区域对齐 */
+/* 与 aurora-body 保持一致的宽度设置 */
+.aurora-footer-container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
+/* 移动端：全屏 */
+@media (max-width: 767px) {
+  .aurora-footer-container {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 1rem;
+  }
+}
+
+/* 桌面端：70% 宽度，最大 1000px */
+@media (min-width: 1024px) {
+  .aurora-footer-container {
+    width: 70%;
+    max-width: 1000px;
+    padding: 0 1.5rem;
+  }
+}
+
+/* 大屏桌面：68% 宽度，最大 1200px */
+@media (min-width: 1280px) {
+  .aurora-footer-container {
+    width: 68%;
+    max-width: 1200px;
+    padding: 0 1.5rem;
+  }
+}
+
+/* 超大屏：65% 宽度，最大 1400px */
+@media (min-width: 1536px) {
+  .aurora-footer-container {
+    width: 65%;
+    max-width: 1400px;
+    padding: 0 2rem;
+  }
+}
+
+/* ============================================
+   Header - 导航栏样式
+   ============================================ */
+
+/* 移动端菜单按钮：只在移动端显示（< 640px），桌面端隐藏 */
+/* 使用自定义媒体查询，不依赖 Tailwind 的响应式类 */
+.mobile-menu-button {
+  display: flex;
+}
+
+@media (min-width: 640px) {
+  .mobile-menu-button {
+    display: none !important;
   }
 }

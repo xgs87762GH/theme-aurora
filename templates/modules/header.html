@@ -71,8 +71,16 @@
     </div>
     <div class="header-actions flex items-center">
       <ul x-data="colorSchemeSwitcher" class="flex items-center gap-4">
-        <li class="sm:hidden" x-on:click="open = true">
-          <div class="i-[tabler--menu-2] text-lg text-gray-600 hover:text-blue-600 dark:text-slate-100"></div>
+        <!-- 移动端菜单按钮：只在移动端显示（< 640px），桌面端隐藏 -->
+        <li th:if="${menu != null and not #lists.isEmpty(menu.menuItems)}" class="mobile-menu-button">
+          <button
+            type="button"
+            x-on:click="open = true"
+            class="cursor-pointer p-2 text-gray-600 transition-colors hover:text-blue-600 dark:text-slate-100 dark:hover:text-blue-400"
+            aria-label="打开菜单"
+          >
+            <div class="i-[tabler--menu-2] text-lg"></div>
+          </button>
         </li>
         <li
           th:if="${theme.config.style.enable_change_color_scheme}"

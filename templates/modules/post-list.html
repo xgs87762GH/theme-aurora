@@ -1,6 +1,7 @@
 <!-- 文章列表组件 -->
 <!-- showPagination: 是否显示分页（只有通过路由系统返回的 posts 对象才有完整的分页信息） -->
-<th:block th:fragment="post-list(posts, list_layout, card_gap, card_style, card_animation, image_position, headerWidget, isFirstPage, showPagination)">
+<!-- paginationContext: 分页的上下文路径（可选，默认为 '/'） -->
+<th:block th:fragment="post-list(posts, list_layout, card_gap, card_style, card_animation, image_position, headerWidget, isFirstPage, showPagination, paginationContext)">
   <th:block th:with="skipCount=${isFirstPage and headerWidget == 'latest_post' ? 1 : (isFirstPage and headerWidget == 'latest_post_grid' ? 5 : 0)},postItems=${skipCount gt 0 and not #lists.isEmpty(posts.items) and posts.items.size() gt skipCount ? posts.items.subList(skipCount, posts.items.size()) : posts.items}">
     <!-- 文章列表 -->
     <div
@@ -38,8 +39,9 @@
       <!-- 但仍然需要检查分页属性是否存在，以防万一 -->
       <th:block
         th:if="${posts.prevUrl != null and posts.nextUrl != null and posts.totalPages != null and posts.page != null}"
+        th:with="paginationCtx=${paginationContext != null ? paginationContext : '/'}"
         class="mt-8"
-        th:replace="~{modules/pagination :: pagination(context = '/', prevUrl = ${posts.prevUrl}, nextUrl = ${posts.nextUrl}, totalPages = ${posts.totalPages}, page = ${posts.page}, hasPrevious = ${posts.hasPrevious()}, hasNext = ${posts.hasNext()})}"
+        th:replace="~{modules/pagination :: pagination(context = ${paginationCtx}, prevUrl = ${posts.prevUrl}, nextUrl = ${posts.nextUrl}, totalPages = ${posts.totalPages}, page = ${posts.page}, hasPrevious = ${posts.hasPrevious()}, hasNext = ${posts.hasNext()})}"
       />
     </th:block>
   </th:block>

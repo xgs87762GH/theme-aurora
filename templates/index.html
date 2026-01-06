@@ -7,9 +7,69 @@
   <!-- 仅返回文章列表容器内容，不包含任何 HTML 结构 -->
   <div id="post-list-container">
     <th:block
-      th:with="categoryParam=${param.category != null and not #lists.isEmpty(param.category) ? param.category[0] : null},selectedCategory=${categoryParam != null ? categoryFinder.getByName(categoryParam) : null},filteredPosts=${selectedCategory != null ? postFinder.listByCategory(1, posts.size, selectedCategory.metadata.name) : posts},headerWidget=${theme.config.home.header_widget ?: 'none'},isFirstPage=${filteredPosts.page == 1 or filteredPosts.page == null},list_layout=${theme.config.post_list.post_list_layout ?: 'grid_3'},card_gap=${theme.config.post_list.card_gap ?: 'medium'},card_style=${theme.config.post_list.card_style ?: 'default'},card_animation=${theme.config.post_list.card_animation ?: 'hover_lift'},image_position=${theme.config.post_list.post_image_position ?: 'left'}"
-      th:replace="~{modules/post-list :: post-list(posts = ${filteredPosts}, list_layout = ${list_layout}, card_gap = ${card_gap}, card_style = ${card_style}, card_animation = ${card_animation}, image_position = ${image_position}, headerWidget = ${headerWidget}, isFirstPage = ${isFirstPage}, showPagination = ${selectedCategory == null})}"
-    />
+      th:with="categoryParam=${param.category != null and not #lists.isEmpty(param.category) ? param.category[0] : null},selectedCategory=${categoryParam != null ? categoryFinder.getByName(categoryParam) : null},currentPage=${param.page != null and not #lists.isEmpty(param.page) ? T(java.lang.Integer).valueOf(param.page[0]) : 1},pageSize=${theme.config.post_list.posts_per_page ?: 12},filteredPosts=${selectedCategory != null ? postFinder.list({page: currentPage, size: pageSize, categoryName: selectedCategory.metadata.name}) : postFinder.list({page: currentPage, size: pageSize})},headerWidget=${theme.config.home.header_widget ?: 'none'},isFirstPage=${currentPage == 1},list_layout=${theme.config.post_list.post_list_layout ?: 'grid_3'},card_gap=${theme.config.post_list.card_gap ?: 'medium'},card_style=${theme.config.post_list.card_style ?: 'default'},card_animation=${theme.config.post_list.card_animation ?: 'hover_lift'},image_position=${theme.config.post_list.post_image_position ?: 'left'},totalPages=${filteredPosts.totalPages},hasPrevious=${filteredPosts.hasPrevious()},hasNext=${filteredPosts.hasNext()},prevUrl=${hasPrevious ? (selectedCategory != null ? ('/?category=' + selectedCategory.metadata.name + '&page=' + (currentPage - 1)) : ('/?page=' + (currentPage - 1))) : null},nextUrl=${hasNext ? (selectedCategory != null ? ('/?category=' + selectedCategory.metadata.name + '&page=' + (currentPage + 1)) : ('/?page=' + (currentPage + 1))) : null}"
+    >
+      <th:block th:replace="~{modules/post-list :: post-list(posts = ${filteredPosts}, list_layout = ${list_layout}, card_gap = ${card_gap}, card_style = ${card_style}, card_animation = ${card_animation}, image_position = ${image_position}, headerWidget = ${headerWidget}, isFirstPage = ${isFirstPage}, showPagination = false, paginationContext = null)}" />
+      
+      <!-- 手动构建分页 -->
+      <th:block th:if="${filteredPosts.total gt 0 and totalPages gt 1}">
+        <div class="mt-8 flex items-center justify-between">
+          <a
+            th:href="@{${prevUrl}}"
+            th:if="${hasPrevious}"
+            class="whitespace-no-wrap group inline-flex items-center justify-center gap-1 rounded-md border border-gray-200 bg-white px-4 py-1 text-sm font-medium leading-6 text-gray-600 shadow-sm hover:bg-gray-50 focus:shadow-none focus:outline-none dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600 dark:hover:text-white"
+          >
+            <span class="i-tabler-arrow-left text-lg transition-all group-hover:-translate-x-1"></span>
+            <span th:text="#{common.previousPage}"></span>
+          </a>
+          <span th:unless="${hasPrevious}" class="whitespace-no-wrap inline-flex items-center justify-center gap-1 rounded-md border border-gray-200 bg-white px-4 py-1 text-sm font-medium leading-6 text-gray-400 pointer-events-none opacity-60 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-500">
+            <span class="i-tabler-arrow-left text-lg"></span>
+            <span th:text="#{common.previousPage}"></span>
+          </span>
+          
+          <select id="pagination-index" class="bg-transparent text-sm text-gray-900 outline-none dark:text-slate-50">
+            <option
+              th:each="i : ${#numbers.sequence(1,totalPages)}"
+              th:selected="${i == currentPage}"
+              th:value="${i}"
+              th:text="|${i} / ${totalPages}|"
+              class="bg-white text-gray-900 dark:bg-slate-700 dark:text-slate-50"
+            ></option>
+          </select>
+          
+          <a
+            th:href="@{${nextUrl}}"
+            th:if="${hasNext}"
+            class="whitespace-no-wrap group inline-flex items-center justify-center gap-1 rounded-md border border-gray-200 bg-white px-4 py-1 text-sm font-medium leading-6 text-gray-600 shadow-sm hover:bg-gray-50 focus:shadow-none focus:outline-none dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600 dark:hover:text-white"
+          >
+            <span th:text="#{common.nextPage}"></span>
+            <span class="i-tabler-arrow-right text-lg transition-all group-hover:translate-x-1"></span>
+          </a>
+          <span th:unless="${hasNext}" class="whitespace-no-wrap inline-flex items-center justify-center gap-1 rounded-md border border-gray-200 bg-white px-4 py-1 text-sm font-medium leading-6 text-gray-400 pointer-events-none opacity-60 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-500">
+            <span th:text="#{common.nextPage}"></span>
+            <span class="i-tabler-arrow-right text-lg"></span>
+          </span>
+        </div>
+        
+        <script th:inline="javascript">
+          document.addEventListener("DOMContentLoaded", () => {
+            const paginationSelect = document.getElementById("pagination-index");
+            if (!paginationSelect) return;
+            
+            paginationSelect.addEventListener("change", (event) => {
+              const selectedPage = event.target.value;
+              const currentUrl = new URL(window.location.href);
+              const categoryParam = /*[[${categoryParam}]]*/ null;
+              if (categoryParam) {
+                currentUrl.searchParams.set("category", categoryParam);
+              }
+              currentUrl.searchParams.set("page", selectedPage);
+              window.location.href = currentUrl.toString();
+            });
+          });
+        </script>
+      </th:block>
+    </th:block>
   </div>
 </th:block>
 

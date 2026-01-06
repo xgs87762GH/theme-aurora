@@ -33,48 +33,70 @@
   </th:block>
 
   <th:block th:fragment="main-content">
-    <th:block th:with="posts = ${postFinder.listByTag(1,10,tag.metadata.name)},list_layout=${theme.config.post_list.post_list_layout ?: 'grid_3'},card_gap=${theme.config.post_list.card_gap ?: 'medium'},card_style=${theme.config.post_list.card_style ?: 'default'},card_animation=${theme.config.post_list.card_animation ?: 'hover_lift'},image_position=${theme.config.post_list.post_image_position ?: 'left'}">
+    <th:block th:with="currentPage=${param.page != null and not #lists.isEmpty(param.page) ? #numbers.integer(param.page[0]) : 1},pageSize=${theme.config.post_list.posts_per_page ?: 10},posts = ${postFinder.listByTag(currentPage, pageSize, tag.metadata.name)},list_layout=${theme.config.post_list.post_list_layout ?: 'grid_3'},card_gap=${theme.config.post_list.card_gap ?: 'medium'},card_style=${theme.config.post_list.card_style ?: 'default'},card_animation=${theme.config.post_list.card_animation ?: 'hover_lift'},image_position=${theme.config.post_list.post_image_position ?: 'left'},totalPages=${#numbers.integer(#math.ceil(posts.total / pageSize))},hasPrevious=${currentPage gt 1},hasNext=${currentPage lt totalPages},prevUrl=${hasPrevious ? '|/tags?tag=' + tag.metadata.name + '&page=' + (currentPage - 1)| : null},nextUrl=${hasNext ? '|/tags?tag=' + tag.metadata.name + '&page=' + (currentPage + 1)| : null}">
       <!-- 标签筛选器 -->
       <div class="mb-6 rounded-xl bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md dark:bg-slate-800">
         <th:block th:replace="~{modules/tag-filter}" />
       </div>
 
-      <!-- 文章列表 -->
-      <div
-        id="post-list"
-        th:if="${posts.total gt 0}"
-        th:with="postItems=${posts.items}"
-        class="aurora-post-list"
-        th:classappend="|${list_layout == 'grid_2' ? 'grid-2' : ''} ${list_layout == 'grid_3' ? 'grid-3' : ''} ${list_layout == 'grid_4' ? 'grid-4' : ''} ${list_layout == 'single' ? 'single' : ''} ${list_layout == 'list' ? 'list' : ''} ${list_layout == 'masonry' ? 'masonry' : ''} ${card_gap == 'tight' ? 'gap-tight' : ''} ${card_gap == 'medium' ? 'gap-medium' : ''} ${card_gap == 'loose' ? 'gap-loose' : ''} ${card_gap == 'extra_loose' ? 'gap-extra-loose' : ''}|"
-      >
-        <th:block th:each="post : ${postItems}">
-          <th:block
-            th:with="cardDirection=${list_layout == 'single' ? 'column' : (list_layout == 'list' ? 'list' : (image_position == 'left' ? 'row' : (image_position == 'right' ? 'row-reverse' : 'row')))}"
-            th:replace="~{modules/post-card :: post-card(${post},${image_position != 'none'},${card_animation != 'none'},${card_style == 'bordered'},${cardDirection},${card_style ?: 'default'},${card_animation ?: 'hover_lift'},${image_position ?: 'left'})}"
-          />
-        </th:block>
-      </div>
+      <!-- 使用统一的 post-list 组件 -->
+      <th:block th:replace="~{modules/post-list :: post-list(posts = ${posts}, list_layout = ${list_layout}, card_gap = ${card_gap}, card_style = ${card_style}, card_animation = ${card_animation}, image_position = ${image_position}, headerWidget = 'none', isFirstPage = ${currentPage == 1}, showPagination = false, paginationContext = null)}" />
 
-      <!-- 空状态 -->
-      <div th:if="${posts.total == 0}" class="flex items-center justify-center py-16">
-        <div class="text-center">
-          <span class="i-tabler-file-off text-6xl text-gray-300 dark:text-slate-600"></span>
-          <p class="mt-4 text-sm font-light text-gray-600 dark:text-slate-200" th:text="#{common.noPosts}"></p>
+      <!-- 手动构建分页（因为 postFinder.listByTag 返回的对象没有分页 URL） -->
+      <th:block th:if="${posts.total gt 0 and totalPages gt 1}">
+        <div class="mt-8 flex items-center justify-between">
+          <a
+            th:href="@{${prevUrl}}"
+            th:if="${hasPrevious}"
+            class="whitespace-no-wrap group inline-flex items-center justify-center gap-1 rounded-md border border-gray-200 bg-white px-4 py-1 text-sm font-medium leading-6 text-gray-600 shadow-sm hover:bg-gray-50 focus:shadow-none focus:outline-none dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600 dark:hover:text-white"
+          >
+            <span class="i-tabler-arrow-left text-lg transition-all group-hover:-translate-x-1"></span>
+            <span th:text="#{common.previousPage}"></span>
+          </a>
+          <span th:unless="${hasPrevious}" class="whitespace-no-wrap inline-flex items-center justify-center gap-1 rounded-md border border-gray-200 bg-white px-4 py-1 text-sm font-medium leading-6 text-gray-400 pointer-events-none opacity-60 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-500">
+            <span class="i-tabler-arrow-left text-lg"></span>
+            <span th:text="#{common.previousPage}"></span>
+          </span>
+          
+          <select id="pagination-tags" class="bg-transparent text-sm text-gray-900 outline-none dark:text-slate-50">
+            <option
+              th:each="i : ${#numbers.sequence(1,totalPages)}"
+              th:selected="${i == currentPage}"
+              th:value="${i}"
+              th:text="|${i} / ${totalPages}|"
+              class="bg-white text-gray-900 dark:bg-slate-700 dark:text-slate-50"
+            ></option>
+          </select>
+          
+          <a
+            th:href="@{${nextUrl}}"
+            th:if="${hasNext}"
+            class="whitespace-no-wrap group inline-flex items-center justify-center gap-1 rounded-md border border-gray-200 bg-white px-4 py-1 text-sm font-medium leading-6 text-gray-600 shadow-sm hover:bg-gray-50 focus:shadow-none focus:outline-none dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600 dark:hover:text-white"
+          >
+            <span th:text="#{common.nextPage}"></span>
+            <span class="i-tabler-arrow-right text-lg transition-all group-hover:translate-x-1"></span>
+          </a>
+          <span th:unless="${hasNext}" class="whitespace-no-wrap inline-flex items-center justify-center gap-1 rounded-md border border-gray-200 bg-white px-4 py-1 text-sm font-medium leading-6 text-gray-400 pointer-events-none opacity-60 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-500">
+            <span th:text="#{common.nextPage}"></span>
+            <span class="i-tabler-arrow-right text-lg"></span>
+          </span>
         </div>
-      </div>
-
-      <!-- 更多文章按钮 -->
-      <div th:if="${posts.total gt 10}" class="mt-10 flex justify-end">
-        <a
-          class="group inline-flex items-center gap-2 rounded-lg bg-blue-50 px-4 py-2 text-sm font-medium text-blue-600 transition-all hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30"
-          th:href="@{${tag.status.permalink}}"
-        >
-          <span th:text="#{page.tags.morePosts}"></span>
-          <span
-            class="i-tabler-chevron-right -translate-x-1 text-lg transition-all group-hover:translate-x-0"
-          ></span>
-        </a>
-      </div>
+        
+        <script th:inline="javascript">
+          document.addEventListener("DOMContentLoaded", () => {
+            const paginationSelect = document.getElementById("pagination-tags");
+            if (!paginationSelect) return;
+            
+            paginationSelect.addEventListener("change", (event) => {
+              const selectedPage = event.target.value;
+              const currentUrl = new URL(window.location.href);
+              currentUrl.searchParams.set("tag", /*[[${tag.metadata.name}]]*/ "");
+              currentUrl.searchParams.set("page", selectedPage);
+              window.location.href = currentUrl.toString();
+            });
+          });
+        </script>
+      </th:block>
     </th:block>
   </th:block>
 </html>

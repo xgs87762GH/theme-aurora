@@ -9,38 +9,10 @@
   </th:block>
 
   <th:block th:fragment="main-content">
-    <th:block th:with="list_layout=${theme.config.post_list.post_list_layout ?: 'grid_3'},card_gap=${theme.config.post_list.card_gap ?: 'medium'},card_style=${theme.config.post_list.card_style ?: 'default'},card_animation=${theme.config.post_list.card_animation ?: 'hover_lift'},image_position=${theme.config.post_list.post_image_position ?: 'left'}">
-      <!-- 文章列表 -->
-      <div
-        id="post-list"
-        th:if="${posts.total gt 0}"
-        th:with="postItems=${posts.items}"
-        class="aurora-post-list"
-        th:classappend="|${list_layout == 'grid_2' ? 'grid-2' : ''} ${list_layout == 'grid_3' ? 'grid-3' : ''} ${list_layout == 'grid_4' ? 'grid-4' : ''} ${list_layout == 'single' ? 'single' : ''} ${list_layout == 'list' ? 'list' : ''} ${list_layout == 'masonry' ? 'masonry' : ''} ${card_gap == 'tight' ? 'gap-tight' : ''} ${card_gap == 'medium' ? 'gap-medium' : ''} ${card_gap == 'loose' ? 'gap-loose' : ''} ${card_gap == 'extra_loose' ? 'gap-extra-loose' : ''}|"
-      >
-        <th:block th:each="post : ${postItems}">
-          <th:block
-            th:with="cardDirection=${list_layout == 'single' ? 'column' : (list_layout == 'list' ? 'list' : (image_position == 'left' ? 'row' : (image_position == 'right' ? 'row-reverse' : 'row')))}"
-            th:replace="~{modules/post-card :: post-card(${post},${image_position != 'none'},${card_animation != 'none'},${card_style == 'bordered'},${cardDirection},${card_style ?: 'default'},${card_animation ?: 'hover_lift'},${image_position ?: 'left'})}"
-          />
-        </th:block>
-      </div>
-
-      <!-- 空状态 -->
-      <div th:if="${posts.total == 0}" class="flex items-center justify-center py-16">
-        <div class="text-center">
-          <span class="i-tabler-file-off text-6xl text-gray-300 dark:text-slate-600"></span>
-          <p class="mt-4 text-sm font-light text-gray-600 dark:text-slate-200" th:text="#{common.noPosts}"></p>
-        </div>
-      </div>
-
-      <!-- 分页 -->
-      <th:block
-        th:if="${posts.total gt 0}"
-        class="mt-8"
-        th:replace="~{modules/pagination :: pagination(context = |${tag.status.permalink}/|, prevUrl = ${posts.prevUrl}, nextUrl = ${posts.nextUrl}, totalPages = ${posts.totalPages}, page = ${posts.page}, hasPrevious = ${posts.hasPrevious()}, hasNext = ${posts.hasNext()})}"
-      />
-    </th:block>
+    <th:block
+      th:with="list_layout=${theme.config.post_list.post_list_layout ?: 'grid_3'},card_gap=${theme.config.post_list.card_gap ?: 'medium'},card_style=${theme.config.post_list.card_style ?: 'default'},card_animation=${theme.config.post_list.card_animation ?: 'hover_lift'},image_position=${theme.config.post_list.post_image_position ?: 'left'},isFirstPage=${posts.page == 1 or posts.page == null},paginationCtx=|${tag.status.permalink}/|"
+      th:replace="~{modules/post-list :: post-list(posts = ${posts}, list_layout = ${list_layout}, card_gap = ${card_gap}, card_style = ${card_style}, card_animation = ${card_animation}, image_position = ${image_position}, headerWidget = 'none', isFirstPage = ${isFirstPage}, showPagination = true, paginationContext = ${paginationCtx})}"
+    />
   </th:block>
 </html>
 

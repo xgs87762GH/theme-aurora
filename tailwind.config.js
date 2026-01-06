@@ -40,6 +40,8 @@ module.exports = {
     "prose-slate",
     "prose-zinc",
     "prose-neutral",
-    "prose-stone"
+    "prose-stone",
+    // 确保响应式类被包含
+    {pattern: /^(?:sm|md|lg|xl|2xl):(hidden|block)$/}
   ],
 };
