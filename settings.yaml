@@ -13,19 +13,21 @@ spec:
           label: 顶部大图高度
           value: half
           options:
+            - label: 不显示
+              value: none
             - label: 全屏
               value: full
             - label: 半屏
               value: half
             - label: 三分之一屏
               value: third
-          help: "首页顶部大图的高度设置"
+          help: "首页顶部大图的高度设置，选择\"不显示\"将隐藏顶部大图区域"
         - $formkit: select
           name: header_widget
           id: header_widget
           label: 首页顶部模块
           value: site_title
-          if: "$get(top_banner_height).value !== 'third'"
+          if: "$get(top_banner_height).value !== 'none' && $get(top_banner_height).value !== 'third'"
           options:
             - label: 无
               value: none
@@ -49,7 +51,7 @@ spec:
             - label: 站点标题
               value: site_title
         - $formkit: select
-          if: "$get(header_widget).value !== none"
+          if: "$get(top_banner_height).value !== 'none'"
           name: header_background_type
           id: header_background_type
           key: header_background_type
@@ -65,19 +67,19 @@ spec:
             - label: 视频
               value: video
         - $formkit: text
-          if: "$get(header_widget).value !== none && $get(header_background_type).value === manual"
+          if: "$get(top_banner_height).value !== 'none' && $get(header_background_type).value === manual"
           name: header_background
           id: header_background
           key: header_background
           label: 首页顶部背景
         - $formkit: attachment
-          if: "$get(header_widget).value !== none && $get(header_background_type).value === image"
+          if: "$get(top_banner_height).value !== 'none' && $get(header_background_type).value === image"
           name: header_background_image
           id: header_background_image
           key: header_background_image
           label: 首页顶部背景图片
         - $formkit: repeater
-          if: "$get(header_widget).value !== none && $get(header_background_type).value === carousel"
+          if: "$get(top_banner_height).value !== 'none' && $get(header_background_type).value === carousel"
           name: header_background_carousel
           id: header_background_carousel
           key: header_background_carousel
@@ -95,27 +97,27 @@ spec:
             - $formkit: text
               name: link
               label: 链接（可选）
-        - $formkit: attachment
-          if: "$get(header_widget).value !== none && $get(header_background_type).value === video"
+        - $formkit: text
+          if: "$get(top_banner_height).value !== 'none' && $get(header_background_type).value === video"
           name: header_background_video
           id: header_background_video
           key: header_background_video
           label: 首页顶部背景视频
-          accepts:
-            - "video/*"
+          value: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+          help: "输入视频 URL。测试链接：https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4 或访问 https://www.pexels.com/videos/ 获取更多免费视频"
         - $formkit: color
-          if: "$get(header_widget).value === site_title"
+          if: "$get(top_banner_height).value !== 'none' && $get(header_widget).value === site_title"
           name: title_color
           id: title_color
           key: title_color
           label: 标题文字颜色
           value: "#ffffff"
         - $formkit: checkbox
-          if: $get(header_widget).value !== none && $get(top_banner_height).value == full && $get(header_background_type).value == image
+          if: "$get(top_banner_height).value === 'full' && $get(header_background_type).value === image"
           name: use_banner_as_background
           label: 将 Banner 作为全局背景
           value: false
-          help: "启用后，所有页面将使用首页 banner 图片作为背景，实现视觉统一（仅图片类型支持）"
+          help: "启用后，所有页面将使用首页 banner 图片作为全局背景，实现视觉统一。未启用时，滚动页面 banner 会放大淡出（仅图片类型支持）"
         - $formkit: checkbox
           name: show_category_filter
           label: 显示分类筛选器

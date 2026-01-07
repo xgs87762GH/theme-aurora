@@ -888,6 +888,134 @@ document.addEventListener("DOMContentLoaded", () => {
   const debugPanel = document.createElement("div");
   debugPanel.id = "banner-posts-debug";
   document.body.appendChild(debugPanel);
+
+  // Banner 轮播功能
+  const initBannerCarousel = () => {
+    const carouselContainer = document.querySelector(".aurora-banner-carousel-container");
+    if (!carouselContainer) return;
+
+    const slides = carouselContainer.querySelectorAll(".aurora-banner-carousel-slide");
+    if (slides.length <= 1) return;
+
+    let currentIndex = 0;
+    const totalSlides = slides.length;
+    const switchInterval = 5000; // 5秒切换一次
+    let carouselTimer: number | null = null;
+
+    const switchSlide = () => {
+      // 隐藏当前幻灯片
+      (slides[currentIndex] as HTMLElement).classList.remove("opacity-100");
+      (slides[currentIndex] as HTMLElement).classList.add("opacity-0");
+
+      // 切换到下一张
+      currentIndex = (currentIndex + 1) % totalSlides;
+
+      // 显示下一张幻灯片
+      (slides[currentIndex] as HTMLElement).classList.remove("opacity-0");
+      (slides[currentIndex] as HTMLElement).classList.add("opacity-100");
+    };
+
+    const startCarousel = () => {
+      if (carouselTimer) {
+        clearInterval(carouselTimer);
+      }
+      carouselTimer = window.setInterval(switchSlide, switchInterval);
+    };
+
+    const stopCarousel = () => {
+      if (carouselTimer) {
+        clearInterval(carouselTimer);
+        carouselTimer = null;
+      }
+    };
+
+    // 启动自动轮播
+    startCarousel();
+
+    // 鼠标悬停时暂停轮播
+    carouselContainer.addEventListener("mouseenter", stopCarousel);
+
+    // 鼠标离开时恢复轮播
+    carouselContainer.addEventListener("mouseleave", startCarousel);
+  };
+
+  // 初始化轮播
+  initBannerCarousel();
+
+  // Banner 背景行为策略模式
+  interface BannerBackgroundStrategy {
+    init(banner: HTMLElement): void;
+    handleScroll(banner: HTMLElement, scrollTop: number, bannerHeight: number): void;
+    cleanup?(): void;
+  }
+
+  // 策略1: 全局背景模式（不淡出，作为全局背景）
+  class GlobalBackgroundStrategy implements BannerBackgroundStrategy {
+    init(_banner: HTMLElement): void {
+      // 全局背景模式不需要滚动处理
+      // 背景已经在 layout.html 中设置为 body 的背景
+    }
+
+    handleScroll(_banner: HTMLElement, _scrollTop: number, _bannerHeight: number): void {
+      // 全局背景模式下，banner 背景不淡出
+      // 不需要任何操作
+    }
+  }
+
+  // 策略2: 滚动淡出模式（滚动时放大淡出）
+  class ScrollFadeStrategy implements BannerBackgroundStrategy {
+    private lastScrollTop = 0;
+    private ticking = false;
+
+    init(banner: HTMLElement): void {
+      // 初始化滚动监听
+      const handleScroll = () => {
+        if (this.ticking) return;
+        this.ticking = true;
+
+        requestAnimationFrame(() => {
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          const bannerHeight = banner.offsetHeight;
+          this.handleScroll(banner, scrollTop, bannerHeight);
+          this.lastScrollTop = scrollTop;
+          this.ticking = false;
+        });
+      };
+
+      window.addEventListener('scroll', handleScroll, { passive: true });
+    }
+
+    handleScroll(banner: HTMLElement, scrollTop: number, bannerHeight: number): void {
+      const scrollThreshold = bannerHeight * 0.3; // 滚动到 banner 高度的 30% 时开始效果
+
+      if (scrollTop > scrollThreshold && scrollTop > this.lastScrollTop) {
+        // 向下滚动，添加 scrolling 类
+        banner.classList.add('scrolling');
+      } else if (scrollTop <= scrollThreshold || scrollTop < this.lastScrollTop) {
+        // 向上滚动或回到顶部，移除 scrolling 类
+        banner.classList.remove('scrolling');
+      }
+    }
+  }
+
+  // Banner 背景策略管理器
+  const initBannerBackgroundStrategy = () => {
+    const fullScreenBanner = document.querySelector('.aurora-top-banner-full[data-full-screen="true"]') as HTMLElement;
+    if (!fullScreenBanner) return;
+
+    const useGlobalBg = fullScreenBanner.getAttribute('data-use-global-bg') === 'true';
+    
+    // 根据配置选择策略
+    const strategy: BannerBackgroundStrategy = useGlobalBg 
+      ? new GlobalBackgroundStrategy() 
+      : new ScrollFadeStrategy();
+
+    // 初始化策略
+    strategy.init(fullScreenBanner);
+  };
+
+  // 初始化 Banner 背景策略
+  initBannerBackgroundStrategy();
 });
 
 window.main = main;

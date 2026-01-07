@@ -3,15 +3,44 @@
   <!-- 首页顶部大图 -->
   <th:block th:fragment="top-banner">
     <div
-      th:if="${theme.config.home.header_widget != 'none'}"
+      th:if="${theme.config.home.top_banner_height != 'none'}"
       class="aurora-top-banner"
-      th:classappend="|${theme.config.home.top_banner_height == 'full' ? 'aurora-top-banner-full' : ''} ${theme.config.home.top_banner_height == 'half' ? 'aurora-top-banner-half' : ''} ${theme.config.home.top_banner_height == 'third' ? 'aurora-top-banner-third' : ''}|"
+      th:classappend="|${theme.config.home.top_banner_height == 'full' ? 'aurora-top-banner-full' : ''} ${theme.config.home.top_banner_height == 'half' ? 'aurora-top-banner-half' : ''} ${theme.config.home.top_banner_height == 'third' ? 'aurora-top-banner-third' : ''} ${theme.config.home.header_background_type == 'carousel' ? 'aurora-banner-carousel' : ''} ${theme.config.home.header_background_type == 'video' ? 'aurora-banner-video' : ''}|"
       th:with="bgImageStyle=${theme.config.home.header_background_type == 'image' and not #strings.isEmpty(theme.config.home.header_background_image) ? 'background-image: url(' + theme.config.home.header_background_image + ');' : ''},
-               bgManualStyle=${theme.config.home.header_background_type == 'manual' and not #strings.isEmpty(theme.config.home.header_background) ? 'background: ' + theme.config.home.header_background + ';' : ''}"
+               bgManualStyle=${theme.config.home.header_background_type == 'manual' and not #strings.isEmpty(theme.config.home.header_background) ? 'background: ' + theme.config.home.header_background + ';' : ''},
+               isFullScreen=${theme.config.home.top_banner_height == 'full'},
+               useGlobalBg=${theme.config.home.use_banner_as_background == true}"
       th:style="|${bgImageStyle} ${bgManualStyle}|"
+      th:attr="data-full-screen=${isFullScreen},data-use-global-bg=${useGlobalBg}"
     >
+      <!-- 轮播背景 -->
+      <div
+        th:if="${theme.config.home.header_background_type == 'carousel' and not #lists.isEmpty(theme.config.home.header_background_carousel)}"
+        class="aurora-banner-carousel-container absolute inset-0 z-0"
+      >
+        <div class="aurora-banner-carousel-slides h-full w-full">
+          <div
+            th:each="slide, slideStat : ${theme.config.home.header_background_carousel}"
+            class="aurora-banner-carousel-slide absolute inset-0 transition-opacity duration-1000 ease-in-out"
+            th:classappend="|${slideStat.index == 0 ? 'opacity-100' : 'opacity-0'}|"
+            th:style="|background-image: url(${slide.image}); background-size: cover; background-position: center; background-repeat: no-repeat;|"
+            th:attr="data-slide-index=${slideStat.index}"
+          ></div>
+        </div>
+      </div>
+      <!-- 视频背景 -->
+      <video
+        th:if="${theme.config.home.header_background_type == 'video' and not #strings.isEmpty(theme.config.home.header_background_video)}"
+        class="aurora-banner-video-element absolute inset-0 z-0 h-full w-full object-cover"
+        th:src="${theme.config.home.header_background_video}"
+        autoplay
+        loop
+        muted
+        playsinline
+        preload="auto"
+      >      </video>
       <div class="aurora-top-banner-overlay"></div>
-      <div class="aurora-top-banner-content">
+      <div class="aurora-top-banner-content" th:if="${theme.config.home.header_widget != null and theme.config.home.header_widget != 'none'}">
         <th:block th:switch="${theme.config.home.header_widget}">
           <th:block th:case="latest_post" th:with="posts = ${postFinder.list(1,1)}">
             <div class="mx-auto max-w-7xl px-4 py-6 lg:px-6" th:if="${posts.total gt 0}" data-banner-posts="true">

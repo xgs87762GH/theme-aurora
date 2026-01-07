@@ -630,14 +630,13 @@
    Home Page Optimizations - 主页优化样式
    ============================================ */
 
-/* Global Background - 全局背景（所有页面统一背景） */
+/* 全局背景样式（当启用 use_banner_as_background 时） */
 .aurora-global-background {
   background-attachment: fixed !important;
   background-size: cover !important;
   background-position: center !important;
   background-repeat: no-repeat !important;
   position: relative;
-  /* 移除默认背景色 */
   background-color: transparent !important;
 }
 
@@ -659,6 +658,50 @@
 .aurora-global-background > * {
   position: relative;
   z-index: 1;
+}
+
+/* 全屏 Banner 滚动时的放大淡出效果（当未启用全局背景时） */
+.aurora-top-banner-full {
+  position: relative;
+  overflow: hidden;
+  transition: background-size 0.5s ease-out, opacity 0.5s ease-out;
+}
+
+/* 图片背景在滚动时的效果（仅非全局背景模式） */
+.aurora-top-banner-full.scrolling {
+  background-size: 120% !important;
+  opacity: 0;
+}
+
+/* 轮播背景在滚动时的效果 */
+.aurora-top-banner-full.aurora-banner-carousel .aurora-banner-carousel-container {
+  transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+  will-change: transform, opacity;
+}
+
+.aurora-top-banner-full.aurora-banner-carousel.scrolling .aurora-banner-carousel-container {
+  transform: scale(1.2);
+  opacity: 0;
+}
+
+.aurora-top-banner-full.aurora-banner-carousel .aurora-banner-carousel-slide {
+  transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+}
+
+.aurora-top-banner-full.aurora-banner-carousel.scrolling .aurora-banner-carousel-slide {
+  transform: scale(1.2);
+  opacity: 0;
+}
+
+/* 视频背景在滚动时的效果 */
+.aurora-top-banner-full.aurora-banner-video .aurora-banner-video-element {
+  transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+  will-change: transform, opacity;
+}
+
+.aurora-top-banner-full.aurora-banner-video.scrolling .aurora-banner-video-element {
+  transform: scale(1.2);
+  opacity: 0;
 }
 
 /* Top Banner Enhancements - 顶部大图增强（参考 MEGO 主题） */
@@ -709,6 +752,40 @@ body:has(.aurora-banner-fixed) .aurora-three-column {
   width: 100%;
   pointer-events: none;
   flex-shrink: 0;
+}
+
+/* Banner 轮播容器 */
+.aurora-banner-carousel-container {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.aurora-banner-carousel-slides {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.aurora-banner-carousel-slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: opacity 1s ease-in-out;
+}
+
+/* Banner 视频背景 */
+.aurora-banner-video-element {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 
 /* Banner 遮罩层（参考 MEGO 主题的渐变效果） */
