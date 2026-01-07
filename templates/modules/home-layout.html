@@ -3,24 +3,24 @@
   <!-- 首页顶部大图 -->
   <th:block th:fragment="top-banner">
     <div
-      th:if="${theme.config.home.top_banner_height != 'none'}"
+      th:if="${theme.config.header.top_banner_height != 'none'}"
       class="aurora-top-banner"
-      th:classappend="|${theme.config.home.top_banner_height == 'full' ? 'aurora-top-banner-full' : ''} ${theme.config.home.top_banner_height == 'half' ? 'aurora-top-banner-half' : ''} ${theme.config.home.top_banner_height == 'third' ? 'aurora-top-banner-third' : ''} ${theme.config.home.header_background_type == 'carousel' ? 'aurora-banner-carousel' : ''} ${theme.config.home.header_background_type == 'video' ? 'aurora-banner-video' : ''}|"
-      th:with="bgImageStyle=${theme.config.home.header_background_type == 'image' and not #strings.isEmpty(theme.config.home.header_background_image) ? 'background-image: url(' + theme.config.home.header_background_image + ');' : ''},
-               bgManualStyle=${theme.config.home.header_background_type == 'manual' and not #strings.isEmpty(theme.config.home.header_background) ? 'background: ' + theme.config.home.header_background + ';' : ''},
-               isFullScreen=${theme.config.home.top_banner_height == 'full'},
-               useGlobalBg=${theme.config.home.use_banner_as_background == true}"
+      th:classappend="|${theme.config.header.top_banner_height == 'full' ? 'aurora-top-banner-full' : ''} ${theme.config.header.top_banner_height == 'half' ? 'aurora-top-banner-half' : ''} ${theme.config.header.top_banner_height == 'third' ? 'aurora-top-banner-third' : ''} ${theme.config.header.header_background_type == 'carousel' ? 'aurora-banner-carousel' : ''} ${theme.config.header.header_background_type == 'video' ? 'aurora-banner-video' : ''}|"
+      th:with="bgImageStyle=${theme.config.header.header_background_type == 'image' and not #strings.isEmpty(theme.config.header.header_background_image) ? 'background-image: url(' + theme.config.header.header_background_image + ');' : ''},
+               bgManualStyle=${theme.config.header.header_background_type == 'manual' and not #strings.isEmpty(theme.config.header.header_background) ? 'background: ' + theme.config.header.header_background + ';' : ''},
+               isFullScreen=${theme.config.header.top_banner_height == 'full'},
+               useGlobalBg=${theme.config.header.use_banner_as_background == true}"
       th:style="|${bgImageStyle} ${bgManualStyle}|"
       th:attr="data-full-screen=${isFullScreen},data-use-global-bg=${useGlobalBg}"
     >
       <!-- 轮播背景 -->
       <div
-        th:if="${theme.config.home.header_background_type == 'carousel' and not #lists.isEmpty(theme.config.home.header_background_carousel)}"
+        th:if="${theme.config.header.header_background_type == 'carousel' and not #lists.isEmpty(theme.config.header.header_background_carousel)}"
         class="aurora-banner-carousel-container absolute inset-0 z-0"
       >
         <div class="aurora-banner-carousel-slides h-full w-full">
           <div
-            th:each="slide, slideStat : ${theme.config.home.header_background_carousel}"
+            th:each="slide, slideStat : ${theme.config.header.header_background_carousel}"
             class="aurora-banner-carousel-slide absolute inset-0 transition-opacity duration-1000 ease-in-out"
             th:classappend="|${slideStat.index == 0 ? 'opacity-100' : 'opacity-0'}|"
             th:style="|background-image: url(${slide.image}); background-size: cover; background-position: center; background-repeat: no-repeat;|"
@@ -30,9 +30,9 @@
       </div>
       <!-- 视频背景 -->
       <video
-        th:if="${theme.config.home.header_background_type == 'video' and not #strings.isEmpty(theme.config.home.header_background_video)}"
+        th:if="${theme.config.header.header_background_type == 'video' and not #strings.isEmpty(theme.config.header.header_background_video)}"
         class="aurora-banner-video-element absolute inset-0 z-0 h-full w-full object-cover"
-        th:src="${theme.config.home.header_background_video}"
+        th:src="${theme.config.header.header_background_video}"
         autoplay
         loop
         muted
@@ -40,15 +40,15 @@
         preload="auto"
       >      </video>
       <div class="aurora-top-banner-overlay"></div>
-      <div class="aurora-top-banner-content" th:if="${(theme.config.home.top_banner_height == 'third' ? (theme.config.home.header_widget_third != null and theme.config.home.header_widget_third != 'none') : (theme.config.home.header_widget != null and theme.config.home.header_widget != 'none'))}">
-        <th:block th:with="effectiveWidget=${theme.config.home.top_banner_height == 'third' ? ((theme.config.home.header_widget_third != null and theme.config.home.header_widget_third != 'site_title') ? theme.config.home.header_widget_third : (theme.config.home.header_widget != null ? theme.config.home.header_widget : 'none')) : (theme.config.home.header_widget ?: 'none')}">
+      <div class="aurora-top-banner-content" th:if="${(theme.config.header.top_banner_height == 'third' ? (theme.config.header.header_widget_third != null and theme.config.header.header_widget_third != 'none') : (theme.config.header.header_widget != null and theme.config.header.header_widget != 'none'))}">
+        <th:block th:with="effectiveWidget=${theme.config.header.top_banner_height == 'third' ? ((theme.config.header.header_widget_third != null and theme.config.header.header_widget_third != 'site_title') ? theme.config.header.header_widget_third : (theme.config.header.header_widget != null ? theme.config.header.header_widget : 'none')) : (theme.config.header.header_widget ?: 'none')}">
         <th:block th:switch="${effectiveWidget}">
           <th:block th:case="latest_post" th:with="posts = ${postFinder.list(1,1)}">
             <div class="mx-auto max-w-7xl px-4 py-6 lg:px-6" th:if="${posts.total gt 0}" data-banner-posts="true">
               <th:block th:replace="~{modules/featured-post-card :: featured-post-card(post=${posts.items[0]})}" />
             </div>
           </th:block>
-          <th:block th:case="latest_post_grid" th:if="${theme.config.home.top_banner_height != 'third'}" th:with="posts = ${postFinder.list(1,5)}">
+          <th:block th:case="latest_post_grid" th:if="${theme.config.header.top_banner_height != 'third'}" th:with="posts = ${postFinder.list(1,5)}">
             <div
               class="aurora-post-grid-container mx-auto grid max-w-7xl grid-cols-1 gap-2 px-4 py-1 sm:grid-cols-5 sm:py-2 lg:gap-3 lg:px-6 lg:py-2"
               th:if="${posts.total gt 0}"
@@ -74,10 +74,10 @@
           </th:block>
           <th:block th:case="site_title">
             <div class="mx-auto flex h-full max-w-4xl flex-col items-center justify-center gap-4 px-4 py-6 text-center lg:px-6">
-              <h1 class="text-5xl font-bold leading-tight" th:style="|color:${theme.config.home.title_color ?: 'white'}|" th:text="${site.title}"></h1>
+              <h1 class="text-5xl font-bold leading-tight" th:style="|color:${theme.config.header.title_color ?: 'white'}|" th:text="${site.title}"></h1>
               <p
                 class="text-lg font-light leading-relaxed max-w-2xl"
-                th:style="|color:${theme.config.home.title_color ?: 'rgba(255, 255, 255, 0.9)'}|"
+                th:style="|color:${theme.config.header.title_color ?: 'rgba(255, 255, 255, 0.9)'}|"
                 th:text="${site.subtitle}"
               ></p>
             </div>
@@ -86,7 +86,7 @@
       </div>
       <!-- 滚动提示按钮（仅全屏时显示，参考 MEGO 主题） -->
       <div
-        th:if="${theme.config.home.top_banner_height == 'full'}"
+        th:if="${theme.config.header.top_banner_height == 'full'}"
         class="aurora-scroll-indicator"
       >
         <button
@@ -102,7 +102,7 @@
 
   <!-- 三栏布局容器（带文章列表）- 首页专用 -->
   <th:block th:fragment="three-column-layout-with-posts(leftContent, rightContent, showCategoryFilter)">
-    <th:block th:with="categoryParam=${param.category != null and not #lists.isEmpty(param.category) ? param.category[0] : null},selectedCategory=${categoryParam != null ? categoryFinder.getByName(categoryParam) : null},currentPage=${param.page != null and not #lists.isEmpty(param.page) ? T(java.lang.Integer).valueOf(param.page[0]) : 1},allWidgets=${theme.config.sidebar.sidebar_widgets},headerWidget=${theme.config.home.top_banner_height == 'third' ? (theme.config.home.header_widget_third ?: 'none') : (theme.config.home.header_widget ?: 'none')},isFirstPage=${currentPage == 1},basePageSize=${theme.config.post_list.posts_per_page ?: 12},pageSize=${isFirstPage and headerWidget == 'latest_post_grid' ? (basePageSize + 5) : basePageSize},filteredPosts=${selectedCategory != null ? postFinder.list({page: currentPage, size: pageSize, categoryName: selectedCategory.metadata.name}) : postFinder.list({page: currentPage, size: pageSize})},list_layout=${theme.config.post_list.post_list_layout ?: 'grid_3'},card_gap=${theme.config.post_list.card_gap ?: 'medium'},card_style=${theme.config.post_list.card_style ?: 'default'},card_animation=${theme.config.post_list.card_animation ?: 'hover_lift'},image_position=${theme.config.post_list.post_image_position ?: 'left'},totalPages=${filteredPosts.totalPages},hasPrevious=${filteredPosts.hasPrevious()},hasNext=${filteredPosts.hasNext()},prevUrl=${hasPrevious ? (selectedCategory != null ? ('/?category=' + selectedCategory.metadata.name + '&page=' + (currentPage - 1)) : ('/?page=' + (currentPage - 1))) : null},nextUrl=${hasNext ? (selectedCategory != null ? ('/?category=' + selectedCategory.metadata.name + '&page=' + (currentPage + 1)) : ('/?page=' + (currentPage + 1))) : null}">
+    <th:block th:with="categoryParam=${param.category != null and not #lists.isEmpty(param.category) ? param.category[0] : null},selectedCategory=${categoryParam != null ? categoryFinder.getByName(categoryParam) : null},currentPage=${param.page != null and not #lists.isEmpty(param.page) ? T(java.lang.Integer).valueOf(param.page[0]) : 1},allWidgets=${theme.config.sidebar.sidebar_widgets},headerWidget=${theme.config.header.top_banner_height == 'third' ? (theme.config.header.header_widget_third ?: 'none') : (theme.config.header.header_widget ?: 'none')},isFirstPage=${currentPage == 1},basePageSize=${theme.config.post_list.posts_per_page ?: 12},pageSize=${isFirstPage and headerWidget == 'latest_post_grid' ? (basePageSize + 5) : basePageSize},filteredPosts=${selectedCategory != null ? postFinder.list({page: currentPage, size: pageSize, categoryName: selectedCategory.metadata.name}) : postFinder.list({page: currentPage, size: pageSize})},list_layout=${theme.config.post_list.post_list_layout ?: 'grid_3'},card_gap=${theme.config.post_list.card_gap ?: 'medium'},card_style=${theme.config.post_list.card_style ?: 'default'},card_animation=${theme.config.post_list.card_animation ?: 'hover_lift'},image_position=${theme.config.post_list.post_image_position ?: 'left'},totalPages=${filteredPosts.totalPages},hasPrevious=${filteredPosts.hasPrevious()},hasNext=${filteredPosts.hasNext()},prevUrl=${hasPrevious ? (selectedCategory != null ? ('/?category=' + selectedCategory.metadata.name + '&page=' + (currentPage - 1)) : ('/?page=' + (currentPage - 1))) : null},nextUrl=${hasNext ? (selectedCategory != null ? ('/?category=' + selectedCategory.metadata.name + '&page=' + (currentPage + 1)) : ('/?page=' + (currentPage + 1))) : null}">
       <!-- 检查左侧是否有启用的、位置匹配的小部件 -->
       <th:block th:with="hasLeftWidgets=${allWidgets != null and not #lists.isEmpty(allWidgets) and allWidgets.?[enabled != false and position == 'left'].size() gt 0}">
         <!-- 检查右侧是否有启用的、位置匹配的小部件 -->

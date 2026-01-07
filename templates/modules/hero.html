@@ -1,11 +1,11 @@
 <section th:fragment="hero(isHome, cover, title)">
   <div
-    th:if="${(theme.config.home.top_banner_height == 'third' ? (theme.config.home.header_widget_third != null and theme.config.home.header_widget_third != 'none') : (theme.config.home.header_widget != null and theme.config.home.header_widget != 'none'))} and ${isHome}"
+    th:if="${(theme.config.header.top_banner_height == 'third' ? (theme.config.header.header_widget_third != null and theme.config.header.header_widget_third != 'none') : (theme.config.header.header_widget != null and theme.config.header.header_widget != 'none'))} and ${isHome}"
     class="aurora-top-banner bg-cover bg-center bg-no-repeat"
-    th:classappend="|${theme.config.home.top_banner_height == 'full' ? 'aurora-top-banner-full' : ''} ${theme.config.home.top_banner_height == 'half' ? 'aurora-top-banner-half' : ''} ${theme.config.home.top_banner_height == 'third' ? 'aurora-top-banner-third' : ''} ${theme.config.home.top_banner_height == null ? 'aurora-top-banner-half' : ''}|"
-    th:style="${theme.config.home.header_background_type == 'image' and not #strings.isEmpty(theme.config.home.header_background_image) ? |background-image: url(${theme.config.home.header_background_image});| : (theme.config.home.header_background_type == 'manual' and not #strings.isEmpty(theme.config.home.header_background) ? |background: ${theme.config.home.header_background};| : '')}"
+    th:classappend="|${theme.config.header.top_banner_height == 'full' ? 'aurora-top-banner-full' : ''} ${theme.config.header.top_banner_height == 'half' ? 'aurora-top-banner-half' : ''} ${theme.config.header.top_banner_height == 'third' ? 'aurora-top-banner-third' : ''} ${theme.config.header.top_banner_height == null ? 'aurora-top-banner-half' : ''}|"
+    th:style="${theme.config.header.header_background_type == 'image' and not #strings.isEmpty(theme.config.header.header_background_image) ? |background-image: url(${theme.config.header.header_background_image});| : (theme.config.header.header_background_type == 'manual' and not #strings.isEmpty(theme.config.header.header_background) ? |background: ${theme.config.header.header_background};| : '')}"
   >
-    <th:block th:with="effectiveWidget=${theme.config.home.top_banner_height == 'third' ? ((theme.config.home.header_widget_third != null and theme.config.home.header_widget_third != 'site_title') ? theme.config.home.header_widget_third : (theme.config.home.header_widget != null ? theme.config.home.header_widget : 'none')) : (theme.config.home.header_widget ?: 'none')}">
+    <th:block th:with="effectiveWidget=${theme.config.header.top_banner_height == 'third' ? ((theme.config.header.header_widget_third != null and theme.config.header.header_widget_third != 'site_title') ? theme.config.header.header_widget_third : (theme.config.header.header_widget != null ? theme.config.header.header_widget : 'none')) : (theme.config.header.header_widget ?: 'none')}">
     <th:block th:switch="${effectiveWidget}">
       <th:block th:case="latest_post" th:with="posts = ${postFinder.list(1,1)}">
         <div class="mx-auto max-w-7xl px-4 py-6 lg:px-6" th:if="${posts.total gt 0}">
@@ -35,10 +35,10 @@
       </th:block>
       <th:block th:case="site_title">
         <div class="mx-auto flex h-full max-w-7xl flex-col items-center justify-center gap-3 px-4 py-6 lg:px-6">
-          <span class="text-5xl" th:style="|color:${theme.config.home.title_color}|" th:text="${site.title}"></span>
+          <span class="text-5xl" th:style="|color:${theme.config.header.title_color}|" th:text="${site.title}"></span>
           <span
             class="text-sm font-light"
-            th:style="|color:${theme.config.home.title_color}|"
+            th:style="|color:${theme.config.header.title_color}|"
             th:text="${site.subtitle}"
           ></span>
         </div>

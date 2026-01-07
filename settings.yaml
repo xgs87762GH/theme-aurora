@@ -4,8 +4,55 @@ metadata:
   name: theme-aurora-setting
 spec:
   forms:
-    - group: home
-      label: 首页
+    - group: global
+      label: 全局设置
+      formSchema:
+        - $formkit: select
+          name: color_scheme
+          label: 默认配色
+          value: system
+          options:
+            - label: 跟随系统
+              value: system
+            - label: 深色
+              value: dark
+            - label: 浅色
+              value: light
+        - $formkit: checkbox
+          name: enable_change_color_scheme
+          label: 允许访客切换配色
+          value: true
+        - $formkit: select
+          name: logo_type
+          id: logo_type
+          label: 菜单栏 Logo 类型
+          value: image
+          options:
+            - label: 文字
+              value: text
+            - label: 图片
+              value: image
+        - $formkit: checkbox
+          name: show_scroll_button
+          label: 显示滚动到顶部按钮
+          value: true
+        - $formkit: text
+          name: icp_text
+          label: ICP备案号
+        - $formkit: text
+          name: icp_link
+          label: ICP备案跳转链接
+          value: https://beian.miit.gov.cn/
+        - $formkit: text
+          name: gongan_text
+          label: 公安联网备案号
+        - $formkit: text
+          name: gongan_link
+          label: 公安联网备案跳转链接
+          value: https://beian.mps.gov.cn/#/query/webSearch
+
+    - group: header
+      label: 头部与 Banner
       formSchema:
         - $formkit: select
           name: top_banner_height
@@ -125,7 +172,7 @@ spec:
           help: "在首页顶部显示分类筛选器"
 
     - group: post_list
-      label: 文章列表
+      label: 列表与归档
       formSchema:
         - $formkit: select
           name: post_list_layout
@@ -243,10 +290,6 @@ spec:
           label: 显示评论数
           value: false
           help: "在文章卡片中显示评论数统计"
-
-    - group: archives
-      label: 归档页
-      formSchema:
         - $formkit: select
           name: timeline_view
           label: 时间线视图
@@ -260,46 +303,8 @@ spec:
               value: year
           help: "选择归档页时间线的显示方式：时间视图按时间倒序排列所有文章，月视图按年月分组，年视图按年份分组"
 
-    - group: global
-      label: 全局
-      formSchema:
-        - $formkit: select
-          name: logo_type
-          id: logo_type
-          label: 菜单栏 Logo 类型
-          value: image
-          options:
-            - label: 文字
-              value: text
-            - label: 图片
-              value: image
-        - $formkit: checkbox
-          name: show_scroll_button
-          label: 显示滚动到顶部按钮
-          value: true
-
-    - group: style
-      label: 样式
-      formSchema:
-        - $formkit: select
-          name: color_scheme
-          label: 默认配色
-          value: system
-          options:
-            - label: 跟随系统
-              value: system
-            - label: 深色
-              value: dark
-            - label: 浅色
-              value: light
-
-        - $formkit: checkbox
-          name: enable_change_color_scheme
-          label: 允许访客切换配色
-          value: true
-
     - group: post
-      label: 文章
+      label: 文章详情
       formSchema:
         - $formkit: checkbox
           name: content_header
@@ -718,22 +723,3 @@ spec:
                   value: normal
                 - label: 图片
                   value: image
-
-    - group: beian
-      label: 备案设置
-      formSchema:
-        - $formkit: text
-          name: icp_text
-          label: ICP备案号
-        - $formkit: text
-          name: icp_link
-          label: ICP备案跳转链接
-          value: https://beian.miit.gov.cn/
-
-        - $formkit: text
-          name: gongan_text
-          label: 公安联网备案号
-        - $formkit: text
-          name: gongan_link
-          label: 公安联网备案跳转链接
-          value: https://beian.mps.gov.cn/#/query/webSearch

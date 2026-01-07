@@ -5,7 +5,7 @@
 >
   <th:block th:fragment="hero">
     <th:block
-      th:replace="~{modules/hero :: hero(isHome = false, cover = ${theme.config.home.header_background_image}, title = #{page.author.title(${author.spec.displayName})})}"
+      th:replace="~{modules/hero :: hero(isHome = false, cover = ${theme.config.header.header_background_image}, title = #{page.author.title(${author.spec.displayName})})}"
     />
   </th:block>
   <th:block th:fragment="content">

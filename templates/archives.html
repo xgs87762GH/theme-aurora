@@ -11,7 +11,7 @@
   <th:block th:fragment="main-content">
     <div class="rounded-xl bg-white p-6 dark:bg-slate-800">
       <th:block th:if="${archives.total gt 0}">
-        <th:block th:with="timelineView=${theme.config.archives.timeline_view != null and not #strings.isEmpty(theme.config.archives.timeline_view) ? theme.config.archives.timeline_view : 'month'}">
+        <th:block th:with="timelineView=${theme.config.post_list.timeline_view != null and not #strings.isEmpty(theme.config.post_list.timeline_view) ? theme.config.post_list.timeline_view : 'month'}">
           <!-- 使用 th:switch 确保只有一个视图被渲染 -->
           <th:block th:switch="${timelineView}">
             <!-- 日视图时间线 -->

@@ -8,9 +8,9 @@
     </th:block>
   </head>
   <body 
-    th:with="hasGlobalBg=${theme.config.home.top_banner_height == 'full' and theme.config.home.use_banner_as_background == true and theme.config.home.header_background_type == 'image' and theme.config.home.header_background_image != null and not #strings.isEmpty(theme.config.home.header_background_image)}"
+    th:with="hasGlobalBg=${theme.config.header.top_banner_height == 'full' and theme.config.header.use_banner_as_background == true and theme.config.header.header_background_type == 'image' and theme.config.header.header_background_image != null and not #strings.isEmpty(theme.config.header.header_background_image)}"
     th:class="${hasGlobalBg ? 'aurora-global-background' : 'bg-slate-50 dark:bg-slate-900'}"
-    th:style="${hasGlobalBg ? 'background-image: url(' + theme.config.home.header_background_image + ');' : ''}"
+    th:style="${hasGlobalBg ? 'background-image: url(' + theme.config.header.header_background_image + ');' : ''}"
   >
     <th:block th:replace="~{modules/header}" />
     <!-- 首页使用自定义布局，其他页面使用默认布局 -->

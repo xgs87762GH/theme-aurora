@@ -35,7 +35,7 @@
     (function() {
       function tryInit() {
         if (typeof window.main !== 'undefined' && window.main && typeof window.main.initColorScheme === 'function') {
-          window.main.initColorScheme(/*[[${theme.config.style.color_scheme}]]*/ '', /*[[${theme.config.style.enable_change_color_scheme}]]*/ false);
+          window.main.initColorScheme(/*[[${theme.config.global.color_scheme}]]*/ '', /*[[${theme.config.global.enable_change_color_scheme}]]*/ false);
         } else {
           setTimeout(tryInit, 10);
         }

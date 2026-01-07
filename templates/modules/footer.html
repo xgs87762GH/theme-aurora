@@ -23,15 +23,15 @@
   <hr class="my-6 border-gray-100 dark:border-slate-700 sm:mx-auto lg:my-8" />
   <div class="space-y-1">
     <span class="aurora-footer-container block text-center text-sm text-gray-500 dark:text-slate-300"
-      th:if="${not #strings.isEmpty(theme.config.beian.icp_text)}">
+      th:if="${not #strings.isEmpty(theme.config.global.icp_text)}">
       <a href="https://beian.miit.gov.cn/" class="hover:underline" target="_blank"
-        th:href="${theme.config.beian.icp_link}" th:text="${theme.config.beian.icp_text}"></a>
+        th:href="${theme.config.global.icp_link}" th:text="${theme.config.global.icp_text}"></a>
     </span>
-    <div th:if="${not #strings.isEmpty(theme.config.beian.gongan_text)}"
+    <div th:if="${not #strings.isEmpty(theme.config.global.gongan_text)}"
       class="aurora-footer-container block text-center text-sm text-gray-500 dark:text-slate-300">
       <p class="flex items-center justify-center gap-1">
         <a href="https://beian.mps.gov.cn/#/query/webSearch" class="hover:underline" target="_blank"
-          th:href="${theme.config.beian.gongan_link}" th:text="${theme.config.beian.gongan_text}"></a>
+          th:href="${theme.config.global.gongan_link}" th:text="${theme.config.global.gongan_text}"></a>
       </p>
     </div>
     <span class="aurora-footer-container block text-center text-sm text-gray-500 dark:text-slate-300">
@@ -88,14 +88,14 @@
 
       <div class="flex flex-col gap-1 sm:flex-row">
         <span class="block text-center text-sm text-gray-500 sm:text-left"
-          th:if="${not #strings.isEmpty(theme.config.beian.icp_text)}">
+          th:if="${not #strings.isEmpty(theme.config.global.icp_text)}">
           <a href="https://beian.miit.gov.cn/" class="hover:underline" target="_blank"
-            th:href="${theme.config.beian.icp_link}" th:text="${theme.config.beian.icp_text}"></a>
+            th:href="${theme.config.global.icp_link}" th:text="${theme.config.global.icp_text}"></a>
         </span>
-        <div th:if="${not #strings.isEmpty(theme.config.beian.gongan_text)}"
+        <div th:if="${not #strings.isEmpty(theme.config.global.gongan_text)}"
           class="inline-flex items-center justify-center gap-1 text-sm text-gray-500 sm:justify-start">
           <a href="https://beian.mps.gov.cn/#/query/webSearch" class="hover:underline" target="_blank"
-            th:href="${theme.config.beian.gongan_link}" th:text="${theme.config.beian.gongan_text}"></a>
+            th:href="${theme.config.global.gongan_link}" th:text="${theme.config.global.gongan_text}"></a>
         </div>
       </div>
 
