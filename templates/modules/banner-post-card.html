@@ -21,7 +21,7 @@
     <!-- 图片区域：根据 image_position 设置显示，有图片显示图片，没有图片显示占位符 -->
     <div
       th:if="${imgPosition != 'none'}"
-      class="aurora-post-card-image-wrapper aspect-h-9 aspect-w-16 flex-shrink-0 overflow-hidden relative w-full"
+      class="aurora-post-card-image-wrapper aurora-banner-small-image-wrapper flex-shrink-0 overflow-hidden relative w-full"
       th:classappend="|${not hasCover ? 'aurora-post-card-image-placeholder' : ''}|"
     >
       <!-- 有图片时显示图片 -->
@@ -71,18 +71,48 @@
       </th:block>
       <!-- 没有图片时显示占位符 -->
       <th:block th:if="${not hasCover}">
-        <a th:href="@{${post.status.permalink}}" th:title="${post.spec.title}" class="aurora-post-card-placeholder-link block h-full w-full bg-gray-100 dark:bg-slate-700 flex items-center justify-center">
+        <a th:href="@{${post.status.permalink}}" th:title="${post.spec.title}" class="aurora-post-card-placeholder-link block h-full w-full bg-gray-100 dark:bg-slate-700 flex items-center justify-center relative">
           <span class="aurora-post-card-placeholder-icon i-[tabler--photo] text-gray-400 dark:text-slate-500"></span>
         </a>
+        <!-- 没有图片时，统计信息也显示在图片区域的右下角 -->
+        <div
+          th:if="${show_visit_count or show_upvote_count or show_comment_count}"
+          class="aurora-post-stats-overlay absolute bottom-2 right-2 z-10 flex items-center gap-2"
+        >
+          <span
+            th:if="${show_visit_count}"
+            class="aurora-post-stat-overlay inline-flex items-center gap-1 rounded-full bg-black/50 backdrop-blur-sm px-2 py-1 text-xs text-white"
+            th:title="#{common.visitCount}"
+          >
+            <span class="i-[tabler--eye] text-sm leading-none"></span>
+            <span class="tabular-nums font-medium" th:text="${post.stats?.visit ?: 0}"></span>
+          </span>
+          <span
+            th:if="${show_upvote_count}"
+            class="aurora-post-stat-overlay inline-flex items-center gap-1 rounded-full bg-black/50 backdrop-blur-sm px-2 py-1 text-xs text-white"
+            th:title="#{common.upvoteCount}"
+          >
+            <span class="i-[tabler--heart] text-sm leading-none"></span>
+            <span class="tabular-nums font-medium" th:text="${post.stats?.upvote ?: 0}"></span>
+          </span>
+          <span
+            th:if="${show_comment_count}"
+            class="aurora-post-stat-overlay inline-flex items-center gap-1 rounded-full bg-black/50 backdrop-blur-sm px-2 py-1 text-xs text-white"
+            th:title="#{common.commentCount}"
+          >
+            <span class="i-[tabler--message-circle] text-sm leading-none"></span>
+            <span class="tabular-nums font-medium" th:text="${post.stats?.comment ?: 0}"></span>
+          </span>
+        </div>
       </th:block>
       <div th:if="${post.spec.pinned}" class="absolute left-2 top-2 z-10" th:title="#{fragment.postCard.pinned}">
         <div class="i-[bx--arrow-to-top] size-5 rounded-full bg-white/90 p-1 text-sky-600 shadow-sm backdrop-blur-sm dark:bg-slate-800/90"></div>
       </div>
     </div>
     
-    <!-- 内容区域 -->
+    <!-- 内容区域：只显示标签和标题 -->
     <div
-      class="aurora-post-card-content relative grid h-full grid-cols-1 content-between gap-2 p-3 flex-1"
+      class="aurora-post-card-content relative flex flex-col gap-2 p-3 flex-1"
     >
       <div class="space-y-1.5">
         <div
@@ -108,74 +138,11 @@
           </a>
         </div>
         <h1
-          class="aurora-post-title line-clamp-2 text-lg font-semibold leading-tight transition-colors dark:text-slate-50"
+          class="aurora-post-title text-sm font-semibold leading-snug transition-colors dark:text-slate-50 relative"
         >
-          <a th:href="@{${post.status.permalink}}" th:text="${post.spec.title}" th:title="${post.spec.title}" class="text-gray-900 hover:text-blue-600 dark:text-slate-50 dark:hover:text-blue-400"></a>
+          <a th:href="@{${post.status.permalink}}" th:text="${post.spec.title}" th:title="${post.spec.title}" class="text-gray-900 hover:text-blue-600 dark:text-slate-50 dark:hover:text-blue-400 block"></a>
         </h1>
-        <p
-          th:if="${show_excerpt}"
-          class="aurora-post-excerpt line-clamp-2 text-sm leading-relaxed text-gray-600 dark:text-slate-300"
-          th:text="${post.status.excerpt}"
-        ></p>
       </div>
-      <div th:if="${show_author or show_date}" class="aurora-post-meta mt-auto flex items-center justify-start gap-3 flex-wrap pt-3 border-t border-gray-100 dark:border-slate-700">
-        <div class="flex items-center gap-2">
-          <a th:if="${show_author}" th:href="@{${post.owner.permalink}}" th:title="${post.owner.displayName}" class="aurora-post-author-avatar">
-            <img
-              th:src="${post.owner.avatar ?: #theme.assets('/images/default-avatar.svg')}"
-              th:title="${post.owner.displayName}"
-              th:alt="${post.owner.displayName}"
-              class="size-7 rounded-full border-2 border-white shadow-sm transition-all hover:scale-110 hover:border-blue-500 dark:border-slate-700 dark:hover:border-blue-400"
-            />
-          </a>
-          <div class="flex flex-col">
-            <a
-              th:if="${show_author}"
-              th:href="@{${post.owner.permalink}}"
-              th:title="${post.owner.displayName}"
-              class="text-xs font-medium text-gray-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400"
-              th:text="${post.owner.displayName}"
-            ></a>
-            <span
-              th:if="${show_date}"
-              class="text-xs tabular-nums text-gray-500 dark:text-slate-400"
-              th:text="${#dates.format(post.spec.publishTime,'yyyy-MM-dd')}"
-            >
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- 无图片时，统计信息显示在卡片右下角（整个卡片） -->
-    <div
-      th:if="${(show_visit_count or show_upvote_count or show_comment_count) and not hasCover and imgPosition != 'none'}"
-      class="aurora-banner-post-card-small-stats absolute bottom-2 right-2 z-10 flex items-center gap-2"
-    >
-      <span
-        th:if="${show_visit_count}"
-        class="aurora-post-stat-overlay inline-flex items-center gap-1 rounded-full bg-black/50 backdrop-blur-sm px-2 py-1 text-xs text-white"
-        th:title="#{common.visitCount}"
-      >
-        <span class="i-[tabler--eye] text-sm leading-none"></span>
-        <span class="tabular-nums font-medium" th:text="${post.stats?.visit ?: 0}"></span>
-      </span>
-      <span
-        th:if="${show_upvote_count}"
-        class="aurora-post-stat-overlay inline-flex items-center gap-1 rounded-full bg-black/50 backdrop-blur-sm px-2 py-1 text-xs text-white"
-        th:title="#{common.upvoteCount}"
-      >
-        <span class="i-[tabler--heart] text-sm leading-none"></span>
-        <span class="tabular-nums font-medium" th:text="${post.stats?.upvote ?: 0}"></span>
-      </span>
-      <span
-        th:if="${show_comment_count}"
-        class="aurora-post-stat-overlay inline-flex items-center gap-1 rounded-full bg-black/50 backdrop-blur-sm px-2 py-1 text-xs text-white"
-        th:title="#{common.commentCount}"
-      >
-        <span class="i-[tabler--message-circle] text-sm leading-none"></span>
-        <span class="tabular-nums font-medium" th:text="${post.stats?.comment ?: 0}"></span>
-      </span>
     </div>
   </div>
 
