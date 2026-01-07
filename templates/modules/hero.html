@@ -1,11 +1,29 @@
 <section th:fragment="hero(isHome, cover, title)">
+  <!-- 调试信息 -->
+  <div th:if="${isHome}" style="position: fixed; top: 0; left: 0; z-index: 9999; background: rgba(0,0,0,0.8); color: white; padding: 10px; font-size: 12px; max-width: 400px; max-height: 300px; overflow: auto;">
+    <div><strong>Hero Debug Info:</strong></div>
+    <div>isHome: <span th:text="${isHome}"></span></div>
+    <div>top_banner_height: <span th:text="${theme.config.home.top_banner_height}"></span></div>
+    <div>header_widget: <span th:text="${theme.config.home.header_widget}"></span></div>
+    <div>header_widget_third: <span th:text="${theme.config.home.header_widget_third}"></span></div>
+    <div th:with="widgetValue=${theme.config.home.top_banner_height == 'third' ? (theme.config.home.header_widget_third ?: 'none') : (theme.config.home.header_widget ?: 'none')}">
+      <div>widgetValue: <span th:text="${widgetValue}"></span></div>
+      <div>condition check: <span th:text="${(theme.config.home.top_banner_height == 'third' ? (theme.config.home.header_widget_third != null and theme.config.home.header_widget_third != 'none') : (theme.config.home.header_widget != null and theme.config.home.header_widget != 'none'))}"></span></div>
+      <div th:if="${widgetValue == 'latest_post'}" th:with="posts = ${postFinder.list(1,1)}">
+        <div>posts.total: <span th:text="${posts.total}"></span></div>
+        <div>posts.items.size: <span th:text="${posts.items != null ? posts.items.size() : 0}"></span></div>
+        <div th:if="${posts.total gt 0}">First post title: <span th:text="${posts.items[0].spec.title}"></span></div>
+      </div>
+    </div>
+  </div>
   <div
-    th:if="${(theme.config.home.top_banner_height == 'third' ? (theme.config.home.header_widget_third != 'none') : (theme.config.home.header_widget != 'none'))} and ${isHome}"
+    th:if="${(theme.config.home.top_banner_height == 'third' ? (theme.config.home.header_widget_third != null and theme.config.home.header_widget_third != 'none') : (theme.config.home.header_widget != null and theme.config.home.header_widget != 'none'))} and ${isHome}"
     class="aurora-top-banner bg-cover bg-center bg-no-repeat"
     th:classappend="|${theme.config.home.top_banner_height == 'full' ? 'aurora-top-banner-full' : ''} ${theme.config.home.top_banner_height == 'half' ? 'aurora-top-banner-half' : ''} ${theme.config.home.top_banner_height == 'third' ? 'aurora-top-banner-third' : ''} ${theme.config.home.top_banner_height == null ? 'aurora-top-banner-half' : ''}|"
     th:style="${theme.config.home.header_background_type == 'image' and not #strings.isEmpty(theme.config.home.header_background_image) ? |background-image: url(${theme.config.home.header_background_image});| : (theme.config.home.header_background_type == 'manual' and not #strings.isEmpty(theme.config.home.header_background) ? |background: ${theme.config.home.header_background};| : '')}"
   >
-    <th:block th:switch="${theme.config.home.top_banner_height == 'third' ? (theme.config.home.header_widget_third ?: 'none') : (theme.config.home.header_widget ?: 'none')}">
+    <th:block th:with="effectiveWidget=${theme.config.home.top_banner_height == 'third' ? ((theme.config.home.header_widget_third != null and theme.config.home.header_widget_third != 'site_title') ? theme.config.home.header_widget_third : (theme.config.home.header_widget != null ? theme.config.home.header_widget : 'none')) : (theme.config.home.header_widget ?: 'none')}">
+    <th:block th:switch="${effectiveWidget}">
       <th:block th:case="latest_post" th:with="posts = ${postFinder.list(1,1)}">
         <div class="mx-auto max-w-7xl px-4 py-6 lg:px-6" th:if="${posts.total gt 0}">
           <th:block th:replace="~{modules/featured-post-card :: featured-post-card(post=${posts.items[0]})}" />

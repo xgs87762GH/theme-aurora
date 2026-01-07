@@ -41,7 +41,7 @@ spec:
           name: header_widget_third
           id: header_widget_third
           label: 首页顶部模块
-          value: site_title
+          value: latest_post
           if: "$get(top_banner_height).value === 'third'"
           options:
             - label: 无
