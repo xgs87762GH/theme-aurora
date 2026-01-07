@@ -1,12 +1,11 @@
 <section th:fragment="hero(isHome, cover, title)">
   <div
-    th:if="${(theme.config.header.top_banner_height == 'third' ? (theme.config.header.header_widget_third != null and theme.config.header.header_widget_third != 'none') : (theme.config.header.header_widget != null and theme.config.header.header_widget != 'none'))} and ${isHome}"
+    th:if="${(theme.config.header.top_banner_height == 'third' ? (theme.config.header.header_widget_3 != null and theme.config.header.header_widget_3 != 'none') : (theme.config.header.header_widget != null and theme.config.header.header_widget != 'none'))} and ${isHome}"
     class="aurora-top-banner bg-cover bg-center bg-no-repeat"
     th:classappend="|${theme.config.header.top_banner_height == 'full' ? 'aurora-top-banner-full' : ''} ${theme.config.header.top_banner_height == 'half' ? 'aurora-top-banner-half' : ''} ${theme.config.header.top_banner_height == 'third' ? 'aurora-top-banner-third' : ''} ${theme.config.header.top_banner_height == null ? 'aurora-top-banner-half' : ''}|"
     th:style="${theme.config.header.header_background_type == 'image' and not #strings.isEmpty(theme.config.header.header_background_image) ? |background-image: url(${theme.config.header.header_background_image});| : (theme.config.header.header_background_type == 'manual' and not #strings.isEmpty(theme.config.header.header_background) ? |background: ${theme.config.header.header_background};| : '')}"
   >
-    <th:block th:with="effectiveWidget=${theme.config.header.top_banner_height == 'third' ? ((theme.config.header.header_widget_third != null and theme.config.header.header_widget_third != 'site_title') ? theme.config.header.header_widget_third : (theme.config.header.header_widget != null ? theme.config.header.header_widget : 'none')) : (theme.config.header.header_widget ?: 'none')}">
-    <th:block th:switch="${effectiveWidget}">
+    <th:block th:switch="${theme.config.header.top_banner_height == 'third' ? (theme.config.header.header_widget_3 ?: 'none') : (theme.config.header.header_widget ?: 'none')}">
       <th:block th:case="latest_post" th:with="posts = ${postFinder.list(1,1)}">
         <div class="mx-auto max-w-7xl px-4 py-6 lg:px-6" th:if="${posts.total gt 0}">
           <th:block th:replace="~{modules/featured-post-card :: featured-post-card(post=${posts.items[0]})}" />
