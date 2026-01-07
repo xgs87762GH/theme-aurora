@@ -1,11 +1,11 @@
 <section th:fragment="hero(isHome, cover, title)">
   <div
-    th:if="${theme.config.home.header_widget != 'none'} and ${isHome}"
+    th:if="${(theme.config.home.top_banner_height == 'third' ? (theme.config.home.header_widget_third != 'none') : (theme.config.home.header_widget != 'none'))} and ${isHome}"
     class="aurora-top-banner bg-cover bg-center bg-no-repeat"
     th:classappend="|${theme.config.home.top_banner_height == 'full' ? 'aurora-top-banner-full' : ''} ${theme.config.home.top_banner_height == 'half' ? 'aurora-top-banner-half' : ''} ${theme.config.home.top_banner_height == 'third' ? 'aurora-top-banner-third' : ''} ${theme.config.home.top_banner_height == null ? 'aurora-top-banner-half' : ''}|"
     th:style="${theme.config.home.header_background_type == 'image' and not #strings.isEmpty(theme.config.home.header_background_image) ? |background-image: url(${theme.config.home.header_background_image});| : (theme.config.home.header_background_type == 'manual' and not #strings.isEmpty(theme.config.home.header_background) ? |background: ${theme.config.home.header_background};| : '')}"
   >
-    <th:block th:switch="${theme.config.home.header_widget}">
+    <th:block th:switch="${theme.config.home.top_banner_height == 'third' ? (theme.config.home.header_widget_third ?: 'none') : (theme.config.home.header_widget ?: 'none')}">
       <th:block th:case="latest_post" th:with="posts = ${postFinder.list(1,1)}">
         <div class="mx-auto max-w-7xl px-4 py-6 lg:px-6" th:if="${posts.total gt 0}">
           <th:block th:replace="~{modules/featured-post-card :: featured-post-card(post=${posts.items[0]})}" />
