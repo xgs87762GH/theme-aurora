@@ -733,10 +733,10 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     
     // 检查文章列表容器（aurora-three-column）在视口中的可见高度
-    // 当文章列表容器占用屏幕一半以上时，隐藏 banner 中的文章
+    // 当文章列表容器占用屏幕2/3以上时，隐藏 banner 中的文章（兼容2/3屏配置）
     const postListContainer = document.querySelector(".aurora-three-column") as HTMLElement;
     const viewportHeight = window.innerHeight;
-    const halfViewportHeight = viewportHeight / 2;
+    const twoThirdViewportHeight = (viewportHeight * 2) / 3;
     
     const distanceFromTop = containerRect.top;
     const distanceFromBottom = containerRect.bottom;
@@ -758,18 +758,18 @@ document.addEventListener("DOMContentLoaded", () => {
       const visibleBottom = Math.min(viewportHeight, postListRect.bottom);
       postListVisibleHeight = Math.max(0, visibleBottom - visibleTop);
       
-      // 当文章列表容器在视口中的可见高度超过视口高度的一半时，隐藏 banner 中的文章
-      isPostListContainerHalfVisible = postListVisibleHeight > halfViewportHeight;
+      // 当文章列表容器在视口中的可见高度超过视口高度的2/3时，隐藏 banner 中的文章（兼容2/3屏配置）
+      isPostListContainerHalfVisible = postListVisibleHeight > twoThirdViewportHeight;
     }
     
     // 当 banner 中的文章容器顶部已经滚动出视口（距离 < 0）时，隐藏文章
-    // 或者当文章列表容器占用屏幕一半以上时，也隐藏 banner 中的文章
+    // 或者当文章列表容器占用屏幕2/3以上时，也隐藏 banner 中的文章（兼容2/3屏配置）
     const isContainerOutOfView = distanceFromTop < 0 || isPostListContainerHalfVisible;
     debugInfo.isBannerOutOfView = isContainerOutOfView;
     debugInfo.distanceFromTop = distanceFromTop;
     debugInfo.distanceFromBottom = distanceFromBottom;
     debugInfo.viewportHeight = viewportHeight;
-    debugInfo.halfViewportHeight = halfViewportHeight;
+    debugInfo.twoThirdViewportHeight = twoThirdViewportHeight;
     debugInfo.postListContainerTop = postListContainerTop;
     debugInfo.postListContainerBottom = postListContainerBottom;
     debugInfo.postListVisibleHeight = postListVisibleHeight;
@@ -814,9 +814,9 @@ document.addEventListener("DOMContentLoaded", () => {
             <div>容器 Height: ${info.containerRect.height.toFixed(0)}px</div>
           ` : ""}
           ${info.viewportHeight !== undefined ? `<div>视口高度: ${info.viewportHeight.toFixed(0)}px</div>` : ""}
-          ${info.halfViewportHeight !== undefined ? `<div>视口一半: ${info.halfViewportHeight.toFixed(0)}px</div>` : ""}
+          ${info.twoThirdViewportHeight !== undefined ? `<div>视口2/3: ${info.twoThirdViewportHeight.toFixed(0)}px</div>` : ""}
           ${info.postListVisibleHeight !== undefined ? `<div>文章列表可见高度: ${info.postListVisibleHeight.toFixed(0)}px</div>` : ""}
-          ${info.isPostListContainerHalfVisible !== undefined ? `<div>文章列表占一半以上: ${info.isPostListContainerHalfVisible ? "✓" : "✗"}</div>` : ""}
+          ${info.isPostListContainerHalfVisible !== undefined ? `<div>文章列表占2/3以上: ${info.isPostListContainerHalfVisible ? "✓" : "✗"}</div>` : ""}
           <div>Banner 出视口: ${info.isBannerOutOfView ? "✓" : "✗"}</div>
           <div>操作: ${info.action}</div>
         </div>
