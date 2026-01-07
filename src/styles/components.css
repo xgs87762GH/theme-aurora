@@ -142,17 +142,25 @@
   }
 }
 
-/* direction-row: 横向布局（图片在左，内容在右） */
+/* direction-row: 横向布局（图片在左，内容在右，图片占满高度） */
 .aurora-post-card.direction-row {
   display: flex;
   flex-direction: row;
+  align-items: stretch;
 }
 
 .aurora-post-card.direction-row .aurora-post-card-image-wrapper {
   width: 40%;
   min-width: 200px;
   flex-shrink: 0;
-  aspect-ratio: 16 / 9;
+  height: 100%;
+  aspect-ratio: auto;
+}
+
+.aurora-post-card.direction-row .aurora-post-card-image-wrapper img,
+.aurora-post-card.direction-row .aurora-post-card-image-wrapper .aurora-post-card-placeholder-link {
+  height: 100%;
+  object-fit: cover;
 }
 
 .aurora-post-card.direction-row .aurora-post-card-content {
