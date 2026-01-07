@@ -688,6 +688,162 @@ document.addEventListener("DOMContentLoaded", () => {
     handleBannerEffect(); // 初始化
 
   }
+
+  // 处理 banner 中的文章隐藏
+  // 当 banner 完全滚动出视口后，隐藏 banner 中的文章
+  const handleBannerPostsHide = () => {
+    const banner = document.querySelector(".aurora-top-banner");
+    const debugInfo: any = {
+      bannerExists: !!banner,
+      bannerPostsContainerExists: false,
+      scrollY: window.scrollY,
+      bannerRect: null,
+      isBannerOutOfView: false,
+      action: "none"
+    };
+
+    if (!banner) {
+      updateDebugInfo(debugInfo);
+      return;
+    }
+
+    const bannerPostsContainer = banner.querySelector('[data-banner-posts="true"]') as HTMLElement;
+    debugInfo.bannerPostsContainerExists = !!bannerPostsContainer;
+    
+    if (!bannerPostsContainer) {
+      updateDebugInfo(debugInfo);
+      return;
+    }
+
+    // 检测文章容器是否滚动出视口
+    // 检查文章容器的位置，如果容器的底部已经滚动出视口顶部，就隐藏文章
+    const bannerRect = banner.getBoundingClientRect();
+    const containerRect = bannerPostsContainer.getBoundingClientRect();
+    
+    debugInfo.bannerRect = {
+      top: bannerRect.top,
+      bottom: bannerRect.bottom,
+      height: bannerRect.height
+    };
+    
+    debugInfo.containerRect = {
+      top: containerRect.top,
+      bottom: containerRect.bottom,
+      height: containerRect.height
+    };
+    
+    // 检查文章列表容器（aurora-three-column）在视口中的可见高度
+    // 当文章列表容器占用屏幕一半以上时，隐藏 banner 中的文章
+    const postListContainer = document.querySelector(".aurora-three-column") as HTMLElement;
+    const viewportHeight = window.innerHeight;
+    const halfViewportHeight = viewportHeight / 2;
+    
+    const distanceFromTop = containerRect.top;
+    const distanceFromBottom = containerRect.bottom;
+    
+    let postListContainerTop = 0;
+    let postListContainerBottom = 0;
+    let postListVisibleHeight = 0;
+    let isPostListContainerHalfVisible = false;
+    
+    if (postListContainer) {
+      const postListRect = postListContainer.getBoundingClientRect();
+      postListContainerTop = postListRect.top;
+      postListContainerBottom = postListRect.bottom;
+      
+      // 计算文章列表容器在视口中的可见高度
+      // 如果容器顶部在视口上方，从视口顶部开始计算
+      // 如果容器底部在视口下方，计算到视口底部
+      const visibleTop = Math.max(0, postListRect.top);
+      const visibleBottom = Math.min(viewportHeight, postListRect.bottom);
+      postListVisibleHeight = Math.max(0, visibleBottom - visibleTop);
+      
+      // 当文章列表容器在视口中的可见高度超过视口高度的一半时，隐藏 banner 中的文章
+      isPostListContainerHalfVisible = postListVisibleHeight > halfViewportHeight;
+    }
+    
+    // 当 banner 中的文章容器顶部已经滚动出视口（距离 < 0）时，隐藏文章
+    // 或者当文章列表容器占用屏幕一半以上时，也隐藏 banner 中的文章
+    const isContainerOutOfView = distanceFromTop < 0 || isPostListContainerHalfVisible;
+    debugInfo.isBannerOutOfView = isContainerOutOfView;
+    debugInfo.distanceFromTop = distanceFromTop;
+    debugInfo.distanceFromBottom = distanceFromBottom;
+    debugInfo.viewportHeight = viewportHeight;
+    debugInfo.halfViewportHeight = halfViewportHeight;
+    debugInfo.postListContainerTop = postListContainerTop;
+    debugInfo.postListContainerBottom = postListContainerBottom;
+    debugInfo.postListVisibleHeight = postListVisibleHeight;
+    debugInfo.isPostListContainerHalfVisible = isPostListContainerHalfVisible;
+
+    // 根据容器是否出视口来显示/隐藏文章
+    if (isContainerOutOfView) {
+      // Banner 完全滚动出视口，隐藏文章
+      bannerPostsContainer.style.opacity = "0";
+      bannerPostsContainer.style.visibility = "hidden";
+      bannerPostsContainer.style.pointerEvents = "none";
+      debugInfo.action = "hide";
+    } else {
+      // Banner 在视口中，显示文章
+      bannerPostsContainer.style.opacity = "1";
+      bannerPostsContainer.style.visibility = "visible";
+      bannerPostsContainer.style.pointerEvents = "auto";
+      debugInfo.action = "show";
+    }
+
+    updateDebugInfo(debugInfo);
+  };
+
+  // 更新调试信息到页面
+  const updateDebugInfo = (info: any) => {
+    const debugPanel = document.getElementById("banner-posts-debug");
+    if (debugPanel) {
+      debugPanel.innerHTML = `
+        <div style="background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 5px; font-size: 12px; position: fixed; top: 10px; right: 10px; z-index: 9999; max-width: 300px;">
+          <div><strong>Banner 文章隐藏调试</strong></div>
+          <div>Banner 存在: ${info.bannerExists ? "✓" : "✗"}</div>
+          <div>文章容器存在: ${info.bannerPostsContainerExists ? "✓" : "✗"}</div>
+          <div>滚动位置: ${info.scrollY.toFixed(0)}px</div>
+          ${info.bannerRect ? `
+            <div>Banner Top: ${info.bannerRect.top.toFixed(0)}px</div>
+            <div>Banner Bottom: ${info.bannerRect.bottom.toFixed(0)}px</div>
+            <div>Banner Height: ${info.bannerRect.height.toFixed(0)}px</div>
+          ` : ""}
+          ${info.containerRect ? `
+            <div>容器 Top: ${info.containerRect.top.toFixed(0)}px</div>
+            <div>容器 Bottom: ${info.containerRect.bottom.toFixed(0)}px</div>
+            <div>容器 Height: ${info.containerRect.height.toFixed(0)}px</div>
+          ` : ""}
+          ${info.viewportHeight !== undefined ? `<div>视口高度: ${info.viewportHeight.toFixed(0)}px</div>` : ""}
+          ${info.halfViewportHeight !== undefined ? `<div>视口一半: ${info.halfViewportHeight.toFixed(0)}px</div>` : ""}
+          ${info.postListVisibleHeight !== undefined ? `<div>文章列表可见高度: ${info.postListVisibleHeight.toFixed(0)}px</div>` : ""}
+          ${info.isPostListContainerHalfVisible !== undefined ? `<div>文章列表占一半以上: ${info.isPostListContainerHalfVisible ? "✓" : "✗"}</div>` : ""}
+          <div>Banner 出视口: ${info.isBannerOutOfView ? "✓" : "✗"}</div>
+          <div>操作: ${info.action}</div>
+        </div>
+      `;
+    }
+  };
+
+  // 监听滚动事件，检测 banner 是否完全滚动出视口
+  let bannerPostsHideTicking = false;
+  const handleBannerPostsHideScroll = () => {
+    if (!bannerPostsHideTicking) {
+      window.requestAnimationFrame(() => {
+        handleBannerPostsHide();
+        bannerPostsHideTicking = false;
+      });
+      bannerPostsHideTicking = true;
+    }
+  };
+
+  window.addEventListener("scroll", handleBannerPostsHideScroll, { passive: true });
+  // 初始化检查一次
+  handleBannerPostsHide();
+  
+  // 创建调试面板
+  const debugPanel = document.createElement("div");
+  debugPanel.id = "banner-posts-debug";
+  document.body.appendChild(debugPanel);
 });
 
 window.main = main;

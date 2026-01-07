@@ -14,7 +14,7 @@
       <div class="aurora-top-banner-content">
         <th:block th:switch="${theme.config.home.header_widget}">
           <th:block th:case="latest_post" th:with="posts = ${postFinder.list(1,1)}">
-            <div class="mx-auto max-w-7xl px-4 py-6 lg:px-6" th:if="${posts.total gt 0}">
+            <div class="mx-auto max-w-7xl px-4 py-6 lg:px-6" th:if="${posts.total gt 0}" data-banner-posts="true">
               <th:block th:replace="~{modules/featured-post-card :: featured-post-card(post=${posts.items[0]})}" />
             </div>
           </th:block>
@@ -22,6 +22,7 @@
             <div
               class="aurora-post-grid-container mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 py-6 sm:grid-cols-5 lg:gap-6 lg:px-6"
               th:if="${posts.total gt 0}"
+              data-banner-posts="true"
             >
               <div class="col-span-1 sm:col-span-3">
                 <th:block
