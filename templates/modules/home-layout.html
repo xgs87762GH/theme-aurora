@@ -40,31 +40,6 @@
         preload="auto"
       >      </video>
       <div class="aurora-top-banner-overlay"></div>
-      <!-- 调试信息 -->
-      <div style="position: fixed; top: 0; right: 0; z-index: 9999; background: rgba(0,0,0,0.8); color: white; padding: 10px; font-size: 12px; max-width: 400px; max-height: 300px; overflow: auto;">
-        <div><strong>Home Layout Debug Info:</strong></div>
-        <div>top_banner_height: <span th:text="${theme.config.home.top_banner_height}"></span></div>
-        <div>header_widget: <span th:text="${theme.config.home.header_widget}"></span></div>
-        <div>header_widget_third: <span th:text="${theme.config.home.header_widget_third}"></span></div>
-        <div>header_widget_third == null: <span th:text="${theme.config.home.header_widget_third == null}"></span></div>
-        <div>header_widget_third == 'none': <span th:text="${theme.config.home.header_widget_third == 'none'}"></span></div>
-        <div th:with="effectiveWidget=${theme.config.home.top_banner_height == 'third' ? ((theme.config.home.header_widget_third != null and theme.config.home.header_widget_third != 'site_title') ? theme.config.home.header_widget_third : (theme.config.home.header_widget != null ? theme.config.home.header_widget : 'none')) : (theme.config.home.header_widget ?: 'none')},widgetValue=${theme.config.home.top_banner_height == 'third' ? (theme.config.home.header_widget_third ?: 'none') : (theme.config.home.header_widget ?: 'none')}">
-          <div>widgetValue (old): <span th:text="${widgetValue}"></span></div>
-          <div>effectiveWidget (new): <span th:text="${effectiveWidget}"></span></div>
-          <div>effectiveWidget == 'latest_post': <span th:text="${effectiveWidget == 'latest_post'}"></span></div>
-          <div>condition check: <span th:text="${(theme.config.home.top_banner_height == 'third' ? (theme.config.home.header_widget_third != null and theme.config.home.header_widget_third != 'none') : (theme.config.home.header_widget != null and theme.config.home.header_widget != 'none'))}"></span></div>
-          <div th:if="${effectiveWidget == 'latest_post'}" th:with="posts = ${postFinder.list(1,1)}">
-            <div style="color: green;">✓ 匹配到 latest_post case</div>
-            <div>posts.total: <span th:text="${posts.total}"></span></div>
-            <div>posts.items.size: <span th:text="${posts.items != null ? posts.items.size() : 0}"></span></div>
-            <div th:if="${posts.total gt 0}">First post title: <span th:text="${posts.items[0].spec.title}"></span></div>
-          </div>
-          <div th:if="${effectiveWidget == 'site_title'}">
-            <div style="color: yellow;">⚠️ 当前匹配到 site_title case，不是 latest_post</div>
-            <div>请检查设置中"首页顶部模块"是否选择了"最新一篇文章"</div>
-          </div>
-        </div>
-      </div>
       <div class="aurora-top-banner-content" th:if="${(theme.config.home.top_banner_height == 'third' ? (theme.config.home.header_widget_third != null and theme.config.home.header_widget_third != 'none') : (theme.config.home.header_widget != null and theme.config.home.header_widget != 'none'))}">
         <th:block th:with="effectiveWidget=${theme.config.home.top_banner_height == 'third' ? ((theme.config.home.header_widget_third != null and theme.config.home.header_widget_third != 'site_title') ? theme.config.home.header_widget_third : (theme.config.home.header_widget != null ? theme.config.home.header_widget : 'none')) : (theme.config.home.header_widget ?: 'none')}">
         <th:block th:switch="${effectiveWidget}">

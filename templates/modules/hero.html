@@ -1,21 +1,4 @@
 <section th:fragment="hero(isHome, cover, title)">
-  <!-- 调试信息 -->
-  <div th:if="${isHome}" style="position: fixed; top: 0; left: 0; z-index: 9999; background: rgba(0,0,0,0.8); color: white; padding: 10px; font-size: 12px; max-width: 400px; max-height: 300px; overflow: auto;">
-    <div><strong>Hero Debug Info:</strong></div>
-    <div>isHome: <span th:text="${isHome}"></span></div>
-    <div>top_banner_height: <span th:text="${theme.config.home.top_banner_height}"></span></div>
-    <div>header_widget: <span th:text="${theme.config.home.header_widget}"></span></div>
-    <div>header_widget_third: <span th:text="${theme.config.home.header_widget_third}"></span></div>
-    <div th:with="widgetValue=${theme.config.home.top_banner_height == 'third' ? (theme.config.home.header_widget_third ?: 'none') : (theme.config.home.header_widget ?: 'none')}">
-      <div>widgetValue: <span th:text="${widgetValue}"></span></div>
-      <div>condition check: <span th:text="${(theme.config.home.top_banner_height == 'third' ? (theme.config.home.header_widget_third != null and theme.config.home.header_widget_third != 'none') : (theme.config.home.header_widget != null and theme.config.home.header_widget != 'none'))}"></span></div>
-      <div th:if="${widgetValue == 'latest_post'}" th:with="posts = ${postFinder.list(1,1)}">
-        <div>posts.total: <span th:text="${posts.total}"></span></div>
-        <div>posts.items.size: <span th:text="${posts.items != null ? posts.items.size() : 0}"></span></div>
-        <div th:if="${posts.total gt 0}">First post title: <span th:text="${posts.items[0].spec.title}"></span></div>
-      </div>
-    </div>
-  </div>
   <div
     th:if="${(theme.config.home.top_banner_height == 'third' ? (theme.config.home.header_widget_third != null and theme.config.home.header_widget_third != 'none') : (theme.config.home.header_widget != null and theme.config.home.header_widget != 'none'))} and ${isHome}"
     class="aurora-top-banner bg-cover bg-center bg-no-repeat"

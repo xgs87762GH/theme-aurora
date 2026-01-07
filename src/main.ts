@@ -693,44 +693,14 @@ document.addEventListener("DOMContentLoaded", () => {
   // 当 banner 完全滚动出视口后，隐藏 banner 中的文章
   const handleBannerPostsHide = () => {
     const banner = document.querySelector(".aurora-top-banner");
-    const debugInfo: any = {
-      bannerExists: !!banner,
-      bannerPostsContainerExists: false,
-      scrollY: window.scrollY,
-      bannerRect: null,
-      isBannerOutOfView: false,
-      action: "none"
-    };
-
-    if (!banner) {
-      updateDebugInfo(debugInfo);
-      return;
-    }
+    if (!banner) return;
 
     const bannerPostsContainer = banner.querySelector('[data-banner-posts="true"]') as HTMLElement;
-    debugInfo.bannerPostsContainerExists = !!bannerPostsContainer;
-    
-    if (!bannerPostsContainer) {
-      updateDebugInfo(debugInfo);
-      return;
-    }
+    if (!bannerPostsContainer) return;
 
     // 检测文章容器是否滚动出视口
     // 检查文章容器的位置，如果容器的底部已经滚动出视口顶部，就隐藏文章
-    const bannerRect = banner.getBoundingClientRect();
     const containerRect = bannerPostsContainer.getBoundingClientRect();
-    
-    debugInfo.bannerRect = {
-      top: bannerRect.top,
-      bottom: bannerRect.bottom,
-      height: bannerRect.height
-    };
-    
-    debugInfo.containerRect = {
-      top: containerRect.top,
-      bottom: containerRect.bottom,
-      height: containerRect.height
-    };
     
     // 检查文章列表容器（aurora-three-column）在视口中的可见高度
     // 当文章列表容器占用屏幕2/3以上时，隐藏 banner 中的文章（兼容2/3屏配置）
@@ -739,24 +709,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const twoThirdViewportHeight = (viewportHeight * 2) / 3;
     
     const distanceFromTop = containerRect.top;
-    const distanceFromBottom = containerRect.bottom;
-    
-    let postListContainerTop = 0;
-    let postListContainerBottom = 0;
-    let postListVisibleHeight = 0;
     let isPostListContainerHalfVisible = false;
     
     if (postListContainer) {
       const postListRect = postListContainer.getBoundingClientRect();
-      postListContainerTop = postListRect.top;
-      postListContainerBottom = postListRect.bottom;
       
       // 计算文章列表容器在视口中的可见高度
       // 如果容器顶部在视口上方，从视口顶部开始计算
       // 如果容器底部在视口下方，计算到视口底部
       const visibleTop = Math.max(0, postListRect.top);
       const visibleBottom = Math.min(viewportHeight, postListRect.bottom);
-      postListVisibleHeight = Math.max(0, visibleBottom - visibleTop);
+      const postListVisibleHeight = Math.max(0, visibleBottom - visibleTop);
       
       // 当文章列表容器在视口中的可见高度超过视口高度的2/3时，隐藏 banner 中的文章（兼容2/3屏配置）
       isPostListContainerHalfVisible = postListVisibleHeight > twoThirdViewportHeight;
@@ -765,15 +728,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // 当 banner 中的文章容器顶部已经滚动出视口（距离 < 0）时，隐藏文章
     // 或者当文章列表容器占用屏幕2/3以上时，也隐藏 banner 中的文章（兼容2/3屏配置）
     const isContainerOutOfView = distanceFromTop < 0 || isPostListContainerHalfVisible;
-    debugInfo.isBannerOutOfView = isContainerOutOfView;
-    debugInfo.distanceFromTop = distanceFromTop;
-    debugInfo.distanceFromBottom = distanceFromBottom;
-    debugInfo.viewportHeight = viewportHeight;
-    debugInfo.twoThirdViewportHeight = twoThirdViewportHeight;
-    debugInfo.postListContainerTop = postListContainerTop;
-    debugInfo.postListContainerBottom = postListContainerBottom;
-    debugInfo.postListVisibleHeight = postListVisibleHeight;
-    debugInfo.isPostListContainerHalfVisible = isPostListContainerHalfVisible;
 
     // 根据容器是否出视口来显示/隐藏文章
     if (isContainerOutOfView) {
@@ -781,90 +735,11 @@ document.addEventListener("DOMContentLoaded", () => {
       bannerPostsContainer.style.opacity = "0";
       bannerPostsContainer.style.visibility = "hidden";
       bannerPostsContainer.style.pointerEvents = "none";
-      debugInfo.action = "hide";
     } else {
       // Banner 在视口中，显示文章
       bannerPostsContainer.style.opacity = "1";
       bannerPostsContainer.style.visibility = "visible";
       bannerPostsContainer.style.pointerEvents = "auto";
-      debugInfo.action = "show";
-    }
-
-    // 收集布局信息
-    const postCards = document.querySelectorAll('.aurora-post-card');
-    if (postCards.length > 0) {
-      const firstCard = postCards[0] as HTMLElement;
-      const computedStyle = window.getComputedStyle(firstCard);
-      const imageWrapper = firstCard.querySelector('.aurora-post-card-image-wrapper') as HTMLElement;
-      const statsOverlay = firstCard.querySelector('.aurora-post-stats-overlay') as HTMLElement;
-      const statsInContent = firstCard.querySelector('.aurora-post-card-content .aurora-post-stats') as HTMLElement;
-      const imageElement = firstCard.querySelector('.aurora-post-card-image') as HTMLElement;
-      const placeholderIcon = firstCard.querySelector('.aurora-post-card-placeholder-icon') as HTMLElement;
-      
-      // 检查是否有图片
-      const hasImage = imageElement !== null && imageElement.tagName === 'IMG';
-      const hasPlaceholder = placeholderIcon !== null;
-      
-      // 检查统计信息元素
-      const statsOverlayVisible = statsOverlay && window.getComputedStyle(statsOverlay).display !== 'none';
-      const statsInContentVisible = statsInContent && window.getComputedStyle(statsInContent).display !== 'none';
-      const statsOverlayChildren = statsOverlay ? statsOverlay.querySelectorAll('.aurora-post-stat-overlay').length : 0;
-      const statsInContentChildren = statsInContent ? statsInContent.querySelectorAll('.aurora-post-stat').length : 0;
-      
-      debugInfo.layoutInfo = {
-        '卡片 flex-direction': computedStyle.flexDirection,
-        '卡片 display': computedStyle.display,
-        '图片容器存在': imageWrapper ? '✓' : '✗',
-        '图片容器 display': imageWrapper ? window.getComputedStyle(imageWrapper).display : 'N/A',
-        '图片容器 position': imageWrapper ? window.getComputedStyle(imageWrapper).position : 'N/A',
-        '有图片元素': hasImage ? '✓' : '✗',
-        '有占位符': hasPlaceholder ? '✓' : '✗',
-        '统计信息在图片上': statsOverlay ? '✓' : '✗',
-        '图片上统计项数量': statsOverlayChildren.toString(),
-        '图片上统计信息可见': statsOverlayVisible ? '✓' : '✗',
-        '统计信息在内容区': statsInContent ? '✓' : '✗',
-        '内容区统计项数量': statsInContentChildren.toString(),
-        '内容区统计信息可见': statsInContentVisible ? '✓' : '✗'
-      };
-    }
-
-    updateDebugInfo(debugInfo);
-  };
-
-  // 更新调试信息到页面
-  const updateDebugInfo = (info: any) => {
-    const debugPanel = document.getElementById("banner-posts-debug");
-    if (debugPanel) {
-      debugPanel.innerHTML = `
-        <div style="background: rgba(0,0,0,0.8); color: white; padding: 10px; border-radius: 5px; font-size: 12px; position: fixed; top: 10px; right: 10px; z-index: 9999; max-width: 300px;">
-          <div><strong>Banner 文章隐藏调试</strong></div>
-          <div>Banner 存在: ${info.bannerExists ? "✓" : "✗"}</div>
-          <div>文章容器存在: ${info.bannerPostsContainerExists ? "✓" : "✗"}</div>
-          <div>滚动位置: ${info.scrollY.toFixed(0)}px</div>
-          ${info.bannerRect ? `
-            <div>Banner Top: ${info.bannerRect.top.toFixed(0)}px</div>
-            <div>Banner Bottom: ${info.bannerRect.bottom.toFixed(0)}px</div>
-            <div>Banner Height: ${info.bannerRect.height.toFixed(0)}px</div>
-          ` : ""}
-          ${info.containerRect ? `
-            <div>容器 Top: ${info.containerRect.top.toFixed(0)}px</div>
-            <div>容器 Bottom: ${info.containerRect.bottom.toFixed(0)}px</div>
-            <div>容器 Height: ${info.containerRect.height.toFixed(0)}px</div>
-          ` : ""}
-          ${info.viewportHeight !== undefined ? `<div>视口高度: ${info.viewportHeight.toFixed(0)}px</div>` : ""}
-          ${info.twoThirdViewportHeight !== undefined ? `<div>视口2/3: ${info.twoThirdViewportHeight.toFixed(0)}px</div>` : ""}
-          ${info.postListVisibleHeight !== undefined ? `<div>文章列表可见高度: ${info.postListVisibleHeight.toFixed(0)}px</div>` : ""}
-          ${info.isPostListContainerHalfVisible !== undefined ? `<div>文章列表占2/3以上: ${info.isPostListContainerHalfVisible ? "✓" : "✗"}</div>` : ""}
-          <div>Banner 出视口: ${info.isBannerOutOfView ? "✓" : "✗"}</div>
-          <div>操作: ${info.action}</div>
-          ${info.layoutInfo ? `
-            <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.3);">
-              <div><strong>布局信息</strong></div>
-              ${Object.entries(info.layoutInfo).map(([key, value]) => `<div>${key}: ${value}</div>`).join("")}
-            </div>
-          ` : ""}
-        </div>
-      `;
     }
   };
 
@@ -883,11 +758,6 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("scroll", handleBannerPostsHideScroll, { passive: true });
   // 初始化检查一次
   handleBannerPostsHide();
-  
-  // 创建调试面板
-  const debugPanel = document.createElement("div");
-  debugPanel.id = "banner-posts-debug";
-  document.body.appendChild(debugPanel);
 
   // Banner 轮播功能
   const initBannerCarousel = () => {
