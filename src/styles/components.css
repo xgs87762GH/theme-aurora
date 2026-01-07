@@ -157,6 +157,28 @@
   aspect-ratio: auto;
 }
 
+/* 横向布局组件：确保图片容器占满高度 */
+.aurora-post-card-horizontal {
+  align-items: stretch;
+}
+
+@media (min-width: 768px) {
+  .aurora-post-card-horizontal {
+    align-items: stretch;
+  }
+  
+  .aurora-post-card-horizontal .aurora-post-card-image-wrapper {
+    height: 100%;
+    align-self: stretch;
+  }
+  
+  .aurora-post-card-horizontal .aurora-post-card-image-wrapper img,
+  .aurora-post-card-horizontal .aurora-post-card-image-wrapper .aurora-post-card-placeholder-link {
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
 .aurora-post-card.direction-row .aurora-post-card-image-wrapper img,
 .aurora-post-card.direction-row .aurora-post-card-image-wrapper .aurora-post-card-placeholder-link {
   height: 100%;

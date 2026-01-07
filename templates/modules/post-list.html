@@ -11,10 +11,21 @@
       th:classappend="|${list_layout == 'grid_2' ? 'grid-2' : ''} ${list_layout == 'grid_3' ? 'grid-3' : ''} ${list_layout == 'grid_4' ? 'grid-4' : ''} ${list_layout == 'single' ? 'single' : ''} ${list_layout == 'list' ? 'list' : ''} ${list_layout == 'masonry' ? 'masonry' : ''} ${card_gap == 'tight' ? 'gap-tight' : ''} ${card_gap == 'medium' ? 'gap-medium' : ''} ${card_gap == 'loose' ? 'gap-loose' : ''} ${card_gap == 'extra_loose' ? 'gap-extra-loose' : ''}|"
     >
       <th:block th:each="post : ${postItems}">
-        <th:block
-          th:with="cardDirection=${list_layout == 'single' ? 'row' : (list_layout == 'list' ? 'list' : 'row')}"
-          th:replace="~{modules/post-card :: post-card(${post},${image_position != 'none'},${card_animation != 'none'},${card_style == 'bordered'},${cardDirection},${card_style ?: 'default'},${card_animation ?: 'hover_lift'},${image_position ?: 'left'})}"
-        />
+        <!-- 根据布局模式选择不同的卡片组件 -->
+        <th:block th:with="normalizedImagePosition=${image_position != null and image_position != '' ? image_position : 'left'},isGridLayout=${list_layout == 'grid_2' or list_layout == 'grid_3' or list_layout == 'grid_4'},isListLayout=${list_layout == 'list'},isSingleLayout=${list_layout == 'single'},showExcerpt=${theme.config.post_list.show_post_excerpt ?: true},showAuthor=${theme.config.post_list.show_post_author ?: true},showDate=${theme.config.post_list.show_post_date ?: true},showTags=${theme.config.post_list.show_post_tags ?: true},showVisitCount=${theme.config.post_list.show_post_visit_count ?: false},showUpvoteCount=${theme.config.post_list.show_post_upvote_count ?: false},showCommentCount=${theme.config.post_list.show_post_comment_count ?: false}">
+          <!-- Grid 布局：使用竖向卡片组件 -->
+          <th:block th:if="${isGridLayout}">
+            <th:block th:replace="~{modules/post-card-vertical :: post-card-vertical(post=${post},list_layout=${list_layout},card_style=${card_style ?: 'default'},card_animation=${card_animation ?: 'hover_lift'},showExcerpt=${showExcerpt},showAuthor=${showAuthor},showDate=${showDate},showTags=${showTags},showVisitCount=${showVisitCount},showUpvoteCount=${showUpvoteCount},showCommentCount=${showCommentCount})}" />
+          </th:block>
+          <!-- List/Single 布局：使用横向卡片组件 -->
+          <th:block th:if="${isListLayout or isSingleLayout}">
+            <th:block th:replace="~{modules/post-card-horizontal :: post-card-horizontal(post=${post},image_position=${normalizedImagePosition},card_style=${card_style ?: 'default'},card_animation=${card_animation ?: 'hover_lift'},showExcerpt=${showExcerpt},showAuthor=${showAuthor},showDate=${showDate},showTags=${showTags},showVisitCount=${showVisitCount},showUpvoteCount=${showUpvoteCount},showCommentCount=${showCommentCount})}" />
+          </th:block>
+          <!-- Masonry 布局：使用竖向卡片组件 -->
+          <th:block th:if="${list_layout == 'masonry'}">
+            <th:block th:replace="~{modules/post-card-vertical :: post-card-vertical(post=${post},list_layout=${list_layout},card_style=${card_style ?: 'default'},card_animation=${card_animation ?: 'hover_lift'},showExcerpt=${showExcerpt},showAuthor=${showAuthor},showDate=${showDate},showTags=${showTags},showVisitCount=${showVisitCount},showUpvoteCount=${showUpvoteCount},showCommentCount=${showCommentCount})}" />
+          </th:block>
+        </th:block>
       </th:block>
     </div>
 
