@@ -8,10 +8,24 @@ spec:
       label: 首页
       formSchema:
         - $formkit: select
+          name: top_banner_height
+          id: top_banner_height
+          label: 顶部大图高度
+          value: half
+          options:
+            - label: 全屏
+              value: full
+            - label: 半屏
+              value: half
+            - label: 三分之一屏
+              value: third
+          help: "首页顶部大图的高度设置"
+        - $formkit: select
           name: header_widget
           id: header_widget
           label: 首页顶部模块
           value: site_title
+          if: "$get(top_banner_height).value !== 'third'"
           options:
             - label: 无
               value: none
@@ -19,6 +33,19 @@ spec:
               value: latest_post
             - label: 文章网格（最新五篇文章）
               value: latest_post_grid
+            - label: 站点标题
+              value: site_title
+        - $formkit: select
+          name: header_widget
+          id: header_widget_third
+          label: 首页顶部模块
+          value: none
+          if: "$get(top_banner_height).value === 'third'"
+          options:
+            - label: 无
+              value: none
+            - label: 最新一篇文章
+              value: latest_post
             - label: 站点标题
               value: site_title
         - $formkit: select
@@ -83,18 +110,6 @@ spec:
           key: title_color
           label: 标题文字颜色
           value: "#ffffff"
-        - $formkit: select
-          name: top_banner_height
-          label: 顶部大图高度
-          value: half
-          options:
-            - label: 全屏
-              value: full
-            - label: 半屏
-              value: half
-            - label: 三分之一屏
-              value: third
-          help: "首页顶部大图的高度设置"
         - $formkit: checkbox
           if: $get(header_widget).value !== none && $get(top_banner_height).value == full && $get(header_background_type).value == image
           name: use_banner_as_background

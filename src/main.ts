@@ -790,6 +790,44 @@ document.addEventListener("DOMContentLoaded", () => {
       debugInfo.action = "show";
     }
 
+    // 收集布局信息
+    const postCards = document.querySelectorAll('.aurora-post-card');
+    if (postCards.length > 0) {
+      const firstCard = postCards[0] as HTMLElement;
+      const computedStyle = window.getComputedStyle(firstCard);
+      const imageWrapper = firstCard.querySelector('.aurora-post-card-image-wrapper') as HTMLElement;
+      const statsOverlay = firstCard.querySelector('.aurora-post-stats-overlay') as HTMLElement;
+      const statsInContent = firstCard.querySelector('.aurora-post-card-content .aurora-post-stats') as HTMLElement;
+      const imageElement = firstCard.querySelector('.aurora-post-card-image') as HTMLElement;
+      const placeholderIcon = firstCard.querySelector('.aurora-post-card-placeholder-icon') as HTMLElement;
+      
+      // 检查是否有图片
+      const hasImage = imageElement !== null && imageElement.tagName === 'IMG';
+      const hasPlaceholder = placeholderIcon !== null;
+      
+      // 检查统计信息元素
+      const statsOverlayVisible = statsOverlay && window.getComputedStyle(statsOverlay).display !== 'none';
+      const statsInContentVisible = statsInContent && window.getComputedStyle(statsInContent).display !== 'none';
+      const statsOverlayChildren = statsOverlay ? statsOverlay.querySelectorAll('.aurora-post-stat-overlay').length : 0;
+      const statsInContentChildren = statsInContent ? statsInContent.querySelectorAll('.aurora-post-stat').length : 0;
+      
+      debugInfo.layoutInfo = {
+        '卡片 flex-direction': computedStyle.flexDirection,
+        '卡片 display': computedStyle.display,
+        '图片容器存在': imageWrapper ? '✓' : '✗',
+        '图片容器 display': imageWrapper ? window.getComputedStyle(imageWrapper).display : 'N/A',
+        '图片容器 position': imageWrapper ? window.getComputedStyle(imageWrapper).position : 'N/A',
+        '有图片元素': hasImage ? '✓' : '✗',
+        '有占位符': hasPlaceholder ? '✓' : '✗',
+        '统计信息在图片上': statsOverlay ? '✓' : '✗',
+        '图片上统计项数量': statsOverlayChildren.toString(),
+        '图片上统计信息可见': statsOverlayVisible ? '✓' : '✗',
+        '统计信息在内容区': statsInContent ? '✓' : '✗',
+        '内容区统计项数量': statsInContentChildren.toString(),
+        '内容区统计信息可见': statsInContentVisible ? '✓' : '✗'
+      };
+    }
+
     updateDebugInfo(debugInfo);
   };
 
@@ -819,6 +857,12 @@ document.addEventListener("DOMContentLoaded", () => {
           ${info.isPostListContainerHalfVisible !== undefined ? `<div>文章列表占2/3以上: ${info.isPostListContainerHalfVisible ? "✓" : "✗"}</div>` : ""}
           <div>Banner 出视口: ${info.isBannerOutOfView ? "✓" : "✗"}</div>
           <div>操作: ${info.action}</div>
+          ${info.layoutInfo ? `
+            <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.3);">
+              <div><strong>布局信息</strong></div>
+              ${Object.entries(info.layoutInfo).map(([key, value]) => `<div>${key}: ${value}</div>`).join("")}
+            </div>
+          ` : ""}
         </div>
       `;
     }

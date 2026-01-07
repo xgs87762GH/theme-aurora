@@ -18,22 +18,24 @@
               <th:block th:replace="~{modules/featured-post-card :: featured-post-card(post=${posts.items[0]})}" />
             </div>
           </th:block>
-          <th:block th:case="latest_post_grid" th:with="posts = ${postFinder.list(1,5)}">
+          <th:block th:case="latest_post_grid" th:if="${theme.config.home.top_banner_height != 'third'}" th:with="posts = ${postFinder.list(1,5)}">
             <div
-              class="aurora-post-grid-container mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 py-6 sm:grid-cols-5 lg:gap-6 lg:px-6"
+              class="aurora-post-grid-container mx-auto grid max-w-7xl grid-cols-1 gap-2 px-4 py-1 sm:grid-cols-5 sm:py-2 lg:gap-3 lg:px-6 lg:py-2"
               th:if="${posts.total gt 0}"
               data-banner-posts="true"
             >
+              <!-- 左侧大卡片 -->
               <div class="col-span-1 sm:col-span-3">
                 <th:block
-                  th:replace="~{modules/post-card :: post-card(post=${posts.items[0]},cover=true,animation=true,border=false,direction='row',card_style='default',card_animation='hover_lift',image_position='left')}"
+                  th:replace="~{modules/banner-post-card :: banner-post-card-large(post=${posts.items[0]},cover=true,animation=true,border=false,card_style='default',card_animation='hover_lift',image_position='left')}"
                 />
               </div>
-              <div class="col-span-1 grid grid-cols-1 gap-4 sm:col-span-2 sm:grid-cols-2 lg:gap-4">
+              <!-- 右侧四个小卡片 -->
+              <div class="col-span-1 grid grid-cols-1 gap-2 sm:col-span-2 sm:grid-cols-2 lg:gap-2">
                 <th:block th:each="post,postStat : ${posts.items}">
                   <th:block th:if="${postStat.index != 0}">
                     <th:block
-                      th:replace="~{modules/post-card :: post-card(post=${post},cover=false,animation=true,border=false,direction='column',card_style='default',card_animation='hover_lift',image_position='left')}"
+                      th:replace="~{modules/banner-post-card :: banner-post-card-small(post=${post},cover=false,animation=true,border=false,card_style='default',card_animation='hover_lift',image_position='left')}"
                     />
                   </th:block>
                 </th:block>

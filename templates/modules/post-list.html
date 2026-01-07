@@ -12,7 +12,7 @@
     >
       <th:block th:each="post : ${postItems}">
         <th:block
-          th:with="cardDirection=${list_layout == 'single' ? 'column' : (list_layout == 'list' ? 'list' : (image_position == 'left' ? 'row' : (image_position == 'right' ? 'row-reverse' : 'row')))}"
+          th:with="cardDirection=${list_layout == 'single' ? 'column' : (list_layout == 'list' ? 'list' : 'column')}"
           th:replace="~{modules/post-card :: post-card(${post},${image_position != 'none'},${card_animation != 'none'},${card_style == 'bordered'},${cardDirection},${card_style ?: 'default'},${card_animation ?: 'hover_lift'},${image_position ?: 'left'})}"
         />
       </th:block>
