@@ -13,12 +13,22 @@ export class GlobalBackgroundStrategy implements BannerBackgroundStrategy {
   private bannerImageUrl: string | null = null;
 
   init(banner: HTMLElement): void {
+    // 检查 Banner 类型，仅图片类型支持全局背景
+    // 如果 Banner 包含轮播或视频，则不应用全局背景
+    const hasCarousel = banner.querySelector('.aurora-banner-carousel-container');
+    const hasVideo = banner.querySelector('.aurora-banner-video-element');
+    
+    if (hasCarousel || hasVideo) {
+      // 轮播和视频类型不支持全局背景
+      return;
+    }
+
     // 获取 Banner 的背景图片 URL（仅支持图片类型）
     const bgImage = window.getComputedStyle(banner).backgroundImage;
     
     // 从 backgroundImage 字符串中提取 URL（格式：url("...") 或 url('...') 或 url(...)）
     const urlMatch = bgImage.match(/url\(['"]?([^'"]+)['"]?\)/);
-    if (urlMatch && urlMatch[1]) {
+    if (urlMatch && urlMatch[1] && urlMatch[1] !== 'none') {
       this.bannerImageUrl = urlMatch[1];
       
       // 将 Banner 图片应用到 body 元素作为全局背景
