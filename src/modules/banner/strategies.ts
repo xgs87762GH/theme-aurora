@@ -105,17 +105,15 @@ export function initBannerBackgroundStrategy(
   isFullScreen: boolean,
   useGlobalBg: boolean
 ): void {
-  // 全屏 Banner 且使用全局背景模式：不应用滚动淡出策略
-  if (isFullScreen && useGlobalBg) {
+  // 使用全局背景模式：应用全局背景策略（不限制是否全屏）
+  if (useGlobalBg) {
     const strategy = new GlobalBackgroundStrategy();
     strategy.init(banner);
     return;
   }
 
-  // 非全屏 Banner 或全屏 Banner 的非全局背景模式：应用滚动淡出策略
-  if (!isFullScreen || !useGlobalBg) {
-    const strategy = new ScrollFadeStrategy();
-    strategy.init(banner);
-  }
+  // 非全局背景模式：应用滚动淡出策略
+  const strategy = new ScrollFadeStrategy();
+  strategy.init(banner);
 }
 

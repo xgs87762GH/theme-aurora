@@ -191,9 +191,14 @@ export function initFullScreenBannerEffect(banner: HTMLElement, useGlobalBg: boo
         return;
       }
 
-      // 非全局背景模式：应用放大和固定效果
-      // 在 Banner 可见范围内应用放大效果
-      if (scrolled < currentBannerHeight) {
+      // 非全局背景模式：应用放大和固定效果（仅图片类型支持）
+      // 检查 Banner 类型，仅图片类型支持放大效果
+      const hasCarousel = banner.querySelector('.aurora-banner-carousel-container');
+      const hasVideo = banner.querySelector('.aurora-banner-video-element');
+      const isImageType = !hasCarousel && !hasVideo;
+      
+      // 在 Banner 可见范围内应用放大效果（仅图片类型）
+      if (isImageType && scrolled < currentBannerHeight) {
         // 计算缩放比例（向下滚动时放大）
         const scale = 1 + scrolled * 0.001;
         banner.style.transform = `scale(${scale})`;
