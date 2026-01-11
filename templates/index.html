@@ -7,9 +7,9 @@
   <!-- 仅返回文章列表容器内容，不包含任何 HTML 结构 -->
   <div id="post-list-container">
     <th:block
-      th:with="categoryParam=${param.category != null and not #lists.isEmpty(param.category) ? param.category[0] : null},selectedCategory=${categoryParam != null ? categoryFinder.getByName(categoryParam) : null},currentPage=${param.page != null and not #lists.isEmpty(param.page) ? T(java.lang.Integer).valueOf(param.page[0]) : 1},headerWidget=${theme.config.header.top_banner_height == 'third' ? (theme.config.header.header_widget_3 ?: 'none') : (theme.config.header.header_widget ?: 'none')},isFirstPage=${currentPage == 1},basePageSize=${theme.config.post_list.posts_per_page ?: 12},pageSize=${isFirstPage and headerWidget == 'latest_post_grid' ? (basePageSize + 5) : basePageSize},filteredPosts=${selectedCategory != null ? postFinder.list({page: currentPage, size: pageSize, categoryName: selectedCategory.metadata.name}) : postFinder.list({page: currentPage, size: pageSize})},list_layout=${theme.config.post_list.post_list_layout ?: 'grid_3'},card_gap=${theme.config.post_list.card_gap ?: 'medium'},card_style=${theme.config.post_list.card_style ?: 'default'},card_animation=${theme.config.post_list.card_animation ?: 'hover_lift'},image_position=${theme.config.post_list.post_image_position ?: 'left'},totalPages=${filteredPosts.totalPages},hasPrevious=${filteredPosts.hasPrevious()},hasNext=${filteredPosts.hasNext()},prevUrl=${hasPrevious ? (selectedCategory != null ? ('/?category=' + selectedCategory.metadata.name + '&page=' + (currentPage - 1)) : ('/?page=' + (currentPage - 1))) : null},nextUrl=${hasNext ? (selectedCategory != null ? ('/?category=' + selectedCategory.metadata.name + '&page=' + (currentPage + 1)) : ('/?page=' + (currentPage + 1))) : null}"
+      th:with="categoryParam=${param.category != null and not #lists.isEmpty(param.category) ? param.category[0] : null},selectedCategory=${categoryParam != null ? categoryFinder.getByName(categoryParam) : null},currentPage=${param.page != null and not #lists.isEmpty(param.page) ? T(java.lang.Integer).valueOf(param.page[0]) : 1},bannerHeight=${theme.config.header.top_banner_height ?: 'half'},headerWidget=${bannerHeight == 'third' ? (theme.config.header.header_widget_3 ?: 'none') : (theme.config.header.header_widget ?: 'none')},isFirstPage=${currentPage == 1},basePageSize=${theme.config.post_list.posts_per_page ?: 12},pageSize=${isFirstPage and headerWidget == 'latest_post_grid' ? (basePageSize + 5) : basePageSize},filteredPosts=${selectedCategory != null ? postFinder.list({page: currentPage, size: pageSize, categoryName: selectedCategory.metadata.name}) : postFinder.list({page: currentPage, size: pageSize})},base_layout=${theme.config.post_list.post_list_layout ?: 'grid_2'},enable_masonry=${theme.config.post_list.enable_masonry ?: false},list_layout=${(base_layout == 'grid_2' or base_layout == 'grid_3' or base_layout == 'grid_4') and enable_masonry == true ? 'masonry' : base_layout},card_gap=${theme.config.post_list.card_gap ?: 'medium'},card_style=${theme.config.post_list.card_style ?: 'default'},card_animation=${theme.config.post_list.card_animation ?: 'hover_lift'},image_position=${theme.config.post_list.post_image_position ?: 'left'},totalPages=${filteredPosts.totalPages},hasPrevious=${filteredPosts.hasPrevious()},hasNext=${filteredPosts.hasNext()},prevUrl=${hasPrevious ? (selectedCategory != null ? ('/?category=' + selectedCategory.metadata.name + '&page=' + (currentPage - 1)) : ('/?page=' + (currentPage - 1))) : null},nextUrl=${hasNext ? (selectedCategory != null ? ('/?category=' + selectedCategory.metadata.name + '&page=' + (currentPage + 1)) : ('/?page=' + (currentPage + 1))) : null}"
     >
-      <th:block th:replace="~{modules/post-list :: post-list(posts = ${filteredPosts}, list_layout = ${list_layout}, card_gap = ${card_gap}, card_style = ${card_style}, card_animation = ${card_animation}, image_position = ${image_position}, headerWidget = ${headerWidget}, isFirstPage = ${isFirstPage}, showPagination = false, paginationContext = null)}" />
+      <th:block th:replace="~{modules/posts/post-list :: post-list(posts = ${filteredPosts}, list_layout = ${list_layout}, card_gap = ${card_gap}, card_style = ${card_style}, card_animation = ${card_animation}, image_position = ${image_position}, headerWidget = ${headerWidget}, isFirstPage = ${isFirstPage}, showPagination = false, paginationContext = null)}" />
       
       <!-- 手动构建分页 -->
       <th:block th:if="${filteredPosts.total gt 0 and totalPages gt 1}">
@@ -77,16 +77,16 @@
 <html
   xmlns:th="https://www.thymeleaf.org"
   th:if="${param.fragment == null or #lists.isEmpty(param.fragment) or param.fragment[0] != 'post-list'}"
-  th:replace="~{modules/layout :: html(title = ${site.title}, hero = null, content = ~{::content}, head = null, footer = null, sidebar = null, contentClass = null)}"
+  th:replace="~{modules/layouts/layout :: html(title = ${site.title}, hero = null, content = ~{::content}, head = null, footer = null, sidebar = null, contentClass = null)}"
 >
   <th:block th:fragment="content">
     <!-- 顶部大图 -->
-    <th:block th:replace="~{modules/home-layout :: top-banner}" />
+    <th:block th:replace="~{modules/layouts/home-layout :: top-banner}" />
 
     <!-- 三栏布局（包含文章列表）- 当 banner 固定时，内容需要相对定位以叠加在背景上 -->
-    <div th:classappend="${theme.config.header.top_banner_height == 'full' ? 'relative z-10' : ''}">
+    <div th:with="bannerHeight=${theme.config.header.top_banner_height ?: 'half'}" th:classappend="${bannerHeight == 'full' ? 'relative z-10' : ''}">
       <th:block
-        th:replace="~{modules/home-layout :: three-column-layout-with-posts(leftContent = null, rightContent = null, showCategoryFilter = ${theme.config.header.show_category_filter == true})}"
+        th:replace="~{modules/layouts/home-layout :: three-column-layout-with-posts(leftContent = null, rightContent = null, showCategoryFilter = ${(theme.config.header.show_category_filter ?: true) == true})}"
       />
     </div>
 

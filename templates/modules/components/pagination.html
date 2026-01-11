@@ -1,0 +1,70 @@
+<!--
+  Component: Pagination
+  Description: A reusable pagination component for list pages (archives, tags, categories, moments).
+  组件：分页
+  描述：用于列表页（归档、标签、分类、动态）的可复用分页组件。
+-->
+<th:block th:fragment="pagination(context, prevUrl, nextUrl, totalPages, page, hasPrevious, hasNext)">
+  <div class="mt-8 flex items-center justify-between" th:if="${totalPages > 1}">
+    <!-- 上一页 -->
+    <a
+      th:href="@{${prevUrl}}"
+      th:if="${hasPrevious}"
+      class="whitespace-no-wrap group inline-flex items-center justify-center gap-1 rounded-md border border-gray-200 bg-white px-4 py-1 text-sm font-medium leading-6 text-gray-600 shadow-sm hover:bg-gray-50 focus:shadow-none focus:outline-none dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600 dark:hover:text-white"
+    >
+      <span class="i-tabler-arrow-left text-lg transition-all group-hover:-translate-x-1"></span>
+      <span th:text="#{common.previousPage}"></span>
+    </a>
+    <span th:unless="${hasPrevious}" class="whitespace-no-wrap inline-flex items-center justify-center gap-1 rounded-md border border-gray-200 bg-white px-4 py-1 text-sm font-medium leading-6 text-gray-400 pointer-events-none opacity-60 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-500">
+      <span class="i-tabler-arrow-left text-lg"></span>
+      <span th:text="#{common.previousPage}"></span>
+    </span>
+    
+    <!-- 页码选择 -->
+    <select 
+      th:id="|pagination-select-${#strings.randomAlphanumeric(5)}|" 
+      class="pagination-select bg-transparent text-sm text-gray-900 outline-none dark:text-slate-50"
+      th:attr="data-context=${context}"
+    >
+      <option
+        th:each="i : ${#numbers.sequence(1,totalPages)}"
+        th:selected="${i == page}"
+        th:value="${i}"
+        th:text="|${i} / ${totalPages}|"
+        class="bg-white text-gray-900 dark:bg-slate-700 dark:text-slate-50"
+      ></option>
+    </select>
+    
+    <!-- 下一页 -->
+    <a
+      th:href="@{${nextUrl}}"
+      th:if="${hasNext}"
+      class="whitespace-no-wrap group inline-flex items-center justify-center gap-1 rounded-md border border-gray-200 bg-white px-4 py-1 text-sm font-medium leading-6 text-gray-600 shadow-sm hover:bg-gray-50 focus:shadow-none focus:outline-none dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600 dark:hover:text-white"
+    >
+      <span th:text="#{common.nextPage}"></span>
+      <span class="i-tabler-arrow-right text-lg transition-all group-hover:translate-x-1"></span>
+    </a>
+    <span th:unless="${hasNext}" class="whitespace-no-wrap inline-flex items-center justify-center gap-1 rounded-md border border-gray-200 bg-white px-4 py-1 text-sm font-medium leading-6 text-gray-400 pointer-events-none opacity-60 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-500">
+      <span th:text="#{common.nextPage}"></span>
+      <span class="i-tabler-arrow-right text-lg"></span>
+    </span>
+
+    <script th:inline="javascript">
+      document.addEventListener("DOMContentLoaded", () => {
+        const selects = document.querySelectorAll(".pagination-select");
+        selects.forEach(select => {
+          select.addEventListener("change", (event) => {
+            const selectedPage = event.target.value;
+            const context = event.target.dataset.context;
+            // 构建新的 URL
+            // 这里假设 context 是类似 '/archives/' 或 '/tags/tagname/' 的基础路径
+            // 或者是一个带查询参数的 URL
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set("page", selectedPage);
+            window.location.href = currentUrl.toString();
+          });
+        });
+      });
+    </script>
+  </div>
+</th:block>

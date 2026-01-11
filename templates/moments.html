@@ -1,11 +1,11 @@
 <!doctype html>
 <html
   xmlns:th="https://www.thymeleaf.org"
-  th:replace="~{modules/layout :: html(title = |#{page.moments.title} - ${site.title}|, hero = null, content = ~{::content}, head = null, footer = null, sidebar = null, contentClass = null)}"
+  th:replace="~{modules/layouts/layout :: html(title = |#{page.moments.title} - ${site.title}|, hero = null, content = ~{::content}, head = null, footer = null, sidebar = null, contentClass = null)}"
 >
   <th:block th:fragment="content">
     <!-- 使用通用三栏布局 -->
-    <th:block th:replace="~{modules/components/three-column-layout :: three-column-layout-auto(mainContent = ~{::main-content}, leftContent = null, rightContent = null)}" />
+    <th:block th:replace="~{modules/layouts/three-column-layout :: three-column-layout-auto(mainContent = ~{::main-content}, leftContent = null, rightContent = null)}" />
   </th:block>
 
   <th:block th:fragment="main-content">
@@ -153,7 +153,7 @@
       <!-- 分页 -->
       <div class="aurora-moments-pagination">
         <th:block
-          th:replace="~{modules/pagination :: pagination(context = '/moments/', prevUrl = ${moments.prevUrl}, nextUrl = ${moments.nextUrl}, totalPages = ${moments.totalPages}, page = ${moments.page}, hasPrevious = ${moments.hasPrevious()}, hasNext = ${moments.hasNext()})}"
+          th:replace="~{modules/components/pagination :: pagination(context = '/moments/', prevUrl = ${moments.prevUrl}, nextUrl = ${moments.nextUrl}, totalPages = ${moments.totalPages}, page = ${moments.page}, hasPrevious = ${moments.hasPrevious()}, hasNext = ${moments.hasNext()})}"
         />
       </div>
     </div>

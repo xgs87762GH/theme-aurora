@@ -1,0 +1,108 @@
+<!--
+  Component: Banner Post Card
+  Description: Post cards designed specifically for the banner grid layout (large and small variants).
+  组件：Banner 文章卡片
+  描述：专为 Banner 网格布局设计的文章卡片（包含大卡片和小卡片变体）。
+-->
+<th:block th:fragment="banner-post-card-large(post, cover, animation, border, card_style, card_animation, image_position)">
+  <article
+    class="aurora-banner-post-card aurora-banner-post-card-large group relative h-64 overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-lg dark:bg-slate-800 sm:h-80 lg:h-96"
+    th:classappend="|style-${card_style} animation-${card_animation}|"
+  >
+    <!-- 背景图 -->
+    <a th:href="@{${post.status.permalink}}" class="absolute inset-0 block overflow-hidden">
+      <img
+        th:if="${not #strings.isEmpty(post.spec.cover)}"
+        th:src="${post.spec.cover}"
+        th:alt="${post.spec.title}"
+        loading="lazy"
+        class="size-full object-cover transition-transform duration-700 group-hover:scale-105"
+      />
+      <div
+        th:if="${#strings.isEmpty(post.spec.cover)}"
+        class="flex size-full items-center justify-center bg-gray-100 dark:bg-slate-700"
+      >
+        <span class="i-[tabler--photo] text-6xl text-gray-300 dark:text-slate-600"></span>
+      </div>
+      <!-- 渐变遮罩 -->
+      <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+    </a>
+
+    <!-- 内容区域 -->
+    <div class="absolute inset-x-0 bottom-0 p-6 text-white md:p-8">
+      <!-- 分类 -->
+      <div class="mb-3 flex flex-wrap gap-2" th:if="${not #lists.isEmpty(post.categories)}">
+        <span
+          th:each="category : ${post.categories}"
+          class="rounded-md bg-blue-600/80 px-2 py-0.5 text-xs font-medium backdrop-blur-sm"
+          th:text="${category.spec.displayName}"
+        ></span>
+      </div>
+
+      <!-- 标题 -->
+      <h2 class="mb-3 text-2xl font-bold leading-tight md:text-3xl">
+        <a th:href="@{${post.status.permalink}}" class="hover:underline" th:text="${post.spec.title}"></a>
+      </h2>
+
+      <!-- Meta 信息 -->
+      <div class="flex items-center gap-4 text-sm text-gray-200">
+        <div class="flex items-center gap-2">
+          <img
+            th:if="${not #strings.isEmpty(post.owner.avatar)}"
+            th:src="${post.owner.avatar}"
+            th:alt="${post.owner.displayName}"
+            class="size-6 rounded-full ring-1 ring-white/50"
+          />
+          <span th:text="${post.owner.displayName}"></span>
+        </div>
+        <span class="flex items-center gap-1">
+          <span class="i-[tabler--calendar]"></span>
+          <span th:text="${#dates.format(post.spec.publishTime, 'yyyy-MM-dd')}"></span>
+        </span>
+      </div>
+    </div>
+  </article>
+</th:block>
+
+<th:block th:fragment="banner-post-card-small(post, cover, animation, border, card_style, card_animation, image_position)">
+  <article
+    class="aurora-banner-post-card aurora-banner-post-card-small group relative h-32 overflow-hidden rounded-xl bg-white shadow-sm transition-all hover:shadow-md dark:bg-slate-800 sm:h-40 lg:h-48"
+    th:classappend="|style-${card_style} animation-${card_animation}|"
+  >
+    <!-- 背景图 -->
+    <a th:href="@{${post.status.permalink}}" class="absolute inset-0 block overflow-hidden">
+      <img
+        th:if="${not #strings.isEmpty(post.spec.cover)}"
+        th:src="${post.spec.cover}"
+        th:alt="${post.spec.title}"
+        loading="lazy"
+        class="size-full object-cover transition-transform duration-700 group-hover:scale-105"
+      />
+      <div
+        th:if="${#strings.isEmpty(post.spec.cover)}"
+        class="flex size-full items-center justify-center bg-gray-100 dark:bg-slate-700"
+      >
+        <span class="i-[tabler--photo] text-4xl text-gray-300 dark:text-slate-600"></span>
+      </div>
+      <!-- 渐变遮罩 -->
+      <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent"></div>
+    </a>
+
+    <!-- 内容区域 -->
+    <div class="absolute inset-x-0 bottom-0 p-4 text-white">
+      <!-- 标题 -->
+      <h2 class="mb-2 text-sm font-bold leading-snug line-clamp-2 md:text-base">
+        <a th:href="@{${post.status.permalink}}" class="hover:underline" th:text="${post.spec.title}"></a>
+      </h2>
+
+      <!-- Meta 信息 -->
+      <div class="flex items-center justify-between text-xs text-gray-300">
+        <span th:text="${#dates.format(post.spec.publishTime, 'MM-dd')}"></span>
+        <span class="flex items-center gap-1">
+          <span class="i-[tabler--eye]"></span>
+          <span th:text="${post.stats.visit}"></span>
+        </span>
+      </div>
+    </div>
+  </article>
+</th:block>

@@ -1,0 +1,65 @@
+<!doctype html>
+<!--
+  Component: Header Widgets (Banner Widgets)
+  Description: Widgets displayed in the top banner area, such as latest post, post grid, or site title.
+  组件：顶部 Banner 挂件
+  描述：显示在顶部 Banner 区域的挂件，如最新文章、文章网格或站点标题。
+-->
+<html xmlns:th="https://www.thymeleaf.org">
+  <!-- 最新一篇文章组件 -->
+  <th:block th:fragment="latest-post">
+    <th:block th:with="posts = ${postFinder.list(1,1)}">
+      <div class="mx-auto max-w-7xl px-4 py-6 lg:px-6" th:if="${posts.total gt 0}" data-banner-posts="true">
+        <th:block th:replace="~{modules/posts/featured-post-card :: featured-post-card(post=${posts.items[0]})}" />
+      </div>
+    </th:block>
+  </th:block>
+
+  <!-- 文章网格（最新五篇文章）组件 -->
+  <th:block th:fragment="latest-post-grid">
+    <th:block th:with="posts = ${postFinder.list(1,5)}">
+      <!-- 调试信息 -->
+      <!-- <div class="mx-auto max-w-7xl px-4 py-2 text-center text-white text-xs">
+        <p>🔍 latest-post-grid 组件已加载，文章总数: <span th:text="${posts.total}">0</span></p>
+      </div> -->
+      <div
+        class="aurora-post-grid-container mx-auto grid max-w-7xl grid-cols-1 gap-2 px-4 py-1 sm:grid-cols-5 sm:py-2 lg:gap-3 lg:px-6 lg:py-2"
+        th:if="${posts.total gt 0}"
+        data-banner-posts="true"
+      >
+        <!-- 左侧大卡片 -->
+        <div class="col-span-1 sm:col-span-3">
+          <th:block
+            th:replace="~{modules/posts/banner-post-card :: banner-post-card-large(post=${posts.items[0]},cover=true,animation=true,border=false,card_style='default',card_animation='hover_lift',image_position='left')}"
+          />
+        </div>
+        <!-- 右侧四个小卡片 -->
+        <div class="col-span-1 grid grid-cols-1 gap-2 sm:col-span-2 sm:grid-cols-2 lg:gap-2">
+          <th:block th:each="post,postStat : ${posts.items}">
+            <th:block th:if="${postStat.index != 0}">
+              <th:block
+                th:replace="~{modules/posts/banner-post-card :: banner-post-card-small(post=${post},cover=false,animation=true,border=false,card_style='default',card_animation='hover_lift',image_position='left')}"
+              />
+            </th:block>
+          </th:block>
+        </div>
+      </div>
+      <!-- 无文章时的提示 -->
+      <div th:if="${posts.total == 0}" class="mx-auto max-w-7xl px-4 py-6 text-center text-white">
+        <p class="text-sm">暂无文章</p>
+      </div>
+    </th:block>
+  </th:block>
+
+  <!-- 站点标题组件 -->
+  <th:block th:fragment="site-title">
+    <div class="mx-auto flex h-full max-w-4xl flex-col items-center justify-center gap-4 px-4 py-6 text-center lg:px-6">
+      <h1 class="text-5xl font-bold leading-tight" th:style="|color:${theme.config.header.title_color ?: 'white'}|" th:text="${site.title}"></h1>
+      <p
+        class="text-lg font-light leading-relaxed max-w-2xl"
+        th:style="|color:${theme.config.header.title_color ?: 'rgba(255, 255, 255, 0.9)'}|"
+        th:text="${site.subtitle}"
+      ></p>
+    </div>
+  </th:block>
+</html>

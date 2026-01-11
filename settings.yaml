@@ -114,19 +114,19 @@ spec:
             - label: 视频
               value: video
         - $formkit: text
-          if: "$get(top_banner_height).value !== 'none' && $get(header_background_type).value === manual"
+          if: "$get(top_banner_height).value !== 'none' && $get(header_background_type).value === 'manual'"
           name: header_background
           id: header_background
           key: header_background
           label: 首页顶部背景
         - $formkit: attachment
-          if: "$get(top_banner_height).value !== 'none' && $get(header_background_type).value === image"
+          if: "$get(top_banner_height).value !== 'none' && $get(header_background_type).value === 'image'"
           name: header_background_image
           id: header_background_image
           key: header_background_image
           label: 首页顶部背景图片
         - $formkit: repeater
-          if: "$get(top_banner_height).value !== 'none' && $get(header_background_type).value === carousel"
+          if: "$get(top_banner_height).value !== 'none' && $get(header_background_type).value === 'carousel'"
           name: header_background_carousel
           id: header_background_carousel
           key: header_background_carousel
@@ -145,7 +145,7 @@ spec:
               name: link
               label: 链接（可选）
         - $formkit: text
-          if: "$get(top_banner_height).value !== 'none' && $get(header_background_type).value === video"
+          if: "$get(top_banner_height).value !== 'none' && $get(header_background_type).value === 'video'"
           name: header_background_video
           id: header_background_video
           key: header_background_video
@@ -160,7 +160,7 @@ spec:
           label: 标题文字颜色
           value: "#ffffff"
         - $formkit: checkbox
-          if: "$get(top_banner_height).value === 'full' && $get(header_background_type).value === image"
+          if: "$get(top_banner_height).value === 'full' && $get(header_background_type).value === 'image'"
           name: use_banner_as_background
           label: 将 Banner 作为全局背景
           value: false
@@ -176,24 +176,26 @@ spec:
       formSchema:
         - $formkit: select
           name: post_list_layout
+          id: post_list_layout
           label: 文章列表布局
-          value: grid_3
+          value: grid_2
           options:
-            - label: 网格（一行三列）
-              value: grid_3
             - label: 网格（一行两列）
               value: grid_2
+            - label: 网格（一行三列）
+              value: grid_3
             - label: 网格（一行四列）
               value: grid_4
             - label: 单条
               value: single
             - label: 列表
               value: list
-            - label: 瀑布流
-              value: masonry
-          help: "选择单条时，文章卡片的图片将位于左侧；列表布局适合移动端；瀑布流布局需要 JavaScript 支持"
+          help: "选择单条时，文章卡片的图片将位于左侧；列表布局适合移动端"
+
         - $formkit: select
+          if: "$get(post_list_layout).value === 'single' || $get(post_list_layout).value === 'list'"
           name: post_image_position
+          id: post_image_position
           label: 文章主图片位置
           value: left
           options:
@@ -204,6 +206,14 @@ spec:
             - label: 不显示
               value: none
           help: "选择文章卡片中主图片的显示位置，列表布局下无效"
+
+        - $formkit: checkbox
+          if: "$get(post_list_layout).value !== 'single' && $get(post_list_layout).value !== 'list'"
+          name: enable_masonry
+          label: 启用瀑布流效果
+          value: false
+          help: "在网格布局下启用瀑布流效果，卡片会以错落的方式排列"
+
         - $formkit: select
           name: card_style
           label: 卡片样式
@@ -347,7 +357,7 @@ spec:
           label: 显示分享按钮
           value: true
         - $formkit: select
-          if: $get(show_share_button).value
+          if: "$get(show_share_button).value === true"
           name: share_item_ids
           key: share_item_ids
           id: share_item_ids
@@ -486,7 +496,7 @@ spec:
               name: size
               label: 显示数量
               help: "热门文章和最新评论小部件可配置显示数量，默认5条"
-              if: $value.value === 'popular-posts' || $value.value === 'latest-comments'
+              if: "$value.value === 'popular-posts' || $value.value === 'latest-comments'"
               value: 5
               min: 1
               max: 20
@@ -627,11 +637,11 @@ spec:
           name: slogan
           id: slogan
           key: slogan
-          if: "$get(style).value === style_2"
+          if: "$get(style).value === 'style_2'"
           label: 标语
 
         - $formkit: select
-          if: "$get(style).value === style_1"
+          if: "$get(style).value === 'style_1'"
           name: right_menu
           id: right_menu
           key: right_menu
@@ -644,7 +654,7 @@ spec:
             valueField: "metadata.name"
 
         - $formkit: select
-          if: "$get(style).value === style_2"
+          if: "$get(style).value === 'style_2'"
           name: menu_names
           id: menu_names
           key: menu_names

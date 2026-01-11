@@ -1,15 +1,21 @@
-<!-- 竖向布局文章卡片组件（用于 grid 布局） -->
-<!-- 图片在上，内容在下 -->
+<!--
+  Posts: Post Card
+  Description: Standard post card component used in grid layouts.
+  Path: modules/posts/post-card.html
+  文章：文章卡片
+  描述：网格布局中使用的标准文章卡片组件。
+-->
 <div
-  th:fragment="post-card-vertical(post, list_layout, card_style, card_animation, showExcerpt, showAuthor, showDate, showTags, showVisitCount, showUpvoteCount, showCommentCount)"
-  class="aurora-post-card aurora-post-card-vertical group flex flex-col overflow-hidden bg-white transition-all duration-500 dark:bg-slate-800"
-  th:with="hasCover=${not #strings.isEmpty(post.spec.cover)},list_layout=${list_layout ?: theme.config.post_list.post_list_layout},show_excerpt=${showExcerpt != null ? showExcerpt : (theme.config.post_list.show_post_excerpt ?: true)},show_author=${showAuthor != null ? showAuthor : (theme.config.post_list.show_post_author ?: true)},show_date=${showDate != null ? showDate : (theme.config.post_list.show_post_date ?: true)},show_tags=${showTags != null ? showTags : (theme.config.post_list.show_post_tags ?: true)},show_visit_count=${showVisitCount != null ? showVisitCount : (theme.config.post_list.show_post_visit_count ?: false)},show_upvote_count=${showUpvoteCount != null ? showUpvoteCount : (theme.config.post_list.show_post_upvote_count ?: false)},show_comment_count=${showCommentCount != null ? showCommentCount : (theme.config.post_list.show_post_comment_count ?: false)}"
-  th:classappend="|${card_style == 'default' ? 'style-default' : ''} ${card_style == 'minimal' ? 'style-minimal' : ''} ${card_style == 'rounded' ? 'style-rounded' : ''} ${card_style == 'flat' ? 'style-flat' : ''} ${card_style == 'bordered' ? 'style-bordered' : ''} ${card_animation == 'hover_lift' ? 'animation-hover-lift' : ''} ${card_animation == 'hover_scale' ? 'animation-hover-scale' : ''} ${card_animation == 'hover_shadow' ? 'animation-hover-shadow' : ''} ${card_animation == 'combined' ? 'animation-combined' : ''}|"
+  th:fragment="post-card(post,cover,animation,border,direction,card_style,card_animation,image_position)"
+  class="aurora-post-card group flex overflow-hidden bg-white transition-all duration-500 dark:bg-slate-800"
+  th:with="imgPosition=${image_position ?: 'left'},list_layout=${theme.config.post_list.post_list_layout},show_excerpt=${theme.config.post_list.show_post_excerpt ?: true},show_author=${theme.config.post_list.show_post_author ?: true},show_date=${theme.config.post_list.show_post_date ?: true},show_tags=${theme.config.post_list.show_post_tags ?: true},show_visit_count=${theme.config.post_list.show_post_visit_count ?: false},show_upvote_count=${theme.config.post_list.show_post_upvote_count ?: false},show_comment_count=${theme.config.post_list.show_post_comment_count ?: false},hasCover=${not #strings.isEmpty(post.spec.cover)},actualDirection=${direction != null ? direction : (list_layout == 'single' ? 'column' : (list_layout == 'list' ? 'list' : 'column'))}"
+  th:classappend="|${card_style == 'default' ? 'style-default' : ''} ${card_style == 'minimal' ? 'style-minimal' : ''} ${card_style == 'rounded' ? 'style-rounded' : ''} ${card_style == 'flat' ? 'style-flat' : ''} ${card_style == 'bordered' ? 'style-bordered' : ''} ${card_animation == 'hover_lift' ? 'animation-hover-lift' : ''} ${card_animation == 'hover_scale' ? 'animation-hover-scale' : ''} ${card_animation == 'hover_shadow' ? 'animation-hover-shadow' : ''} ${card_animation == 'combined' ? 'animation-combined' : ''} ${actualDirection == 'column' ? 'direction-column' : ''} ${actualDirection == 'row' ? 'direction-row' : ''} ${actualDirection == 'list' ? 'direction-list' : ''} ${actualDirection == 'row-reverse' ? 'direction-row-reverse' : ''}|"
 >
-  <!-- 图片区域 -->
+  <!-- 图片区域：根据 image_position 设置显示，有图片显示图片，没有图片显示占位符 -->
   <div
-    class="aurora-post-card-image-wrapper w-full aspect-video flex-shrink-0 overflow-hidden relative"
-    th:classappend="|${not hasCover ? 'aurora-post-card-image-placeholder' : ''}|"
+    th:if="${imgPosition != 'none'}"
+    class="aurora-post-card-image-wrapper aspect-h-9 aspect-w-16 flex-shrink-0 overflow-hidden relative"
+    th:classappend="|${actualDirection == 'column' ? 'col-span-2' : ''} ${actualDirection == 'list' ? '!aspect-auto w-48' : ''} ${actualDirection == 'row-reverse' ? '!aspect-auto w-48' : ''} ${not hasCover ? 'aurora-post-card-image-placeholder' : ''}|"
   >
     <!-- 有图片时显示图片 -->
     <th:block th:if="${hasCover}">
@@ -22,7 +28,7 @@
                       ${thumbnail.gen(post.spec.cover, 'l')} 1200w|"
           sizes="(max-width: 1200px) 100vw, 1200px"
           class="aurora-post-card-image size-full object-cover transition-all duration-500"
-          th:classappend="|${card_animation == 'hover_scale' or card_animation == 'combined' ? 'scale-on-hover' : ''}|"
+          th:classappend="|${card_animation == 'hover_scale' or card_animation == 'combined' or (animation and card_animation != 'none') ? 'scale-on-hover' : ''}|"
         />
       </a>
       <!-- 统计信息显示在图片内（右下角） -->
@@ -58,52 +64,19 @@
     </th:block>
     <!-- 没有图片时显示占位符 -->
     <th:block th:if="${not hasCover}">
-      <a th:href="@{${post.status.permalink}}" th:title="${post.spec.title}" class="aurora-post-card-placeholder-link block h-full w-full bg-gray-100 dark:bg-slate-700 flex items-center justify-center relative">
+      <a th:href="@{${post.status.permalink}}" th:title="${post.spec.title}" class="aurora-post-card-placeholder-link block h-full w-full bg-gray-100 dark:bg-slate-700 flex items-center justify-center">
         <span class="aurora-post-card-placeholder-icon i-[tabler--photo] text-gray-400 dark:text-slate-500"></span>
       </a>
-      <!-- 没有图片时，统计信息也显示在图片区域的右下角 -->
-      <div
-        th:if="${show_visit_count or show_upvote_count or show_comment_count}"
-        class="aurora-post-stats-overlay absolute bottom-2 right-2 z-10 flex items-center gap-2"
-      >
-        <span
-          th:if="${show_visit_count}"
-          class="aurora-post-stat-overlay inline-flex items-center gap-1 rounded-full bg-black/50 backdrop-blur-sm px-2 py-1 text-xs text-white"
-          th:title="#{common.visitCount}"
-        >
-          <span class="i-[tabler--eye] text-sm leading-none"></span>
-          <span class="tabular-nums font-medium" th:text="${post.stats?.visit ?: 0}"></span>
-        </span>
-        <span
-          th:if="${show_upvote_count}"
-          class="aurora-post-stat-overlay inline-flex items-center gap-1 rounded-full bg-black/50 backdrop-blur-sm px-2 py-1 text-xs text-white"
-          th:title="#{common.upvoteCount}"
-        >
-          <span class="i-[tabler--heart] text-sm leading-none"></span>
-          <span class="tabular-nums font-medium" th:text="${post.stats?.upvote ?: 0}"></span>
-        </span>
-        <span
-          th:if="${show_comment_count}"
-          class="aurora-post-stat-overlay inline-flex items-center gap-1 rounded-full bg-black/50 backdrop-blur-sm px-2 py-1 text-xs text-white"
-          th:title="#{common.commentCount}"
-        >
-          <span class="i-[tabler--message-circle] text-sm leading-none"></span>
-          <span class="tabular-nums font-medium" th:text="${post.stats?.comment ?: 0}"></span>
-        </span>
-      </div>
     </th:block>
     <div th:if="${post.spec.pinned}" class="absolute left-2 top-2 z-10" th:title="#{fragment.postCard.pinned}">
       <div class="i-[bx--arrow-to-top] size-5 rounded-full bg-white/90 p-1 text-sky-600 shadow-sm backdrop-blur-sm dark:bg-slate-800/90"></div>
     </div>
   </div>
-  
-  <!-- 内容区域 -->
   <div
-    class="aurora-post-card-content relative flex flex-col justify-between gap-3 flex-1 p-5"
-    th:classappend="|${list_layout == 'grid_4' ? 'p-3' : ''}|"
+    class="aurora-post-card-content relative col-span-3 grid h-full grid-cols-1 content-between gap-3 p-5"
+    th:classappend="|${not hasCover or imgPosition == 'none' ? 'col-span-5' : ''} ${actualDirection == 'list' ? '!flex-1 min-w-0' : ''} ${actualDirection == 'row-reverse' ? '!flex-1 min-w-0' : ''} ${list_layout == 'grid_4' ? 'p-3' : ''} ${list_layout == 'list' ? 'p-4' : ''}|"
   >
     <div class="space-y-2.5">
-      <!-- 标签和分类 -->
       <div
         th:if="${show_tags and (not #lists.isEmpty(post.categories) or not #lists.isEmpty(post.tags))}"
         class="flex flex-wrap items-center gap-1.5"
@@ -126,22 +99,19 @@
         >
         </a>
       </div>
-      <!-- 标题 -->
       <h1
         class="aurora-post-title line-clamp-2 text-xl font-semibold leading-tight transition-colors dark:text-slate-50"
-        th:classappend="|${list_layout == 'grid_2' ? 'sm:line-clamp-3 sm:text-2xl' : ''} ${list_layout == 'grid_3' ? 'sm:line-clamp-2 sm:text-xl' : ''} ${list_layout == 'grid_4' ? 'text-base sm:line-clamp-2' : ''}|"
+        th:classappend="|${actualDirection == 'column' ? 'sm:line-clamp-2 sm:text-2xl' : ''} ${actualDirection == 'list' ? 'text-lg' : ''} ${list_layout == 'grid_2' ? 'sm:line-clamp-3 sm:text-2xl' : ''} ${list_layout == 'grid_3' ? 'sm:line-clamp-2 sm:text-xl' : ''} ${list_layout == 'grid_4' ? 'text-base sm:line-clamp-2' : ''}|"
       >
         <a th:href="@{${post.status.permalink}}" th:text="${post.spec.title}" th:title="${post.spec.title}" class="text-gray-900 hover:text-blue-600 dark:text-slate-50 dark:hover:text-blue-400"></a>
       </h1>
-      <!-- 摘要 -->
       <p
         th:if="${show_excerpt}"
         class="aurora-post-excerpt line-clamp-2 text-sm leading-relaxed text-gray-600 dark:text-slate-300"
         th:text="${post.status.excerpt}"
-        th:classappend="|${list_layout == 'grid_3' ? 'sm:line-clamp-3' : ''} ${list_layout == 'grid_4' ? 'text-xs sm:line-clamp-2' : ''}|"
+        th:classappend="|${list_layout == 'grid_3' ? 'sm:line-clamp-3' : ''} ${list_layout == 'grid_4' ? 'text-xs sm:line-clamp-2' : ''} ${actualDirection == 'list' ? 'line-clamp-1' : ''}|"
       ></p>
     </div>
-    <!-- 底部元信息 -->
     <div th:if="${show_author or show_date or (show_visit_count or show_upvote_count or show_comment_count)}" class="aurora-post-meta mt-auto flex items-center justify-between gap-3 flex-wrap pt-3 border-t border-gray-100 dark:border-slate-700">
       <!-- 左侧：作者和日期 -->
       <div class="flex items-center gap-3">

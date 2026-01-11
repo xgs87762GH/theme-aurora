@@ -1,0 +1,36 @@
+<!--
+  Component: Footer Social Icons
+  Description: Social media icons and links displayed in the footer.
+  组件：页脚社交图标
+  描述：显示在页脚的社交媒体图标和链接。
+-->
+<th:block th:fragment="social-icons">
+  <div class="flex gap-4" th:if="${not #lists.isEmpty(theme.config.footer.social_media)}">
+    <th:block th:each="social : ${theme.config.footer.social_media}">
+      <!-- 普通链接类型 -->
+      <a
+        th:if="${social.url_type == null or social.url_type == 'normal'}"
+        th:href="@{${social.url}}"
+        th:title="${social.name}"
+        th:aria-label="${social.name}"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-gray-400 transition-colors hover:text-blue-600 dark:hover:text-blue-400"
+      >
+        <span th:class="${social.icon} + ' text-xl'"></span>
+      </a>
+      <!-- 图片链接类型 -->
+      <a
+        th:if="${social.url_type == 'image'}"
+        th:href="${social.url}"
+        th:title="${social.name}"
+        th:aria-label="${social.name}"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-gray-400 transition-colors hover:text-blue-600 dark:hover:text-blue-400"
+      >
+        <span th:class="${social.icon} + ' text-xl'"></span>
+      </a>
+    </th:block>
+  </div>
+</th:block>

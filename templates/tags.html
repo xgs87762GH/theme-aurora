@@ -1,21 +1,21 @@
 <!doctype html>
 <html
   xmlns:th="https://www.thymeleaf.org"
-  th:replace="~{modules/layout :: html(title = |#{page.tags.title} - ${site.title}|, hero = null, content = ~{::content}, head = null, footer = null, sidebar = null, contentClass = null)}"
+  th:replace="~{modules/layouts/layout :: html(title = |#{page.tags.title} - ${site.title}|, hero = null, content = ~{::content}, head = null, footer = null, sidebar = null, contentClass = null)}"
 >
   <th:block th:fragment="content">
     <!-- 使用通用三栏布局 -->
     <th:block th:with="tags = ${tagFinder.listAll()}">
       <th:block th:if="${#lists.isEmpty(tags)}">
         <!-- 空状态 -->
-        <th:block th:replace="~{modules/components/three-column-layout :: three-column-layout-auto(mainContent = ~{::empty-content}, leftContent = null, rightContent = null)}" />
+        <th:block th:replace="~{modules/layouts/three-column-layout :: three-column-layout-auto(mainContent = ~{::empty-content}, leftContent = null, rightContent = null)}" />
       </th:block>
 
       <th:block th:unless="${#lists.isEmpty(tags)}">
         <th:block th:with="selectedTagName=${param.tag != null and not #lists.isEmpty(param.tag) ? param.tag[0] : tags[0].metadata.name}">
           <th:block th:each="tagItem : ${tags}" th:if="${tagItem.metadata.name == selectedTagName}">
             <th:block th:with="tag=${tagItem}">
-              <th:block th:replace="~{modules/components/three-column-layout :: three-column-layout-auto(mainContent = ~{::main-content}, leftContent = null, rightContent = null)}" />
+              <th:block th:replace="~{modules/layouts/three-column-layout :: three-column-layout-auto(mainContent = ~{::main-content}, leftContent = null, rightContent = null)}" />
             </th:block>
           </th:block>
         </th:block>
@@ -33,15 +33,15 @@
   </th:block>
 
   <th:block th:fragment="main-content">
-    <th:block th:with="currentPage=${param.page != null and not #lists.isEmpty(param.page) ? #numbers.integer(param.page[0]) : 1},pageSize=${theme.config.post_list.posts_per_page ?: 10},posts = ${postFinder.listByTag(currentPage, pageSize, tag.metadata.name)},list_layout=${theme.config.post_list.post_list_layout ?: 'grid_3'},card_gap=${theme.config.post_list.card_gap ?: 'medium'},card_style=${theme.config.post_list.card_style ?: 'default'},card_animation=${theme.config.post_list.card_animation ?: 'hover_lift'},image_position=${theme.config.post_list.post_image_position ?: 'left'},totalPages=${#numbers.integer(#math.ceil(posts.total / pageSize))},hasPrevious=${currentPage gt 1},hasNext=${currentPage lt totalPages},prevUrl=${hasPrevious ? '|/tags?tag=' + tag.metadata.name + '&page=' + (currentPage - 1)| : null},nextUrl=${hasNext ? '|/tags?tag=' + tag.metadata.name + '&page=' + (currentPage + 1)| : null}">
+    <th:block th:with="currentPage=${param.page != null and not #lists.isEmpty(param.page) ? #numbers.integer(param.page[0]) : 1},pageSize=${theme.config.post_list.posts_per_page ?: 10},posts = ${postFinder.listByTag(currentPage, pageSize, tag.metadata.name)},base_layout=${theme.config.post_list.post_list_layout ?: 'grid_2'},enable_masonry=${theme.config.post_list.enable_masonry ?: false},list_layout=${(base_layout == 'grid_2' or base_layout == 'grid_3' or base_layout == 'grid_4') and enable_masonry == true ? 'masonry' : base_layout},card_gap=${theme.config.post_list.card_gap ?: 'medium'},card_style=${theme.config.post_list.card_style ?: 'default'},card_animation=${theme.config.post_list.card_animation ?: 'hover_lift'},image_position=${theme.config.post_list.post_image_position ?: 'left'},totalPages=${#numbers.integer(#math.ceil(posts.total / pageSize))},hasPrevious=${currentPage gt 1},hasNext=${currentPage lt totalPages},prevUrl=${hasPrevious ? '|/tags?tag=' + tag.metadata.name + '&page=' + (currentPage - 1)| : null},nextUrl=${hasNext ? '|/tags?tag=' + tag.metadata.name + '&page=' + (currentPage + 1)| : null}">
       <!-- 标签筛选器 -->
       <div class="mb-6 rounded-xl bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md dark:bg-slate-800">
-        <th:block th:replace="~{modules/tag-filter}" />
+        <th:block th:replace="~{modules/components/tag-filter}" />
       </div>
 
       <!-- 使用统一的 post-list 组件 -->
-      <th:block th:replace="~{modules/post-list :: post-list(posts = ${posts}, list_layout = ${list_layout}, card_gap = ${card_gap}, card_style = ${card_style}, card_animation = ${card_animation}, image_position = ${image_position}, headerWidget = 'none', isFirstPage = ${currentPage == 1}, showPagination = false, paginationContext = null)}" />
-
+      <th:block th:replace="~{modules/posts/post-list :: post-list(posts = ${posts}, list_layout = ${list_layout}, card_gap = ${card_gap}, card_style = ${card_style}, card_animation = ${card_animation}, image_position = ${image_position}, headerWidget = 'none', isFirstPage = ${currentPage == 1}, showPagination = false, paginationContext = null)}" />
+      
       <!-- 手动构建分页（因为 postFinder.listByTag 返回的对象没有分页 URL） -->
       <th:block th:if="${posts.total gt 0 and totalPages gt 1}">
         <div class="mt-8 flex items-center justify-between">

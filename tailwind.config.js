@@ -1,7 +1,15 @@
 /** @type {import('tailwindcss').Config} */
 const { addDynamicIconSelectors } = require("@iconify/tailwind");
 module.exports = {
-  content: ["./templates/**/*.html", "./src/main.ts"],
+  content: [
+    "./templates/**/*.html",
+    "./templates/modules/layouts/**/*.html",
+    "./templates/modules/common/**/*.html",
+    "./templates/modules/posts/**/*.html",
+    "./templates/modules/widgets/**/*.html",
+    "./templates/modules/components/**/*.html",
+    "./src/main.ts"
+  ],
   theme: {
     extend: {
       colors: {

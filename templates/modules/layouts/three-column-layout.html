@@ -1,4 +1,10 @@
 <!doctype html>
+<!--
+  Layout: Three Column Layout Component
+  Description: A reusable layout component supporting left sidebar, main content, and right sidebar with responsive behavior.
+  布局：三栏布局组件
+  描述：可复用的布局组件，支持左侧栏、主内容区和右侧栏，具备响应式行为。
+-->
 <html xmlns:th="https://www.thymeleaf.org">
   <!-- 通用三栏布局容器（自动检测小部件） -->
   <th:block th:fragment="three-column-layout-auto(mainContent, leftContent, rightContent)">
@@ -22,7 +28,7 @@
                     <th:block th:replace="${leftContent}" />
                   </th:block>
                   <th:block th:if="${leftContent == null and hasLeftWidgets}">
-                    <th:block th:replace="~{modules/configured-sidebar :: configured-sidebar(widgets = ${allWidgets}, position = 'left')}" />
+                    <th:block th:replace="~{modules/widgets/configured-sidebar :: configured-sidebar(widgets = ${allWidgets}, position = 'left')}" />
                   </th:block>
                 </aside>
 
@@ -43,7 +49,7 @@
                     <th:block th:replace="${rightContent}" />
                   </th:block>
                   <th:block th:if="${rightContent == null and hasRightWidgets}">
-                    <th:block th:replace="~{modules/configured-sidebar :: configured-sidebar(widgets = ${allWidgets}, position = 'right')}" />
+                    <th:block th:replace="~{modules/widgets/configured-sidebar :: configured-sidebar(widgets = ${allWidgets}, position = 'right')}" />
                   </th:block>
                 </aside>
               </div>

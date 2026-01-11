@@ -1,0 +1,98 @@
+<!--
+  Component: Post Card Vertical
+  Description: A vertical card layout for displaying post summaries, used in grid and masonry views.
+  组件：竖向文章卡片
+  描述：用于网格和瀑布流视图的竖向卡片布局，显示文章摘要。
+-->
+<th:block th:fragment="post-card-vertical(post, list_layout, card_style, card_animation, showExcerpt, showAuthor, showDate, showTags, showVisitCount, showUpvoteCount, showCommentCount)">
+  <article
+    class="aurora-post-card direction-col group flex flex-col overflow-hidden bg-white dark:bg-slate-800 transition-all duration-300"
+    th:classappend="|style-${card_style} animation-${card_animation}|"
+  >
+    <!-- 封面图 -->
+    <a
+      th:href="@{${post.status.permalink}}"
+      class="aurora-post-card-image-wrapper relative block w-full overflow-hidden"
+      th:classappend="${#strings.isEmpty(post.spec.cover) ? 'no-cover aspect-video bg-gray-100 dark:bg-slate-700' : 'aspect-video'}"
+    >
+      <img
+        th:if="${not #strings.isEmpty(post.spec.cover)}"
+        th:src="${post.spec.cover}"
+        th:alt="${post.spec.title}"
+        loading="lazy"
+        class="aurora-post-card-image h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+      />
+      <!-- 无封面图时的占位 -->
+      <div th:if="${#strings.isEmpty(post.spec.cover)}" class="aurora-post-card-placeholder flex h-full w-full items-center justify-center text-gray-300 dark:text-slate-600">
+        <span class="aurora-post-card-placeholder-icon i-[tabler--photo] text-4xl"></span>
+      </div>
+      <!-- 分类标签（悬浮在图片上） -->
+      <div class="aurora-post-card-categories absolute left-3 top-3 z-10 flex flex-wrap gap-2" th:if="${not #lists.isEmpty(post.categories)}">
+        <span
+          th:each="category : ${post.categories}"
+          class="aurora-post-card-category rounded-md bg-white/90 px-2 py-0.5 text-xs font-medium text-gray-700 shadow-sm backdrop-blur-sm dark:bg-slate-800/90 dark:text-gray-200"
+          th:text="${category.spec.displayName}"
+        ></span>
+      </div>
+    </a>
+
+    <!-- 内容区域 -->
+    <div class="aurora-post-card-content flex flex-1 flex-col p-4 sm:p-5">
+      <!-- 标签 -->
+      <div th:if="${showTags and not #lists.isEmpty(post.tags)}" class="aurora-post-tags mb-3 flex flex-wrap gap-2">
+        <span th:each="tag : ${post.tags}" class="aurora-post-tag rounded bg-gray-100 px-1.5 py-0.5 text-xs text-gray-600 transition-colors hover:bg-blue-50 hover:text-blue-600 dark:bg-slate-700 dark:text-gray-400 dark:hover:bg-blue-900/30 dark:hover:text-blue-400">
+          <span class="hash mr-0.5 opacity-50">#</span>
+          <span th:text="${tag.spec.displayName}"></span>
+        </span>
+      </div>
+
+      <!-- 标题 -->
+      <h2 class="aurora-post-title mb-3 text-lg font-bold leading-tight text-gray-900 transition-colors group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400 sm:text-xl">
+        <a th:href="@{${post.status.permalink}}" th:text="${post.spec.title}" class="block"></a>
+      </h2>
+
+      <!-- 摘要 -->
+      <p th:if="${showExcerpt}" class="aurora-post-excerpt mb-4 line-clamp-3 text-sm text-gray-600 dark:text-gray-400" th:text="${post.status.excerpt}"></p>
+
+      <!-- Meta 信息 -->
+      <div class="aurora-post-meta mt-auto flex items-center justify-between border-t border-gray-100 pt-4 text-xs text-gray-500 dark:border-gray-700 dark:text-gray-400">
+        <!-- 作者 -->
+        <div th:if="${showAuthor}" class="aurora-post-author flex items-center gap-2">
+          <img
+            th:if="${not #strings.isEmpty(post.owner.avatar)}"
+            th:src="${post.owner.avatar}"
+            th:alt="${post.owner.displayName}"
+            class="aurora-post-author-avatar h-6 w-6 rounded-full object-cover"
+          />
+          <span class="font-medium" th:text="${post.owner.displayName}"></span>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <!-- 日期 -->
+          <span th:if="${showDate}" class="aurora-post-date flex items-center gap-1" title="发布日期">
+            <span class="i-[tabler--calendar]"></span>
+            <span th:text="${#dates.format(post.spec.publishTime, 'yyyy-MM-dd')}"></span>
+          </span>
+
+          <!-- 访问量 -->
+          <span th:if="${showVisitCount}" class="aurora-post-stat flex items-center gap-1" title="访问量">
+            <span class="i-[tabler--eye]"></span>
+            <span th:text="${post.stats.visit}"></span>
+          </span>
+
+          <!-- 点赞数 -->
+          <span th:if="${showUpvoteCount}" class="aurora-post-stat flex items-center gap-1" title="点赞数">
+            <span class="i-[tabler--thumb-up]"></span>
+            <span th:text="${post.stats.upvote}"></span>
+          </span>
+
+          <!-- 评论数 -->
+          <span th:if="${showCommentCount}" class="aurora-post-stat flex items-center gap-1" title="评论数">
+            <span class="i-[tabler--message-circle]"></span>
+            <span th:text="${post.stats.comment}"></span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </article>
+</th:block>

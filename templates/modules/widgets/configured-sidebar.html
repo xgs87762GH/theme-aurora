@@ -1,3 +1,9 @@
+<!--
+  Component: Configured Sidebar
+  Description: Loads and renders user-configured sidebar widgets based on settings.
+  组件：已配置侧边栏
+  描述：根据设置加载并渲染用户配置的侧边栏小部件。
+-->
 <!-- 可配置的侧边栏组件 -->
 <!-- 只返回内容，不返回 aside 标签（aside 标签由调用方提供） -->
 <th:block th:fragment="configured-sidebar(widgets, position)" th:with="targetPosition=${position}">
@@ -12,7 +18,7 @@
           >
             <th:block th:classappend="${hideClass}">
               <th:block th:with="widgetConfig=${widget}">
-                <th:block th:replace="~{'modules/sidebar-widgets/'+${widget.value}}" />
+                <th:block th:replace="~{'modules/widgets/sidebar/'+${widget.value}}" />
               </th:block>
             </th:block>
           </th:block>

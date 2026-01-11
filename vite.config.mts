@@ -1,9 +1,34 @@
 import { defineConfig } from "vite";
 import { fileURLToPath } from "url";
 import path from "path";
+import { viteStaticCopy } from "vite-plugin-static-copy";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const TARGET_DIR = path.resolve(__dirname, "../../halo2-dev/themes/theme-aurora");
 
 export default defineConfig({
-  plugins: [],
+  plugins: [
+    viteStaticCopy({
+      targets: [
+        {
+          src: "templates",
+          dest: TARGET_DIR,
+        },
+        {
+          src: "i18n",
+          dest: TARGET_DIR,
+        },
+        {
+          src: "settings.yaml",
+          dest: TARGET_DIR,
+        },
+        {
+          src: "theme.yaml",
+          dest: TARGET_DIR,
+        },
+      ],
+    }),
+  ],
   build: {
     outDir: fileURLToPath(new URL("./templates/assets/dist", import.meta.url)),
     emptyOutDir: true,
@@ -25,3 +50,4 @@ export default defineConfig({
     exclude: ["transliteration"],
   },
 });
+

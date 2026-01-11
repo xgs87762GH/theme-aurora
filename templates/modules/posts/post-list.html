@@ -1,0 +1,115 @@
+<!--
+  Component: Post List
+  Description: Renders a list of posts with support for different layouts (grid, list, masonry).
+  组件：文章列表
+  描述：渲染文章列表，支持多种布局（网格、列表、瀑布流）。
+-->
+<!-- showPagination: 是否显示分页（只有通过路由系统返回的 posts 对象才有完整的分页信息） -->
+<!-- paginationContext: 分页的上下文路径（可选，默认为 '/'） -->
+
+<style>
+  
+/* 瀑布流中无图片卡片的随机高度占位（临时样式） */
+.aurora-post-list.masonry .aurora-post-card .no-cover {
+  aspect-ratio: unset; /* 移除固定的 16:9 比例 */
+  height: 180px; /* 默认高度 */
+}
+
+/* 使用 :nth-child 为不同位置的卡片设置不同高度，模拟随机效果 */
+.aurora-post-list.masonry .aurora-post-card:nth-child(1) .no-cover { height: 160px; }
+.aurora-post-list.masonry .aurora-post-card:nth-child(2) .no-cover { height: 220px; }
+.aurora-post-list.masonry .aurora-post-card:nth-child(3) .no-cover { height: 140px; }
+.aurora-post-list.masonry .aurora-post-card:nth-child(4) .no-cover { height: 260px; }
+.aurora-post-list.masonry .aurora-post-card:nth-child(5) .no-cover { height: 190px; }
+.aurora-post-list.masonry .aurora-post-card:nth-child(6) .no-cover { height: 200px; }
+.aurora-post-list.masonry .aurora-post-card:nth-child(7) .no-cover { height: 150px; }
+.aurora-post-list.masonry .aurora-post-card:nth-child(8) .no-cover { height: 240px; }
+.aurora-post-list.masonry .aurora-post-card:nth-child(9) .no-cover { height: 170px; }
+.aurora-post-list.masonry .aurora-post-card:nth-child(10) .no-cover { height: 210px; }
+.aurora-post-list.masonry .aurora-post-card:nth-child(11) .no-cover { height: 180px; }
+.aurora-post-list.masonry .aurora-post-card:nth-child(12) .no-cover { height: 230px; }
+
+/* 12 个之后循环使用相同的高度模式 */
+.aurora-post-list.masonry .aurora-post-card:nth-child(12n+1) .no-cover { height: 160px; }
+.aurora-post-list.masonry .aurora-post-card:nth-child(12n+2) .no-cover { height: 220px; }
+.aurora-post-list.masonry .aurora-post-card:nth-child(12n+3) .no-cover { height: 140px; }
+.aurora-post-list.masonry .aurora-post-card:nth-child(12n+4) .no-cover { height: 260px; }
+.aurora-post-list.masonry .aurora-post-card:nth-child(12n+5) .no-cover { height: 190px; }
+.aurora-post-list.masonry .aurora-post-card:nth-child(12n+6) .no-cover { height: 200px; }
+.aurora-post-list.masonry .aurora-post-card:nth-child(12n+7) .no-cover { height: 150px; }
+.aurora-post-list.masonry .aurora-post-card:nth-child(12n+8) .no-cover { height: 240px; }
+.aurora-post-list.masonry .aurora-post-card:nth-child(12n+9) .no-cover { height: 170px; }
+.aurora-post-list.masonry .aurora-post-card:nth-child(12n+10) .no-cover { height: 210px; }
+.aurora-post-list.masonry .aurora-post-card:nth-child(12n+11) .no-cover { height: 180px; }
+.aurora-post-list.masonry .aurora-post-card:nth-child(12n+12) .no-cover { height: 230px; }
+</style>
+
+<th:block th:fragment="post-list(posts, list_layout, card_gap, card_style, card_animation, image_position, headerWidget, isFirstPage, showPagination, paginationContext)">
+  <th:block th:with="skipCount=${isFirstPage and headerWidget == 'latest_post' ? 1 : (isFirstPage and headerWidget == 'latest_post_grid' ? 5 : 0)},postItems=${skipCount gt 0 and not #lists.isEmpty(posts.items) and posts.items.size() gt skipCount ? posts.items.subList(skipCount, posts.items.size()) : posts.items},base_layout=${theme.config.post_list.post_list_layout ?: 'grid_2'}">
+    
+    <!-- 文章列表 -->
+    <div
+      id="post-list"
+      th:if="${posts.total gt 0}"
+      class="aurora-post-list grid" 
+      th:classappend="|
+        ${list_layout == 'grid_2' ? 'grid-cols-1 md:grid-cols-2' : ''} 
+        ${list_layout == 'grid_3' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : ''} 
+        ${list_layout == 'grid_4' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4' : ''} 
+        ${list_layout == 'single' ? 'grid-cols-1' : ''} 
+        ${list_layout == 'list' ? 'flex flex-col' : ''} 
+        ${list_layout == 'masonry' and base_layout == 'grid_2' ? 'masonry !block columns-1 md:columns-2' : ''} 
+        ${list_layout == 'masonry' and base_layout == 'grid_3' ? 'masonry !block columns-1 md:columns-2 lg:columns-3' : ''} 
+        ${list_layout == 'masonry' and base_layout == 'grid_4' ? 'masonry !block columns-1 md:columns-2 lg:columns-3 xl:columns-4' : ''} 
+        ${card_gap == 'tight' ? 'gap-3' : ''} 
+        ${card_gap == 'medium' ? 'gap-6' : ''} 
+        ${card_gap == 'loose' ? 'gap-8' : ''} 
+        ${card_gap == 'extra_loose' ? 'gap-12' : ''}|"
+    >
+      <th:block th:each="post : ${postItems}">
+        <!-- 根据布局模式选择不同的卡片组件 -->
+        <th:block th:with="normalizedImagePosition=${image_position != null and image_position != '' ? image_position : 'left'},isGridLayout=${list_layout == 'grid_2' or list_layout == 'grid_3' or list_layout == 'grid_4'},isListLayout=${list_layout == 'list'},isSingleLayout=${list_layout == 'single'},showExcerpt=${theme.config.post_list.show_post_excerpt ?: true},showAuthor=${theme.config.post_list.show_post_author ?: true},showDate=${theme.config.post_list.show_post_date ?: true},showTags=${theme.config.post_list.show_post_tags ?: true},showVisitCount=${theme.config.post_list.show_post_visit_count ?: false},showUpvoteCount=${theme.config.post_list.show_post_upvote_count ?: false},showCommentCount=${theme.config.post_list.show_post_comment_count ?: false}">
+          <!-- Grid 布局：使用竖向卡片组件 -->
+          <th:block th:if="${isGridLayout}">
+            <th:block th:replace="~{modules/posts/post-card-vertical :: post-card-vertical(post=${post},list_layout=${list_layout},card_style=${card_style ?: 'default'},card_animation=${card_animation ?: 'hover_lift'},showExcerpt=${showExcerpt},showAuthor=${showAuthor},showDate=${showDate},showTags=${showTags},showVisitCount=${showVisitCount},showUpvoteCount=${showUpvoteCount},showCommentCount=${showCommentCount})}" />
+          </th:block>
+          <!-- List/Single 布局：使用横向卡片组件 -->
+          <th:block th:if="${isListLayout or isSingleLayout}">
+            <th:block th:replace="~{modules/posts/post-card-horizontal :: post-card-horizontal(post=${post},image_position=${normalizedImagePosition},card_style=${card_style ?: 'default'},card_animation=${card_animation ?: 'hover_lift'},showExcerpt=${showExcerpt},showAuthor=${showAuthor},showDate=${showDate},showTags=${showTags},showVisitCount=${showVisitCount},showUpvoteCount=${showUpvoteCount},showCommentCount=${showCommentCount})}" />
+          </th:block>
+          <!-- Masonry 布局：使用竖向卡片组件 -->
+          <th:block th:if="${list_layout == 'masonry'}">
+            <th:block th:replace="~{modules/posts/post-card-vertical :: post-card-vertical(post=${post},list_layout=${list_layout},card_style=${card_style ?: 'default'},card_animation=${card_animation ?: 'hover_lift'},showExcerpt=${showExcerpt},showAuthor=${showAuthor},showDate=${showDate},showTags=${showTags},showVisitCount=${showVisitCount},showUpvoteCount=${showUpvoteCount},showCommentCount=${showCommentCount})}" />
+          </th:block>
+        </th:block>
+      </th:block>
+    </div>
+
+    <!-- 空状态 -->
+    <div th:if="${posts.total == 0}" class="flex items-center justify-center py-16">
+      <div class="text-center">
+        <span class="i-[tabler--file-off] text-6xl text-gray-300 dark:text-slate-600"></span>
+        <p class="mt-4 text-sm font-light text-gray-500 dark:text-slate-400" th:text="#{common.noPosts}"></p>
+      </div>
+    </div>
+
+    <!-- 分页 -->
+    <!-- 注意：postFinder.listByCategory() 返回的 ListResult 对象没有 prevUrl、nextUrl 等分页属性 -->
+    <!-- 只有通过路由系统返回的 posts 对象才有完整的分页信息 -->
+    <!-- showPagination 标志用于指示是否应该显示分页 -->
+    <!-- 关键问题：即使 th:if 为 false，Thymeleaf 仍会解析 th:replace 中的所有表达式 -->
+    <!-- 这导致即使 showPagination == false，访问 posts.prevUrl 时仍会抛出异常 -->
+    <!-- 解决方案：使用 th:if 完全跳过分页部分，并且确保 showPagination 明确为 true 时才访问分页属性 -->
+    <!-- 注意：showPagination 默认为 null，需要明确检查是否为 true（不能使用 != false，因为 null != false 为 true） -->
+    <th:block th:if="${showPagination == true and posts.total gt 0}">
+      <!-- 当 showPagination == true 时，posts 对象应该有分页信息（来自路由系统） -->
+      <!-- 但仍然需要检查分页属性是否存在，以防万一 -->
+      <th:block
+        th:if="${posts.prevUrl != null and posts.nextUrl != null and posts.totalPages != null and posts.page != null}"
+        th:with="paginationCtx=${paginationContext != null ? paginationContext : '/'}"
+        class="mt-8"
+        th:replace="~{modules/components/pagination :: pagination(context = ${paginationCtx}, prevUrl = ${posts.prevUrl}, nextUrl = ${posts.nextUrl}, totalPages = ${posts.totalPages}, page = ${posts.page}, hasPrevious = ${posts.hasPrevious()}, hasNext = ${posts.hasNext()})}"
+      />
+    </th:block>
+  </th:block>
+</th:block>

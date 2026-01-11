@@ -1,0 +1,176 @@
+<!--
+  Component: Global Footer
+  Description: The site footer, supporting two different styles (simple and menu-rich).
+  组件：全局页脚
+  描述：站点页脚，支持两种不同风格（简单风格和富菜单风格）。
+-->
+<footer
+  class="mt-auto bg-white py-12 dark:bg-gray-800"
+  th:with="style=${theme.config.footer.style}"
+>
+  <div class="aurora-footer-container">
+    <!-- 风格一：原有设计 -->
+    <div th:if="${style == 'style_1'}" class="flex flex-col gap-6">
+      <!-- 主要内容区域 -->
+      <div class="flex flex-col items-center justify-between gap-6 md:flex-row">
+        <div class="flex flex-col items-center gap-4 md:flex-row">
+          <!-- Logo -->
+          <a href="/" class="flex items-center gap-2">
+            <img
+              th:if="${not #strings.isEmpty(theme.config.footer.logo ?: site.logo)}"
+              th:src="${theme.config.footer.logo ?: site.logo}"
+              alt="Footer Logo"
+              class="h-8 w-auto"
+            />
+            <span
+              class="text-xl font-bold text-gray-900 dark:text-white"
+              th:text="${theme.config.footer.title ?: site.title}"
+            ></span>
+          </a>
+          
+          <!-- Copyright -->
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            <span
+              >&copy; <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}"></span>
+              <span th:text="${site.title}"></span
+            ></span>
+            <span class="mx-2 hidden md:inline">|</span>
+            <span>Powered by Halo</span>
+          </div>
+        </div>
+
+        <div class="flex flex-col items-center gap-4 md:flex-row">
+          <!-- Menu -->
+          <nav
+            th:if="${not #strings.isEmpty(theme.config.footer.right_menu)}"
+            th:with="footerMenu=${menuFinder.getByName(theme.config.footer.right_menu)}"
+          >
+            <ul class="flex flex-wrap justify-center gap-6" th:if="${footerMenu != null and not #lists.isEmpty(footerMenu.menuItems)}">
+              <li th:each="item : ${footerMenu.menuItems}">
+                <a
+                  th:href="@{${item.status.href}}"
+                  th:text="${item.status.displayName}"
+                  th:target="${item.spec.target?.value}"
+                  class="text-sm text-gray-600 transition-colors hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400"
+                ></a>
+              </li>
+            </ul>
+          </nav>
+
+          <!-- Social Icons -->
+          <th:block th:replace="~{modules/common/footer-social :: social-icons}" />
+        </div>
+      </div>
+      
+      <!-- ICP 备案信息 -->
+      <div
+        th:if="${not #strings.isEmpty(theme.config.global.icp_text) or not #strings.isEmpty(theme.config.global.gongan_text)}"
+        class="flex flex-wrap justify-center gap-2 border-t border-gray-200 pt-6 text-xs text-gray-500 dark:border-gray-700 dark:text-gray-400 md:gap-4"
+      >
+        <a
+          th:if="${not #strings.isEmpty(theme.config.global.icp_text)}"
+          th:href="${theme.config.global.icp_link ?: 'https://beian.miit.gov.cn/'}"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:text-blue-600 dark:hover:text-blue-400"
+          th:text="${theme.config.global.icp_text}"
+        ></a>
+        <a
+          th:if="${not #strings.isEmpty(theme.config.global.gongan_text)}"
+          th:href="${theme.config.global.gongan_link ?: 'https://beian.mps.gov.cn/#/query/webSearch'}"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400"
+        >
+          <img src="https://beian.mps.gov.cn/img/logo01.dd7ff50e.png" alt="公安备案图标" class="h-3 w-3" />
+          <span th:text="${theme.config.global.gongan_text}"></span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 风格二：多列布局 -->
+    <div th:if="${style == 'style_2'}" class="grid grid-cols-1 gap-12 lg:grid-cols-12">
+      <!-- 品牌区域 -->
+      <div class="lg:col-span-4">
+        <a href="/" class="mb-6 flex items-center gap-2">
+          <img
+            th:if="${not #strings.isEmpty(theme.config.footer.logo ?: site.logo)}"
+            th:src="${theme.config.footer.logo ?: site.logo}"
+            alt="Footer Logo"
+            class="h-10 w-auto"
+          />
+          <span
+            class="text-2xl font-bold text-gray-900 dark:text-white"
+            th:text="${theme.config.footer.title ?: site.title}"
+          ></span>
+        </a>
+        <p
+          class="mb-6 text-gray-600 dark:text-gray-400"
+          th:if="${not #strings.isEmpty(theme.config.footer.slogan)}"
+          th:text="${theme.config.footer.slogan}"
+        ></p>
+        <th:block th:replace="~{modules/common/footer-social :: social-icons}" />
+      </div>
+
+      <!-- 菜单链接区域 -->
+      <div class="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-8">
+        <th:block th:if="${not #lists.isEmpty(theme.config.footer.menu_names)}">
+          <div th:each="menuName : ${theme.config.footer.menu_names}" th:with="menu=${menuFinder.getByName(menuName)}">
+            <th:block th:if="${menu != null}">
+              <h3
+                class="mb-4 text-sm font-semibold uppercase tracking-wider text-gray-900 dark:text-white"
+                th:text="${menu.spec.displayName}"
+              ></h3>
+              <ul class="space-y-3" th:if="${not #lists.isEmpty(menu.menuItems)}">
+                <li th:each="item : ${menu.menuItems}">
+                  <a
+                    th:href="@{${item.status.href}}"
+                    th:text="${item.status.displayName}"
+                    th:target="${item.spec.target?.value}"
+                    class="text-base text-gray-600 transition-colors hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
+                  ></a>
+                </li>
+              </ul>
+            </th:block>
+          </div>
+        </th:block>
+      </div>
+      
+      <!-- 底部版权区域 -->
+      <div class="mt-12 border-t border-gray-200 pt-8 dark:border-gray-700 lg:col-span-12">
+        <div class="flex flex-col items-center justify-between gap-4 md:flex-row">
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            <span
+              >&copy; <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}"></span>
+              <span th:text="${site.title}"></span
+            ></span>
+            <span class="mx-2">|</span>
+            <span>Powered by Halo</span>
+          </div>
+          
+          <!-- ICP 备案信息 -->
+          <div class="flex flex-wrap justify-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+            <a
+              th:if="${not #strings.isEmpty(theme.config.global.icp_text)}"
+              th:href="${theme.config.global.icp_link ?: 'https://beian.miit.gov.cn/'}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hover:text-blue-600 dark:hover:text-blue-400"
+              th:text="${theme.config.global.icp_text}"
+            ></a>
+            <a
+              th:if="${not #strings.isEmpty(theme.config.global.gongan_text)}"
+              th:href="${theme.config.global.gongan_link ?: 'https://beian.mps.gov.cn/#/query/webSearch'}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400"
+            >
+              <img src="https://beian.mps.gov.cn/img/logo01.dd7ff50e.png" alt="公安备案图标" class="h-4 w-4" />
+              <span th:text="${theme.config.global.gongan_text}"></span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<!--
+  Layout: Base Layout
+  Description: The base HTML structure for all pages, defining head, body, and script resources.
+  布局：基础布局
+  描述：所有页面的基础 HTML 结构，定义了 head、body 和脚本资源。
+-->
+<html lang="zh-CN" th:fragment="html (title, hero, content, head, footer, sidebar, contentClass)"
+  xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <th:block th:replace="~{modules/common/base-head :: base-head(${title})}" />
+  <th:block th:if="${head != null}">
+    <th:block th:replace="${head}" />
+  </th:block>
+</head>
+
+<body class="bg-gray-50 text-gray-900 antialiased dark:bg-slate-900 dark:text-slate-100 flex flex-col min-h-screen">
+  <th:block th:replace="~{modules/common/header}" />
+
+  <th:block th:if="${hero != null}">
+    <th:block th:replace="${hero}" />
+  </th:block>
+
+  <div class="flex-grow" th:classappend="${contentClass}">
+    <th:block th:replace="${content}" />
+  </div>
+
+  <th:block th:replace="${footer} ?: ~{modules/common/footer}" />
+</body>
+
+</html>
