@@ -34,7 +34,7 @@ export interface BannerWheelHandlerOptions {
 export function createBannerWheelHandler(options: BannerWheelHandlerOptions): () => void {
   const {
     banner,
-    useGlobalBg,
+    useGlobalBg: _useGlobalBg,
     threshold = 50,
     debounce = 300,
     onWheel
