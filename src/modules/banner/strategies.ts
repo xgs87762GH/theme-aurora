@@ -10,12 +10,39 @@ export interface BannerBackgroundStrategy {
 
 // 策略1: 全局背景模式（不淡出，作为全局背景）
 export class GlobalBackgroundStrategy implements BannerBackgroundStrategy {
-  init(_banner: HTMLElement): void {
-    // 全局背景模式不需要滚动处理
+  private bannerImageUrl: string | null = null;
+
+  init(banner: HTMLElement): void {
+    // 获取 Banner 的背景图片 URL（仅支持图片类型）
+    const bgImage = window.getComputedStyle(banner).backgroundImage;
+    
+    // 从 backgroundImage 字符串中提取 URL（格式：url("...") 或 url('...') 或 url(...)）
+    const urlMatch = bgImage.match(/url\(['"]?([^'"]+)['"]?\)/);
+    if (urlMatch && urlMatch[1]) {
+      this.bannerImageUrl = urlMatch[1];
+      
+      // 将 Banner 图片应用到 body 元素作为全局背景
+      document.body.style.backgroundImage = bgImage;
+      document.body.style.backgroundSize = 'cover';
+      document.body.style.backgroundPosition = 'center';
+      document.body.style.backgroundRepeat = 'no-repeat';
+      document.body.style.backgroundAttachment = 'fixed';
+    }
   }
 
   handleScroll(_banner: HTMLElement, _scrollTop: number, _bannerHeight: number): void {
     // 全局背景模式下，Banner 背景不淡出
+  }
+
+  cleanup(): void {
+    // 清理时移除 body 的背景图片
+    if (this.bannerImageUrl) {
+      document.body.style.backgroundImage = '';
+      document.body.style.backgroundSize = '';
+      document.body.style.backgroundPosition = '';
+      document.body.style.backgroundRepeat = '';
+      document.body.style.backgroundAttachment = '';
+    }
   }
 }
 
