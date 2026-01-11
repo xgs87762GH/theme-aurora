@@ -2,7 +2,7 @@
  * Banner 初始化和管理
  */
 import { initFullScreenBannerEffect } from "./fullscreen-effect";
-import { initBannerBackgroundStrategy } from "./strategies";
+import { initBannerBackgroundStrategy, GlobalBackgroundStrategy } from "./strategies";
 import { initBannerCarousel } from "./carousel";
 import { initBannerPostsHide } from "./posts-hide";
 
@@ -16,9 +16,7 @@ export function initBanner(): void {
   if (banners.length === 0) {
     console.warn("[Banner Debug] 警告：未找到任何 Banner 元素");
     // 即使没有 Banner 元素，如果启用全局背景，也要尝试从 localStorage 读取并应用
-    import("./strategies").then(({ GlobalBackgroundStrategy }) => {
-      GlobalBackgroundStrategy.applyFromStorage();
-    });
+    GlobalBackgroundStrategy.applyFromStorage();
     return;
   }
 
