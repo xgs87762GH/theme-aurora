@@ -217,7 +217,7 @@
 .aurora-body {
   width: 100%;
   margin: 0 auto;
-  padding: 0;
+  padding-top: 20px !important;
   box-sizing: border-box;
 }
 
@@ -227,6 +227,7 @@
   .aurora-body {
     width: 100%;
     max-width: 100%;
+    min-height: 100vh;
   }
 }
 
@@ -255,6 +256,7 @@
   .aurora-body {
     width: 70%;
     max-width: 1000px;
+    min-height: 100vh;
   }
 }
 
@@ -263,6 +265,7 @@
   .aurora-body {
     width: 68%;
     max-width: 1200px;
+    min-height: 100vh;
   }
 }
 
@@ -271,6 +274,7 @@
   .aurora-body {
     width: 65%;
     max-width: 1400px;
+    min-height: 100vh;
   }
 }
 
@@ -627,16 +631,6 @@
    ============================================ */
 
 /* 页脚顶部间距 */
-footer {
-  margin-top: 1rem !important;
-}
-
-/* 移动端：减小间距 */
-@media (max-width: 767px) {
-  footer {
-    margin-top: 0.5rem !important;
-  }
-}
 
 /* Footer Container - 页脚容器，与内容区域对齐 */
 /* 与 aurora-body 保持一致的宽度设置 */
@@ -686,18 +680,6 @@ footer {
 /* ============================================
    Header - 导航栏样式
    ============================================ */
-
-/* 导航栏底部间距 */
-#header-menu {
-  margin-bottom: 1rem;
-}
-
-/* 移动端：减小间距 */
-@media (max-width: 767px) {
-  #header-menu {
-    margin-bottom: 0.5rem;
-  }
-}
 
 /* aurora-header-container: 导航栏容器，与 aurora-body 保持一致的宽度设置 */
 .aurora-header-container {
