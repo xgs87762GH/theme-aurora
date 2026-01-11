@@ -1,11 +1,6 @@
 /**
  * Banner 鼠标滚动事件处理器
  */
-import {
-  incrementWheelEventCount,
-  updateBannerLastWheelTime,
-  showBannerDebugInfo
-} from "../debug/banner-debug";
 
 /**
  * Banner 滚动事件配置
@@ -56,10 +51,6 @@ export function createBannerWheelHandler(options: BannerWheelHandlerOptions): ()
     const currentDirection: 'up' | 'down' = e.deltaY > 0 ? 'down' : 'up';
     const absDeltaY = Math.abs(e.deltaY);
 
-    // 更新调试信息
-    incrementWheelEventCount();
-    updateBannerLastWheelTime(now);
-
     // 累积滚轮增量（只累积同方向的）
     if (lastDirection === null || lastDirection === currentDirection) {
       wheelDeltaAccumulator += absDeltaY;
@@ -71,24 +62,15 @@ export function createBannerWheelHandler(options: BannerWheelHandlerOptions): ()
 
     // 防抖检查
     if (timeSinceLastWheel < debounce) {
-      console.log("[Banner Wheel] 防抖中 - deltaY:", e.deltaY, "累积:", wheelDeltaAccumulator, "时间间隔:", timeSinceLastWheel, "ms");
-      // 即使防抖中，也更新调试面板
-      showBannerDebugInfo();
       return;
     }
 
     // 阈值检查
     if (wheelDeltaAccumulator < threshold) {
-      console.log("[Banner Wheel] 增量不足 - deltaY:", e.deltaY, "累积:", wheelDeltaAccumulator, "阈值:", threshold);
-      // 即使增量不足，也更新调试面板
-      showBannerDebugInfo();
       return;
     }
 
     // 达到阈值，触发回调
-    console.log("[Banner Wheel] 触发 - scrollY:", currentScroll, "deltaY:", e.deltaY, "累积:", wheelDeltaAccumulator, "方向:", currentDirection, "全局背景:", useGlobalBg);
-
-    // 调用自定义回调
     if (onWheel) {
       onWheel(e, wheelDeltaAccumulator, currentDirection, currentScroll);
     }
@@ -96,9 +78,6 @@ export function createBannerWheelHandler(options: BannerWheelHandlerOptions): ()
     // 重置状态
     lastWheelTime = now;
     wheelDeltaAccumulator = 0;
-
-    // 更新调试面板
-    showBannerDebugInfo();
   };
 
   // 绑定到 document 和 banner 元素

@@ -1,11 +1,6 @@
 /**
  * 全屏 Banner 滚动效果（放大、固定、跳转）
  */
-import {
-  incrementClickEventCount,
-  updateBannerLastClickTime,
-  showBannerDebugInfo
-} from "../debug/banner-debug";
 import { initBannerWheelScrollHandler } from "./wheel-scroll-handler";
 
 export function initFullScreenBannerEffect(banner: HTMLElement, useGlobalBg: boolean = false): void {
@@ -61,29 +56,10 @@ export function initFullScreenBannerEffect(banner: HTMLElement, useGlobalBg: boo
 
   // 滚动提示按钮点击事件
   if (scrollDownBtn) {
-    console.log("[Banner Debug] 绑定滚动按钮点击事件，按钮元素:", scrollDownBtn);
-    
-    // 测试按钮是否可点击
-    console.log("[Banner Debug] 按钮样式:", window.getComputedStyle(scrollDownBtn).pointerEvents);
-    console.log("[Banner Debug] 按钮位置:", scrollDownBtn.getBoundingClientRect());
-    
     const handleButtonClick = (e: MouseEvent) => {
-      incrementClickEventCount();
-      updateBannerLastClickTime(Date.now());
-      console.log("[Banner Debug] 滚动按钮被点击！", {
-        type: e.type,
-        target: e.target,
-        currentTarget: e.currentTarget,
-        button: e.button,
-        clientX: e.clientX,
-        clientY: e.clientY
-      });
       e.preventDefault();
       e.stopPropagation();
-      console.log("[Banner Debug] 准备滚动到内容区域，目标位置:", bannerHeight);
       scrollToContent();
-      // 更新调试面板
-      showBannerDebugInfo();
     };
     
     // 绑定点击事件（使用多个事件类型确保捕获）
