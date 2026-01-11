@@ -628,13 +628,13 @@
 
 /* 页脚顶部间距 */
 footer {
-  margin-top: 2rem;
+  margin-top: 1rem !important;
 }
 
 /* 移动端：减小间距 */
 @media (max-width: 767px) {
   footer {
-    margin-top: 1rem;
+    margin-top: 0.5rem !important;
   }
 }
 
