@@ -626,6 +626,18 @@
    Footer Container - 页脚容器
    ============================================ */
 
+/* 页脚顶部间距 */
+footer {
+  margin-top: 2rem;
+}
+
+/* 移动端：减小间距 */
+@media (max-width: 767px) {
+  footer {
+    margin-top: 1rem;
+  }
+}
+
 /* Footer Container - 页脚容器，与内容区域对齐 */
 /* 与 aurora-body 保持一致的宽度设置 */
 .aurora-footer-container {
@@ -677,13 +689,13 @@
 
 /* 导航栏底部间距 */
 #header-menu {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 /* 移动端：减小间距 */
 @media (max-width: 767px) {
   #header-menu {
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
   }
 }
 
