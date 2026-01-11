@@ -675,6 +675,18 @@
    Header - 导航栏样式
    ============================================ */
 
+/* 导航栏底部间距 */
+#header-menu {
+  margin-bottom: 2rem;
+}
+
+/* 移动端：减小间距 */
+@media (max-width: 767px) {
+  #header-menu {
+    margin-bottom: 1rem;
+  }
+}
+
 /* aurora-header-container: 导航栏容器，与 aurora-body 保持一致的宽度设置 */
 .aurora-header-container {
   width: 100%;
