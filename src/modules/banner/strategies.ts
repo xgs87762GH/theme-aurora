@@ -102,7 +102,7 @@ export class ScrollFadeStrategy implements BannerBackgroundStrategy {
  */
 export function initBannerBackgroundStrategy(
   banner: HTMLElement,
-  isFullScreen: boolean,
+  _isFullScreen: boolean,
   useGlobalBg: boolean
 ): void {
   // 使用全局背景模式：应用全局背景策略（不限制是否全屏）
