@@ -15,6 +15,10 @@ export function initBanner(): void {
   
   if (banners.length === 0) {
     console.warn("[Banner Debug] 警告：未找到任何 Banner 元素");
+    // 即使没有 Banner 元素，如果启用全局背景，也要尝试从 localStorage 读取并应用
+    import("./strategies").then(({ GlobalBackgroundStrategy }) => {
+      GlobalBackgroundStrategy.applyFromStorage();
+    });
     return;
   }
 

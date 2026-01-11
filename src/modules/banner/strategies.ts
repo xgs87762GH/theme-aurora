@@ -11,6 +11,7 @@ export interface BannerBackgroundStrategy {
 // 策略1: 全局背景模式（不淡出，作为全局背景）
 export class GlobalBackgroundStrategy implements BannerBackgroundStrategy {
   private bannerImageUrl: string | null = null;
+  private static readonly STORAGE_KEY = 'aurora_banner_global_bg_image';
 
   init(banner: HTMLElement): void {
     // 检查 Banner 类型，仅图片类型支持全局背景
@@ -31,6 +32,13 @@ export class GlobalBackgroundStrategy implements BannerBackgroundStrategy {
     if (urlMatch && urlMatch[1] && urlMatch[1] !== 'none') {
       this.bannerImageUrl = urlMatch[1];
       
+      // 将 Banner 图片 URL 保存到 localStorage，供其他页面使用
+      try {
+        localStorage.setItem(GlobalBackgroundStrategy.STORAGE_KEY, this.bannerImageUrl);
+      } catch (e) {
+        console.warn('[Banner] 无法保存 Banner 图片到 localStorage:', e);
+      }
+      
       // 将 Banner 图片应用到 body 元素作为全局背景
       document.body.style.backgroundImage = bgImage;
       document.body.style.backgroundSize = 'cover';
@@ -39,6 +47,25 @@ export class GlobalBackgroundStrategy implements BannerBackgroundStrategy {
       document.body.style.backgroundAttachment = 'fixed';
     }
   }
+
+  /**
+   * 从 localStorage 读取并应用全局背景（用于其他页面）
+   */
+  static applyFromStorage(): void {
+    try {
+      const bgImageUrl = localStorage.getItem(GlobalBackgroundStrategy.STORAGE_KEY);
+      if (bgImageUrl) {
+        // 将 Banner 图片应用到 body 元素作为全局背景
+        document.body.style.backgroundImage = `url(${bgImageUrl})`;
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundPosition = 'center';
+        document.body.style.backgroundRepeat = 'no-repeat';
+        document.body.style.backgroundAttachment = 'fixed';
+      }
+    } catch (e) {
+      console.warn('[Banner] 无法从 localStorage 读取 Banner 图片:', e);
+    }
+  } 
 
   handleScroll(_banner: HTMLElement, _scrollTop: number, _bannerHeight: number): void {
     // 全局背景模式下，Banner 背景不淡出
